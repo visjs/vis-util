@@ -535,7 +535,7 @@ export function convert(object: unknown, type: Types | null): any {
     case 'ASPDate':
       if (isNumber(object)) {
         return '/Date(' + object + ')/'
-      } else if (object instanceof Date) {
+      } else if (object instanceof Date || isMoment(object)) {
         return '/Date(' + object.valueOf() + ')/'
       } else if (isString(object)) {
         match = ASPDateRegex.exec(object)
