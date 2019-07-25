@@ -605,6 +605,8 @@ export function getType(object: unknown): string {
   return type
 }
 
+export function copyAndExtendArray<T>(arr: readonly T[], newValue: T): T[]
+export function copyAndExtendArray<A, V>(arr: readonly A[], newValue: V): (A | V)[]
 /**
  * Used to extend an array and copy it. This is used to propagate paths recursively.
  *
@@ -613,7 +615,7 @@ export function getType(object: unknown): string {
  *
  * @returns A new array with all items from arr and newValue (which is last).
  */
-export function copyAndExtendArray<T>(arr: T[], newValue: T): T[] {
+export function copyAndExtendArray<A, V>(arr: readonly A[], newValue: V): (A | V)[] {
   return [...arr, newValue]
 }
 
