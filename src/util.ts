@@ -563,11 +563,14 @@ export function convert(object: unknown, type: Types | null): any {
 /**
  * Get the type of an object, for example exports.getType([]) returns 'Array'
  *
+ * @deprecated
+ *
  * @param object - Input value of unknown type.
  *
  * @returns Detected type.
  */
 export function getType(object: unknown): string {
+  console.warn(`vis-util.getType is deprecated and will be removed in the next major release`);
   const type = typeof object
 
   if (type === 'object') {
