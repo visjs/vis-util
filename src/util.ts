@@ -163,6 +163,8 @@ export function isMoment(value: unknown): value is Moment {
  * If property in b explicitly set to null, delete it if `allowDeletion` set.
  *
  * Internal helper routine, should not be exported. Not added to `exports` for that reason.
+ * 
+ * @deprecated
  *
  * @param a - Target object.
  * @param b - Source object.
@@ -170,6 +172,7 @@ export function isMoment(value: unknown): value is Moment {
  * @param allowDeletion  if true, delete property in a if explicitly set to null in b
  */
 function copyOrDelete(a: any, b: any, prop: string, allowDeletion: boolean): void {
+  console.warn(`vis-util.copyOrDelete is deprecated and will be removed in the next major release`);
   let doDeletion = false
   if (allowDeletion === true) {
     doDeletion = b[prop] === null && a[prop] !== undefined
