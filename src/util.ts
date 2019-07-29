@@ -150,11 +150,14 @@ export function isDate(value: unknown): value is Date | string {
  * Test whether given object is a Moment date.
  * @TODO: This is basically a workaround, if Moment was imported property it wouldn't necessary as moment.isMoment is a TS type guard.
  *
+ * @deprecated
+ * 
  * @param value - Input value of unknown type.
  *
  * @returns True if Moment instance, false otherwise.
  */
 export function isMoment(value: unknown): value is Moment {
+  console.warn(`vis-util.isMoment is deprecated and will be removed in the next major release`);
   return moment.isMoment(value)
 }
 
