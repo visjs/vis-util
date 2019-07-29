@@ -41,6 +41,13 @@
     "contributors:update": "git-authors-cli",
     "preparepublish": "npm run contributors:update"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  },
   "engines": {
     "node": ">=8"
   },
