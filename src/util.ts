@@ -1087,6 +1087,8 @@ export function overrideOpacity(color: string, opacity: number): string {
 
 /**
  * Convert RGB <0, 255> into hex color string.
+ * 
+ * @deprecated
  *
  * @param red - Red channel.
  * @param green - Green channel.
@@ -1095,6 +1097,7 @@ export function overrideOpacity(color: string, opacity: number): string {
  * @returns Hex color string (for example: '#0acdc0').
  */
 export function RGBToHex(red: number, green: number, blue: number): string {
+  console.warn(`vis-util.RGBToHex is deprecated and will be removed in the next major release`);
   return '#' + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1)
 }
 
