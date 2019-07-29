@@ -358,20 +358,16 @@ export function selectiveNotDeepExtend(propsToExclude: string[], a: any, b: any,
 export function deepExtend(a: any, b: any, protoExtend: boolean = false, allowDeletion: boolean = false): any {
   for (const prop in b) {
     if (Object.prototype.hasOwnProperty.call(b, prop) || protoExtend === true) {
-      if (b[prop] && b[prop].constructor === Object) {
+      if (b[prop] && Object.getPrototypeOf(b[prop]) === Object.prototype) {
         if (a[prop] === undefined) {
-          a[prop] = {}
-        }
-        if (a[prop].constructor === Object) {
+          a[prop] = deepExtend({}, b[prop], protoExtend) // NOTE: allowDeletion not propagated!
+        } else if (a[prop] && Object.getPrototypeOf(a[prop]) === Object.prototype) {
           deepExtend(a[prop], b[prop], protoExtend) // NOTE: allowDeletion not propagated!
         } else {
           copyOrDelete(a, b, prop, allowDeletion)
         }
       } else if (Array.isArray(b[prop])) {
-        a[prop] = []
-        for (let i = 0; i < b[prop].length; i++) {
-          a[prop].push(b[prop][i])
-        }
+        a[prop] = b[prop].slice()
       } else {
         copyOrDelete(a, b, prop, allowDeletion)
       }
