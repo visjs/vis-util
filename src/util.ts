@@ -1426,9 +1426,7 @@ export function isValidHex(hex: string): boolean {
  * @returns True if the string is valid, false otherwise.
  */
 export function isValidRGB(rgb: string): boolean {
-  rgb = rgb.replace(' ', '')
-  const isOk = /rgb\((\d{1,3}),(\d{1,3}),(\d{1,3})\)/i.test(rgb)
-  return isOk
+  return /^ *rgb\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *\) *$/i.test(rgb)
 }
 
 /**
