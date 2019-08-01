@@ -1088,14 +1088,18 @@ export function RGBToHex(red: number, green: number, blue: number): string {
 export interface ColorObject {
   background?: string
   border?: string
-  hover?: {
-    border?: string
-    background?: string
-  }
-  highlight?: {
-    border?: string
-    background?: string
-  }
+  hover?:
+    | string
+    | {
+        border?: string
+        background?: string
+      }
+  highlight?:
+    | string
+    | {
+        border?: string
+        background?: string
+      }
 }
 export interface FullColorObject {
   background: string
@@ -1111,8 +1115,9 @@ export interface FullColorObject {
 }
 
 export function parseColor(inputColor: string): FullColorObject
+export function parseColor(inputColor: FullColorObject): FullColorObject
 export function parseColor(inputColor: ColorObject): ColorObject
-export function parseColor(inputColor: ColorObject | string, defaultColor: FullColorObject): FullColorObject
+export function parseColor(inputColor: ColorObject, defaultColor: FullColorObject): FullColorObject
 /**
  * Parse a color property into an object with border, background, and highlight colors
  *
