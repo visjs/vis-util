@@ -11,9 +11,10 @@ export { uuid4 as randomUUID } from 'vis-uuid'
 // code from http://momentjs.com/
 const ASPDateRegex = /^\/?Date\((-?\d+)/i
 
-// Hex color
+// Color REs
 const fullHexRE = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
 const shortHexRE = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
+const rgbaRE = /^rgba\( *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *([01]|0?\.\d+) *\)$/i
 
 /**
  * Hue, Saturation, Value.
@@ -1437,9 +1438,7 @@ export function isValidRGB(rgb: string): boolean {
  * @returns True if the string is valid, false otherwise.
  */
 export function isValidRGBA(rgba: string): boolean {
-  rgba = rgba.replace(' ', '')
-  const isOk = /rgba\((\d{1,3}),(\d{1,3}),(\d{1,3}),(0?.{1,3})\)/i.test(rgba)
-  return isOk
+  return rgbaRE.test(rgba)
 }
 
 /**
