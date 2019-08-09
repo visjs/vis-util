@@ -14,6 +14,7 @@ const ASPDateRegex = /^\/?Date\((-?\d+)/i
 // Color REs
 const fullHexRE = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
 const shortHexRE = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
+const rgbRE = /^rgb\( *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *\)$/i
 const rgbaRE = /^rgba\( *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *([01]|0?\.\d+) *\)$/i
 
 /**
@@ -1432,7 +1433,7 @@ export function isValidHex(hex: string): boolean {
  * @returns True if the string is valid, false otherwise.
  */
 export function isValidRGB(rgb: string): boolean {
-  return /^ *rgb\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *\) *$/i.test(rgb)
+  return rgbRE.test(rgb)
 }
 
 /**
