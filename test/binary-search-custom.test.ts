@@ -46,7 +46,7 @@ describe('binarySearchCustom', function(): void {
         'The comparator should receive the value retrieved from the array item using the passed property name.'
       )
         .to.have.lengthOf(1)
-        .and.to.have.ownProperty(0)
+        .and.to.have.ownProperty('0')
         .that.is.a('number')
     })
 
@@ -78,7 +78,7 @@ describe('binarySearchCustom', function(): void {
         'The comparator should receive the value retrieved from the array item using the passed property names.'
       )
         .to.have.lengthOf(1)
-        .and.to.have.ownProperty(0)
+        .and.to.have.ownProperty('0')
         .that.is.a('number')
     })
 
