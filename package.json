@@ -7,7 +7,7 @@
   "types": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/visjs/vis-utils.git"
+    "url": "https://github.com/visjs/vis-util.git"
   },
   "author": "Alex de Mulder <alexdemulder@gmail.com>",
   "contributors": [
@@ -103,6 +103,7 @@
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.0.1",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "semantic-release": "^15.13.19",
     "sinon": "^7.3.2",
     "typedoc": "^0.14.2",
     "typescript": "^3.5.3"
