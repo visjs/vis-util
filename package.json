@@ -1,13 +1,13 @@
 {
   "name": "vis-util",
-  "version": "1.1.4",
+  "version": "0.0.0-no-version",
   "description": "utilitie collection for visjs",
   "main": "dist/umd.js",
   "module": "dist/esm.js",
   "types": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/visjs/vis-utils.git"
+    "url": "https://github.com/visjs/vis-util.git"
   },
   "author": "Alex de Mulder <alexdemulder@gmail.com>",
   "contributors": [
@@ -32,12 +32,11 @@
     "clean": "rimraf '{docs,dist}/*'",
     "lint": "eslint '{src,test}/**/*.{m,}{j,t}s{x,}'",
     "lint:fix": "npm run lint -- --fix",
-    "prepublishOnly": "npm run preversion",
-    "preversion": "run-s test type-check clean build",
+    "prepublishOnly": "npm run build",
     "test": "BABEL_ENV=test mocha",
     "test-cov": "BABEL_ENV=test-cov nyc mocha",
     "type-check": "tsc --noemit",
-    "version": "npm run build:docs && git add docs && npm run contributors:update && git add package.json",
+    "version": "npm run contributors:update && git add package.json",
     "contributors:update": "git-authors-cli",
     "preparepublish": "npm run contributors:update"
   },
@@ -103,6 +102,7 @@
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.0.1",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "semantic-release": "^15.13.19",
     "sinon": "^7.3.2",
     "typedoc": "^0.14.2",
     "typescript": "^3.5.3"
