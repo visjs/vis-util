@@ -104,7 +104,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "semantic-release": "^15.13.19",
     "sinon": "^7.3.2",
-    "typedoc": "^0.14.2",
+    "typedoc": "^0.15.0",
     "typescript": "^3.5.3"
   }
 }
