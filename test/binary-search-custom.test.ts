@@ -1,10 +1,10 @@
-import { expect } from 'chai'
-import { assert, mock } from 'sinon'
-import { deepFreeze } from './helpers'
+import { expect } from "chai";
+import { assert, mock } from "sinon";
+import { deepFreeze } from "./helpers";
 
-import { binarySearchCustom } from '../src'
+import { binarySearchCustom } from "../src";
 
-describe('binarySearchCustom', function(): void {
+describe("binarySearchCustom", function(): void {
   const orderedItems = deepFreeze([
     { prop1: -79, nested: { prop2: -0.79 } },
     { prop1: -27, nested: { prop2: -0.27 } },
@@ -21,79 +21,106 @@ describe('binarySearchCustom', function(): void {
     { prop1: 71, nested: { prop2: 0.71 } },
     { prop1: 71, nested: { prop2: 0.71 } },
     { prop1: 71, nested: { prop2: 0.71 } },
-    { prop1: 87, nested: { prop2: 0.87 } },
-  ])
-  const comparatorFactory = (target: number): ((value: number) => -1 | 0 | 1) => (value: number): -1 | 0 | 1 => {
+    { prop1: 87, nested: { prop2: 0.87 } }
+  ]);
+  const comparatorFactory = (
+    target: number
+  ): ((value: number) => -1 | 0 | 1) => (value: number): -1 | 0 | 1 => {
     if (value < target) {
-      return -1
+      return -1;
     } else if (value > target) {
-      return 1
+      return 1;
     } else {
-      return 0
+      return 0;
     }
-  }
+  };
 
-  describe('array[index][prop1]', function(): void {
-    it('comparator args', function(): void {
-      const bscMock = mock()
-      bscMock.returns(0)
+  describe("array[index][prop1]", function(): void {
+    it("comparator args", function(): void {
+      const bscMock = mock();
+      bscMock.returns(0);
 
-      binarySearchCustom(orderedItems, bscMock, 'prop1')
+      binarySearchCustom(orderedItems, bscMock, "prop1");
 
-      assert.calledOnce(bscMock)
+      assert.calledOnce(bscMock);
       expect(
         bscMock.getCall(0).args,
-        'The comparator should receive the value retrieved from the array item using the passed property name.'
+        "The comparator should receive the value retrieved from the array item using the passed property name."
       )
         .to.have.lengthOf(1)
-        .and.to.have.ownProperty('0')
-        .that.is.a('number')
-    })
+        .and.to.have.ownProperty("0")
+        .that.is.a("number");
+    });
 
-    it('missing item', function(): void {
-      expect(binarySearchCustom(orderedItems, comparatorFactory(13), 'prop1')).to.equal(-1)
-    })
+    it("missing item", function(): void {
+      expect(
+        binarySearchCustom(orderedItems, comparatorFactory(13), "prop1")
+      ).to.equal(-1);
+    });
 
-    it('present item', function(): void {
-      expect(binarySearchCustom(orderedItems, comparatorFactory(28), 'prop1')).to.equal(6)
-    })
+    it("present item", function(): void {
+      expect(
+        binarySearchCustom(orderedItems, comparatorFactory(28), "prop1")
+      ).to.equal(6);
+    });
 
-    it('multiple equal items', function(): void {
-      expect(binarySearchCustom(orderedItems, comparatorFactory(71), 'prop1'))
+    it("multiple equal items", function(): void {
+      expect(binarySearchCustom(orderedItems, comparatorFactory(71), "prop1"))
         .to.be.at.least(11)
-        .and.at.most(14)
-    })
-  })
+        .and.at.most(14);
+    });
+  });
 
-  describe('array[index][prop1][prop2]', function(): void {
-    it('comparator args', function(): void {
-      const bscMock = mock()
-      bscMock.returns(0)
+  describe("array[index][prop1][prop2]", function(): void {
+    it("comparator args", function(): void {
+      const bscMock = mock();
+      bscMock.returns(0);
 
-      binarySearchCustom(orderedItems, bscMock, 'nested', 'prop2')
+      binarySearchCustom(orderedItems, bscMock, "nested", "prop2");
 
-      assert.calledOnce(bscMock)
+      assert.calledOnce(bscMock);
       expect(
         bscMock.getCall(0).args,
-        'The comparator should receive the value retrieved from the array item using the passed property names.'
+        "The comparator should receive the value retrieved from the array item using the passed property names."
       )
         .to.have.lengthOf(1)
-        .and.to.have.ownProperty('0')
-        .that.is.a('number')
-    })
+        .and.to.have.ownProperty("0")
+        .that.is.a("number");
+    });
 
-    it('missing item', function(): void {
-      expect(binarySearchCustom(orderedItems, comparatorFactory(0.13), 'nested', 'prop2')).to.equal(-1)
-    })
+    it("missing item", function(): void {
+      expect(
+        binarySearchCustom(
+          orderedItems,
+          comparatorFactory(0.13),
+          "nested",
+          "prop2"
+        )
+      ).to.equal(-1);
+    });
 
-    it('present item', function(): void {
-      expect(binarySearchCustom(orderedItems, comparatorFactory(0.28), 'nested', 'prop2')).to.equal(6)
-    })
+    it("present item", function(): void {
+      expect(
+        binarySearchCustom(
+          orderedItems,
+          comparatorFactory(0.28),
+          "nested",
+          "prop2"
+        )
+      ).to.equal(6);
+    });
 
-    it('multiple equal items', function(): void {
-      expect(binarySearchCustom(orderedItems, comparatorFactory(0.71), 'nested', 'prop2'))
+    it("multiple equal items", function(): void {
+      expect(
+        binarySearchCustom(
+          orderedItems,
+          comparatorFactory(0.71),
+          "nested",
+          "prop2"
+        )
+      )
         .to.be.at.least(11)
-        .and.at.most(14)
-    })
-  })
-})
+        .and.at.most(14);
+    });
+  });
+});
