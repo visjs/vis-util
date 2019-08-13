@@ -28,6 +28,7 @@ export default [
       file: 'dist/umd.js',
       format: 'umd',
       name: 'vis',
+      extend: true
     },
     plugins: [resolve(resolveConfig), commonjs(), babel(babelConfingBase)],
   },
