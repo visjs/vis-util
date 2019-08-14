@@ -5,7 +5,7 @@
       {
         "targets": "> 0.1% or not dead",
         "useBuiltIns": "usage",
-        "corejs": 3
+        "corejs": 2
       }
     ],
     "@babel/preset-typescript"
