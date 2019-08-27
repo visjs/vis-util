@@ -202,7 +202,7 @@ function copyOrDelete(
 export function fillIfDefined<T extends object>(
   a: T,
   b: Partial<T>,
-  allowDeletion: boolean = false
+  allowDeletion = false
 ): void {
   // NOTE: iteration of properties of a
   // NOTE: prototype properties iterated over as well
@@ -283,7 +283,7 @@ export function selectiveDeepExtend(
   props: string[],
   a: any,
   b: any,
-  allowDeletion: boolean = false
+  allowDeletion = false
 ): any {
   // TODO: add support for Arrays to deepExtend
   if (Array.isArray(b)) {
@@ -331,7 +331,7 @@ export function selectiveNotDeepExtend(
   propsToExclude: string[],
   a: any,
   b: any,
-  allowDeletion: boolean = false
+  allowDeletion = false
 ): any {
   // TODO: add support for Arrays to deepExtend
   // NOTE: array properties have an else-below; apparently, there is a problem here.
@@ -383,8 +383,8 @@ export function selectiveNotDeepExtend(
 export function deepExtend(
   a: any,
   b: any,
-  protoExtend: boolean = false,
-  allowDeletion: boolean = false
+  protoExtend = false,
+  allowDeletion = false
 ): any {
   for (const prop in b) {
     if (Object.prototype.hasOwnProperty.call(b, prop) || protoExtend === true) {
