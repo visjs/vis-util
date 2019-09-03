@@ -388,11 +388,16 @@ export function deepExtend(
 ): any {
   for (const prop in b) {
     if (Object.prototype.hasOwnProperty.call(b, prop) || protoExtend === true) {
-      if (b[prop] && Object.getPrototypeOf(b[prop]) === Object.prototype) {
+      if (
+        typeof b[prop] === "object" &&
+        b[prop] !== null &&
+        Object.getPrototypeOf(b[prop]) === Object.prototype
+      ) {
         if (a[prop] === undefined) {
           a[prop] = deepExtend({}, b[prop], protoExtend); // NOTE: allowDeletion not propagated!
         } else if (
-          a[prop] &&
+          typeof a[prop] === "object" &&
+          a[prop] !== null &&
           Object.getPrototypeOf(a[prop]) === Object.prototype
         ) {
           deepExtend(a[prop], b[prop], protoExtend); // NOTE: allowDeletion not propagated!
