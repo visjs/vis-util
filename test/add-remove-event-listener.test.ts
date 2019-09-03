@@ -23,7 +23,7 @@ describe("*EventListener", function(): void {
     {
       method: "removeEventListener" as const,
       methodIE: "detachEvent" as const,
-      fn: removeEventListener
+      fn: removeEventListener as typeof addEventListener
     }
   ].forEach(({ method, methodIE, fn }): void => {
     describe(method, function(): void {
