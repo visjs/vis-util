@@ -1,15 +1,20 @@
 import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
+import { readFileSync } from 'fs'
 
 // This is necessary for Moment to work.
 import commonjs from 'rollup-plugin-commonjs'
 
+const babelrc = JSON.parse(readFileSync('./.babelrc'))
+
 const babelConfingBase = {
+  ...babelrc,
+  babelrc: false,
   extensions: ['.ts', '.js'],
-  runtimeHelpers: true,
+  runtimeHelpers: true
 }
 const resolveConfig = {
-  extensions: [...babelConfingBase.extensions, '.json'],
+  extensions: [...babelConfingBase.extensions, '.json']
 }
 
 export default [
