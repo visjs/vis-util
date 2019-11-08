@@ -14,7 +14,7 @@
  */
 export function deepFreeze<T extends object>(
   object: T,
-  freeze: (object: any) => any = Object.freeze.bind(Object)
+  freeze: (object: T) => T = (object: T): T => Object.freeze(object)
 ): T {
   const alreadyFrozen = new Set<any>();
 
