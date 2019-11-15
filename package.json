@@ -66,6 +66,10 @@
     "dist",
     "LICENSE*"
   ],
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/visjs"
+  },
   "dependencies": {
     "moment": "2.24.0",
     "vis-uuid": "1.1.3"
