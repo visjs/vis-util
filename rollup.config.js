@@ -1,40 +1,65 @@
-import resolve from 'rollup-plugin-node-resolve'
-import babel from 'rollup-plugin-babel'
-import { readFileSync } from 'fs'
+import babel from "rollup-plugin-babel";
+import commonjs from "rollup-plugin-commonjs";
+import copyGlob from "rollup-plugin-copy-glob";
+import resolve from "rollup-plugin-node-resolve";
+import { readFileSync } from "fs";
+import { terser } from "rollup-plugin-terser";
 
-// This is necessary for Moment to work.
-import commonjs from 'rollup-plugin-commonjs'
+const babelrc = JSON.parse(readFileSync("./.babelrc"));
 
-const babelrc = JSON.parse(readFileSync('./.babelrc'))
-
-const babelConfingBase = {
-  ...babelrc,
-  babelrc: false,
-  extensions: ['.ts', '.js'],
-  runtimeHelpers: true
-}
-const resolveConfig = {
-  extensions: [...babelConfingBase.extensions, '.json']
-}
-
-export default [
-  {
-    input: 'src/index.ts',
+const commonPlugins = [
+  resolve({
+    extensions: [".ts", ".js", ".json"]
+  }),
+  commonjs(),
+  babel({
+    ...babelrc,
+    babelrc: false,
+    extensions: [".ts", ".js"],
+    runtimeHelpers: true
+  })
+];
+const rawPlugins = [
+  ...commonPlugins,
+  copyGlob([{ files: "dev-lib/dist/**/*", dest: "." }])
+];
+const minPlugins = [
+  ...commonPlugins,
+  terser({
     output: {
-      file: 'dist/esm.js',
-      format: 'esm',
-    },
-    plugins: [resolve(resolveConfig), commonjs(), babel(babelConfingBase)],
-  },
+      comments: (_node, { value }) => /@license/.test(value)
+    }
+  })
+];
+
+const configs = [
   {
-    input: 'src/index.ts',
-    output: {
-      exports: 'named',
-      file: 'dist/umd.js',
-      format: 'umd',
-      name: 'vis',
-      extend: true
-    },
-    plugins: [resolve(resolveConfig), commonjs(), babel(babelConfingBase)],
-  },
-]
+    input: "src/index.ts",
+    output: [
+      {
+        file: "esm/vis-util.js",
+        format: "esm"
+      },
+      {
+        exports: "named",
+        extend: true,
+        file: "umd/vis-util.js",
+        format: "umd",
+        name: "vis"
+      }
+    ],
+    plugins: rawPlugins
+  }
+];
+
+const configsMin = configs.map(({ output, ...rest }) => ({
+  ...rest,
+  output: output.map(original => {
+    const copy = JSON.parse(JSON.stringify(original));
+    copy.file = original.file.replace(/\.js$/, ".min.js");
+    return copy;
+  }),
+  plugins: minPlugins
+}));
+
+export default [...configs, ...configsMin];
