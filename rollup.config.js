@@ -6,6 +6,13 @@ import { readFileSync } from "fs";
 import { terser } from "rollup-plugin-terser";
 
 const babelrc = JSON.parse(readFileSync("./.babelrc"));
+const packageJSON = JSON.parse(readFileSync("./package.json"));
+
+const external = Object.keys(packageJSON.peerDependencies);
+const globals = {
+  moment: "moment",
+  "vis-uuid": "visUUID"
+};
 
 const commonPlugins = [
   resolve({
@@ -45,9 +52,11 @@ const configs = [
         extend: true,
         file: "umd/vis-util.js",
         format: "umd",
+        globals,
         name: "vis"
       }
     ],
+    external,
     plugins: rawPlugins
   }
 ];

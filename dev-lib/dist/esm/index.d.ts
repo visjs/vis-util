@@ -1,1 +1,1 @@
-export * from "./vis-util";
+export * from "../types";
