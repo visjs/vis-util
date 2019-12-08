@@ -1,6 +1,7 @@
 // utility functions
 
 export { uuid4 as randomUUID } from "vis-uuid";
+export * from "./layered-storage";
 
 // parse ASP.Net Date pattern,
 // for example '/Date(1198908717056)/' or '/Date(1198908717056-0700)/'

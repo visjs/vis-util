@@ -53,6 +53,8 @@ module.exports = {
 
     // Empty functions are useful sometimes.
     "@typescript-eslint/no-empty-function": "off",
+    // This would be great if TypeScript was perfect but sometimes tsc can't infer the correct type.
+    '@typescript-eslint/no-non-null-assertion': 'off',
     // This is really crazy given the functions in this package.
     "@typescript-eslint/no-explicit-any": "off",
     // These are hoisted, I have no idea why it reports them by default.

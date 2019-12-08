@@ -2,6 +2,7 @@ import babel from "rollup-plugin-babel";
 import commonjs from "rollup-plugin-commonjs";
 import copyGlob from "rollup-plugin-copy-glob";
 import resolve from "rollup-plugin-node-resolve";
+import typescript from "rollup-plugin-typescript2";
 import { generateHeader } from "vis-dev-utils";
 import { terser } from "rollup-plugin-terser";
 
@@ -12,6 +13,10 @@ const commonPlugins = [
     extensions: [".ts", ".js", ".json"]
   }),
   commonjs(),
+  typescript({
+    objectHashIgnoreUnknownHack: true,
+    tsconfig: "tsconfig.code.json"
+  }),
   babel({
     extensions: [".ts", ".js"],
     runtimeHelpers: true
