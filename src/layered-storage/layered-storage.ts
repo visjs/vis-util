@@ -12,7 +12,8 @@ import {
   LayeredStorageTransaction,
   Listeners,
   MonolithicTransaction,
-  SegmentTransaction
+  SegmentTransaction,
+  Listener
 } from "./transactions";
 
 export {
@@ -161,11 +162,11 @@ export class LayeredStorage<
     segment: Segment,
     keys: (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
     callback: EventCallback<keyof KeyValue>
-  ): void;
+  ): () => void;
   public on(
     keys: (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
     callback: EventCallback<keyof KeyValue>
-  ): void;
+  ): () => void;
   public on(
     ...rest:
       | [
@@ -177,7 +178,7 @@ export class LayeredStorage<
           (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
           EventCallback<keyof KeyValue>
         ]
-  ): void {
+  ): () => void {
     return rest.length === 2
       ? this._on(
           this._core.monolithic,
@@ -194,7 +195,7 @@ export class LayeredStorage<
     segment: Segment,
     keys: (keyof KeyValue | RegExp)[],
     callback: EventCallback<keyof KeyValue>
-  ): void {
+  ): () => void {
     const literals = keys.filter(
       (value): value is keyof KeyValue => !(value instanceof RegExp)
     );
@@ -206,9 +207,22 @@ export class LayeredStorage<
       literals.includes(key) ||
       (typeof key === "string" && functions.some((func): boolean => func(key)));
 
+    const listener: Listener<keyof KeyValue> = { test, callback };
+
     (
       this._listeners.get(segment) ||
       this._listeners.set(segment, []).get(segment)!
-    ).push({ test, callback });
+    ).push(listener);
+
+    return this._off.bind(this, segment, listener);
+  }
+
+  private _off(segment: Segment, listener: Listener<keyof KeyValue>): void {
+    const listeners = this._listeners.get(segment);
+    if (listeners == null) {
+      return;
+    }
+
+    listeners.splice(listeners.indexOf(listener), 1);
   }
 }

@@ -7,10 +7,11 @@ import {
 } from "./common";
 import { LayeredStorageCore } from "./core";
 
-export type Listeners<Key> = Map<
-  Segment,
-  { test: (key: KeyRange) => boolean; callback: EventCallback<Key> }[]
->;
+export type Listener<Key> = {
+  test: (key: KeyRange) => boolean;
+  callback: EventCallback<Key>;
+};
+export type Listeners<Key> = Map<Segment, Listener<Key>[]>;
 
 class TransactionCore<
   KeyValue extends KeyValueLookup,

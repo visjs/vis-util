@@ -52,7 +52,7 @@ export class LayeredStorageSegment<
   public on(
     keys: (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
     callback: EventCallback<keyof KeyValue>
-  ): void {
+  ): () => void {
     return this._layeredStorage.on(this._segment, keys, callback);
   }
 }
