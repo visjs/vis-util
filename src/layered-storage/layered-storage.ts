@@ -23,6 +23,19 @@ export {
   SegmentTransaction
 };
 
+/**
+ * Stores data in layers and optionally segments.
+ *
+ * @remarks
+ * - Higher layers override lowerlayers.
+ * - Each layer can be segmented using arbitrary values.
+ * - Segmented value overrides monolithic (nonsegmented) value.
+ *
+ * @typeparam KeyValue - Sets the value types associeated with their keys.
+ * (TS only, ignored in JS).
+ * @typeparam Layer - Sets the allowed layers.
+ * (TS only, ignored in JS).
+ */
 export class LayeredStorage<
   KeyValue extends KeyValueLookup,
   Layer extends LayerRange
@@ -151,9 +164,22 @@ export class LayeredStorage<
     }
   }
 
+  /**
+   * Create a new segmented instance for working with a single segment.
+   *
+   * @param segment - The segment that will be used by this instance.
+   *
+   * @returns A new segmented instance premanently bound to this instance.
+   */
   public openSegment(segment: Segment): LayeredStorageSegment<KeyValue, Layer> {
     return new LayeredStorageSegment(this, segment);
   }
+
+  /**
+   * Delete all data belonging to a segment.
+   *
+   * @param segment - The segment whose data will be deleted.
+   */
   public deleteSegmentData(segment: Segment): void {
     return this._core.deleteSegmentData(segment);
   }

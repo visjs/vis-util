@@ -4,6 +4,15 @@ import {
   LayeredStorageSegmentTransaction
 } from "./layered-storage";
 
+/**
+ * This is similar as `LayeredStorage` except that it is permanently bound to
+ * given `LayeredStorage` and can only access a single `Segment`.
+ *
+ * @typeparam KeyValue - Sets the value types associeated with their keys.
+ * (TS only, ignored in JS).
+ * @typeparam Layer - Sets the allowed layers.
+ * (TS only, ignored in JS).
+ */
 export class LayeredStorageSegment<
   KeyValue extends KeyValueLookup,
   Layer extends LayerRange
