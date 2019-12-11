@@ -6,6 +6,9 @@ interface KV {
   "test.value": { number: number; value: { string: string } };
 }
 
+/**
+ * Test that values can be set and retrieved from single monolithic layer.
+ */
 export function singleLayer(): void {
   describe("Single layer", function(): void {
     const testValue: KV["test.value"] = deepFreeze({

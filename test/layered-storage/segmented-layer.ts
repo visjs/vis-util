@@ -6,6 +6,9 @@ interface KV {
   "test.value": { number: number; value: { string: string } };
 }
 
+/**
+ * Test that values can be set accross segments and later retrieved.
+ */
 export function segmentedLayer(): void {
   describe("Segmented layer", function(): void {
     const testValueA: KV["test.value"] = deepFreeze({

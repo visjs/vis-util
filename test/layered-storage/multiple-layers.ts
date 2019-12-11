@@ -6,6 +6,10 @@ interface KV {
   "test.value": { number: number; value: { string: string } };
 }
 
+/**
+ * Test that values can be set accross layers and override each other the way
+ * they should.
+ */
 export function multipleLayers(): void {
   describe("Multiple layers", function(): void {
     const testValue1: KV["test.value"] = deepFreeze({

@@ -54,6 +54,9 @@ const expectedResultMinusABC = deepFreeze({
   c: allUndefined
 });
 
+/**
+ * Test all mutatins including segmented mutations with Layered Storage.
+ */
 export function allCombined(): void {
   describe("All combined", function(): void {
     it("Main instance only", function(): void {

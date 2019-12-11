@@ -7,6 +7,10 @@ interface KV {
   "test.value3": string;
 }
 
+/**
+ * Test that multiple different values can be saved and retrieved each using
+ * it's own key.
+ */
 export function multipleKeys(): void {
   describe("Multiple keys", function(): void {
     const testValue1: KV["test.value1"] = false;

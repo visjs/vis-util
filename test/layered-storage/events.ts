@@ -4,6 +4,9 @@ import { deepFreeze } from "../helpers";
 
 type KV = Record<string, number>;
 
+/**
+ * Test if mutations ant transactions trigger events as they should.
+ */
 export function events(): void {
   describe("Events", function(): void {
     deepFreeze([
