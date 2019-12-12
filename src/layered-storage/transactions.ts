@@ -153,7 +153,7 @@ class TransactionCore<
   /**
    * Discard all queued operations.
    */
-  public revert(): void {
+  public abort(): void {
     this._actions = [];
     this._events = new Map();
   }
@@ -307,7 +307,7 @@ export class MonolithicTransaction<
 
   /** @inheritdoc */
   public abort(): void {
-    return this._transactionCore.revert();
+    return this._transactionCore.abort();
   }
 }
 
@@ -399,6 +399,6 @@ export class SegmentTransaction<
 
   /** @inheritdoc */
   public abort(): void {
-    return this._transactionCore.revert();
+    return this._transactionCore.abort();
   }
 }
