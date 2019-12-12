@@ -29,7 +29,7 @@ export function events(): void {
 
           const msSpy = spy();
 
-          ms.on(keys, msSpy);
+          const msSpyOff = ms.on(keys, msSpy);
           assert.notCalled(msSpy);
 
           ms.set(4, "other.value1", 7);
@@ -50,6 +50,10 @@ export function events(): void {
           ms.delete(1, "test.value1");
           assert.callCount(msSpy, 4);
           assert.calledWithExactly(msSpy.lastCall, ["test.value1"]);
+
+          msSpyOff();
+          ms.set(4, "test.value1", -3);
+          assert.callCount(msSpy, 4);
         });
 
         it("Segmened", function(): void {
@@ -59,8 +63,8 @@ export function events(): void {
           const msSpy = spy();
           const ssSpy = spy();
 
-          ms.on(keys, msSpy);
-          ss.on(keys, ssSpy);
+          const msSpyOff = ms.on(keys, msSpy);
+          const ssSpyOff = ss.on(keys, ssSpy);
           assert.notCalled(msSpy);
           assert.notCalled(ssSpy);
 
@@ -101,6 +105,12 @@ export function events(): void {
           assert.callCount(ssSpy, 6);
           assert.calledWithExactly(msSpy.lastCall, ["test.value1"]);
           assert.calledWithExactly(ssSpy.lastCall, ["test.value1"]);
+
+          msSpyOff();
+          ssSpyOff();
+          ms.set(4, "test.value1", -3);
+          assert.callCount(msSpy, 4);
+          assert.callCount(ssSpy, 6);
         });
 
         it("Monolithic transaction", function(): void {
