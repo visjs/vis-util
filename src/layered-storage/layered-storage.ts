@@ -365,4 +365,11 @@ export class LayeredStorage<
 
     listeners.splice(listeners.indexOf(listener), 1);
   }
+
+  /**
+   * Log the content of the storage into the console.
+   */
+  public dumpContent(): void {
+    this._core.dumpContent();
+  }
 }

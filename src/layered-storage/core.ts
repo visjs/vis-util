@@ -254,4 +254,41 @@ export class LayeredStorageCore<
     this._topLevelCache.delete(segment);
     this._segments.delete(segment);
   }
+
+  /**
+   * Log the content of the storage into the console.
+   */
+  public dumpContent(): void {
+    console.groupCollapsed("Storage content dump");
+
+    console.log("Time:", new Date());
+    console.log("Layers:", [...this._layers.values()]);
+    console.log("Segments:", [...this._segments.values()]);
+
+    console.groupCollapsed("Cache");
+    for (const [segment, cData] of this._topLevelCache.entries()) {
+      console.groupCollapsed(`Segment: ${String(segment)}`);
+      for (const [key, value] of cData.entries()) {
+        console.log([key, value]);
+      }
+      console.groupEnd();
+    }
+    console.groupEnd();
+
+    console.groupCollapsed("Data");
+    for (const [layer, lData] of this._data.entries()) {
+      console.groupCollapsed(`Layer: ${layer}`);
+      for (const [segment, lsData] of lData.entries()) {
+        console.groupCollapsed(`Segment: ${String(segment)}`);
+        for (const [key, value] of lsData.entries()) {
+          console.log([key, value]);
+        }
+        console.groupEnd();
+      }
+      console.groupEnd();
+    }
+    console.groupEnd();
+
+    console.groupEnd();
+  }
 }
