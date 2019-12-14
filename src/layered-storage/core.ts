@@ -48,44 +48,85 @@ export class LayeredStorageCore<
    */
   private readonly _topLevelCache = new Map<
     Segment,
-    Map<keyof KeyValue, KeyValue[keyof KeyValue]>
+    Map<keyof KeyValue, { has: boolean; value: KeyValue[keyof KeyValue] }>
   >();
 
   /**
-   * Update the value held in top level cache after it was changed in data.
+   * Remove outdated values from the cache.
    *
    * @param key - The key that was subject to the mutation.
    */
-  private _updateCache(key: keyof KeyValue): void {
-    // Run the search for each segment to update the cached the top level value
-    // for each of them.
-    segmentsLoop: for (const segment of this._segments) {
-      const sCache =
-        this._topLevelCache.get(segment) ||
-        this._topLevelCache.set(segment, new Map()).get(segment)!;
+  private _cleanCache(key: keyof KeyValue): void {
+    // Run the search for each segment to clean the cached top level value for
+    // each of them.
+    for (const segment of this._segments) {
+      const sCache = this._topLevelCache.get(segment);
+
+      if (!sCache) {
+        // This segment has no cache yet.
+        continue;
+      }
 
       // Delete the outdated value.
       sCache.delete(key);
 
-      // Search the layers from highest to lowest priority.
-      for (const layer of this._layers) {
-        // Check the segmented first and quit if found.
-        const lsData = this._getLSData(layer, segment);
-        if (lsData.has(key)) {
-          sCache.set(key, lsData.get(key)!);
-          continue segmentsLoop;
-        }
+      // Delete the whole segment if empty.
+      if (sCache.size === 0) {
+        this._topLevelCache.delete(segment);
+      }
+    }
+  }
 
-        // Check the monolithic and quit if found.
-        const lmData = this._getLSData(layer, this.monolithic);
-        if (lmData.has(key)) {
-          sCache.set(key, lmData.get(key)!);
-          continue segmentsLoop;
-        }
+  /**
+   * Find a top level value.
+   *
+   * @param segment - Which segment to look into (monolithic is always used as
+   * fallback on each level).
+   * @param key - The key identifying requested value.
+   *
+   * @returns Whether such value exists (`has`) and the value itself (`value`).
+   */
+  private _findValue<Key extends keyof KeyValue>(
+    segment: Segment,
+    key: Key
+  ): { has: boolean; value: KeyValue[Key] | undefined } {
+    const sCache =
+      this._topLevelCache.get(segment) ||
+      this._topLevelCache.set(segment, new Map()).get(segment)!;
+
+    // Return cached value if it exists.
+    const cached = sCache.get(key);
+    if (cached) {
+      return cached;
+    }
+
+    // Search the layers from highest to lowest priority.
+    for (const layer of this._layers) {
+      // Check the segmented first and quit if found.
+      const lsData = this._getLSData(layer, segment);
+      if (lsData.has(key)) {
+        const value = { has: true, value: lsData.get(key)! };
+
+        // Save to the cache.
+        sCache.set(key, value);
+
+        return value;
       }
 
-      // If nothing was found by now all the values for this key were deleted.
+      // Check the monolithic and quit if found.
+      const lmData = this._getLSData(layer, this.monolithic);
+      if (lmData.has(key)) {
+        const value = { has: true, value: lmData.get(key)! };
+
+        // Save to the cache.
+        sCache.set(key, value);
+
+        return value;
+      }
     }
+
+    // If nothing was found by now there are no values for the key.
+    return { has: false, value: undefined };
   }
 
   /**
@@ -135,17 +176,7 @@ export class LayeredStorageCore<
     segment: Segment,
     key: Key
   ): KeyValue[Key] | undefined {
-    const sData =
-      // Get the segment if it exists.
-      this._topLevelCache.get(segment) ||
-      // Fall back to monolithic if nothing was saved into the segment yet.
-      this._topLevelCache.get(this.monolithic);
-
-    if (sData == null) {
-      return;
-    }
-
-    return sData.get(key);
+    return this._findValue(segment, key).value;
   }
 
   /**
@@ -157,12 +188,7 @@ export class LayeredStorageCore<
    * @returns True if found, false otherwise.
    */
   public has<Key extends keyof KeyValue>(segment: Segment, key: Key): boolean {
-    const sData = this._topLevelCache.get(segment);
-    if (sData == null) {
-      return false;
-    }
-
-    return sData.has(key);
+    return this._findValue(segment, key).has;
   }
 
   /**
@@ -182,7 +208,7 @@ export class LayeredStorageCore<
     const lsData = this._getLSData(layer, segment);
     lsData.set(key, value);
 
-    this._updateCache(key);
+    this._cleanCache(key);
   }
 
   /**
@@ -200,7 +226,7 @@ export class LayeredStorageCore<
     const lsData = this._getLSData(layer, segment);
     lsData.delete(key);
 
-    this._updateCache(key);
+    this._cleanCache(key);
   }
 
   /**

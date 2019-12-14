@@ -4,6 +4,7 @@ import { expect } from "chai";
 
 interface KV {
   "test.value": { number: number; value: { string: string } };
+  "unrelated.value": { number: number; value: { string: string } };
 }
 
 /**
@@ -36,6 +37,18 @@ export function segmentedLayer(): void {
       expect(
         ls.get(b, "test.value"),
         "Monolithic value should be used if the segment doesn't exist."
+      ).to.equal(testValueA);
+    });
+
+    it("Get without set after unrelated set", function(): void {
+      const ls = new LayeredStorage<KV, 7>();
+
+      ls.set(7, "test.value", testValueA);
+      ls.set(7, b, "unrelated.value", testValueB);
+
+      expect(
+        ls.get(b, "test.value"),
+        "Monolithic value should be used if the segment doesn't have it's own."
       ).to.equal(testValueA);
     });
 
