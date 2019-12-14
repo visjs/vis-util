@@ -205,6 +205,10 @@ export class LayeredStorageCore<
     key: Key,
     value: KeyValue[Key]
   ): void {
+    if (typeof layer !== "number") {
+      throw new TypeError("Layers have to be numbers.");
+    }
+
     const lsData = this._getLSData(layer, segment);
     lsData.set(key, value);
 
@@ -223,6 +227,10 @@ export class LayeredStorageCore<
     segment: Segment,
     key: Key
   ): void {
+    if (typeof layer !== "number") {
+      throw new TypeError("Layers have to be numbers.");
+    }
+
     const lsData = this._getLSData(layer, segment);
     lsData.delete(key);
 

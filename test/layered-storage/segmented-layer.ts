@@ -141,5 +141,20 @@ export function segmentedLayer(): void {
         "There isn't any value anymore so it should return false."
       ).to.be.false;
     });
+
+    describe("Invalid layer names", function(): void {
+      [undefined, null, "string", true, false, {}].forEach(
+        (layer: any): void => {
+          it("" + layer, function(): void {
+            const ls = new LayeredStorage<KV, 0>();
+
+            expect(
+              (): void => void ls.set(layer, b, "test.value", testValueB),
+              "Layers have to be ordered which is only possible with numbers as that's the only thing that has universally accepted indisputable order."
+            ).to.throw();
+          });
+        }
+      );
+    });
   });
 }

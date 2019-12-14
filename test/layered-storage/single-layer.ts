@@ -77,5 +77,20 @@ export function singleLayer(): void {
         "The value should be reported as not present after being deleted."
       ).to.be.false;
     });
+
+    describe("Invalid layer names", function(): void {
+      [undefined, null, "string", true, false, {}].forEach(
+        (layer: any): void => {
+          it("" + layer, function(): void {
+            const ls = new LayeredStorage<KV, 0>();
+
+            expect(
+              (): void => void ls.set(layer, "test.value", testValue),
+              "Layers have to be ordered which is only possible with numbers as that's the only thing that has universally accepted indisputable order."
+            ).to.throw();
+          });
+        }
+      );
+    });
   });
 }
