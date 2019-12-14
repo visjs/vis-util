@@ -135,7 +135,12 @@ export class LayeredStorageCore<
     segment: Segment,
     key: Key
   ): KeyValue[Key] | undefined {
-    const sData = this._topLevelCache.get(segment);
+    const sData =
+      // Get the segment if it exists.
+      this._topLevelCache.get(segment) ||
+      // Fall back to monolithic if nothing was saved into the segment yet.
+      this._topLevelCache.get(this.monolithic);
+
     if (sData == null) {
       return;
     }

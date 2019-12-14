@@ -28,6 +28,17 @@ export function segmentedLayer(): void {
     const b = Symbol("B");
     const c = Symbol("C");
 
+    it("Get without set", function(): void {
+      const ls = new LayeredStorage<KV, 7>();
+
+      ls.set(7, "test.value", testValueA);
+
+      expect(
+        ls.get(b, "test.value"),
+        "Monolithic value should be used if the segment doesn't exist."
+      ).to.equal(testValueA);
+    });
+
     it("Set and get", function(): void {
       const ls = new LayeredStorage<KV, 7>();
 

@@ -4,12 +4,6 @@ import { expect } from "chai";
 
 type KV = Record<string, number>;
 
-const allUndefined = deepFreeze({
-  "test.value1": undefined,
-  "test.value2": undefined,
-  "test.value3": undefined
-});
-
 const expectedResult = deepFreeze({
   monolithic: {
     "test.value1": 5,
@@ -37,21 +31,21 @@ const expectedResultMinusC = deepFreeze({
   monolithic: expectedResult.monolithic,
   a: expectedResult.a,
   b: expectedResult.b,
-  c: allUndefined
+  c: expectedResult.monolithic
 });
 
 const expectedResultMinusAC = deepFreeze({
   monolithic: expectedResult.monolithic,
-  a: allUndefined,
+  a: expectedResult.monolithic,
   b: expectedResult.b,
-  c: allUndefined
+  c: expectedResult.monolithic
 });
 
 const expectedResultMinusABC = deepFreeze({
   monolithic: expectedResult.monolithic,
-  a: allUndefined,
-  b: allUndefined,
-  c: allUndefined
+  a: expectedResult.monolithic,
+  b: expectedResult.monolithic,
+  c: expectedResult.monolithic
 });
 
 /**
