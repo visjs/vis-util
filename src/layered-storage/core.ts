@@ -113,8 +113,14 @@ export class LayeredStorageCore<
     // Search the layers from highest to lowest priority.
     for (const layer of this._layers) {
       // Check the segmented first and quit if found.
-      const segmentData = this._getLSData(layer, segment).segmentData;
-      if (segmentData.has(key)) {
+      const layerData = this._data.get(layer);
+      if (layerData == null) {
+        // Empty layer.
+        continue;
+      }
+
+      const segmentData = layerData.get(segment);
+      if (segmentData != null && segmentData.has(key)) {
         const value = { has: true, value: segmentData.get(key)! };
 
         // Save to the cache.
@@ -124,9 +130,8 @@ export class LayeredStorageCore<
       }
 
       // Check the monolithic and quit if found.
-      const monolithicData = this._getLSData(layer, this.monolithic)
-        .segmentData;
-      if (monolithicData.has(key)) {
+      const monolithicData = layerData.get(this.monolithic);
+      if (monolithicData != null && monolithicData.has(key)) {
         const value = { has: true, value: monolithicData.get(key)! };
 
         // Save to the cache.
