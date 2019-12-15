@@ -2,6 +2,19 @@ import { KeyValueLookup, LayerRange, Segment } from "./common";
 
 const reverseNumeric = (a: number, b: number): number => b - a;
 
+type SegmentData<KeyValue extends KeyValueLookup> = Map<
+  keyof KeyValue,
+  KeyValue[keyof KeyValue]
+>;
+type LayerData<KeyValue extends KeyValueLookup> = Map<
+  Segment,
+  SegmentData<KeyValue>
+>;
+type Data<KeyValue extends KeyValueLookup, Layer extends LayerRange> = Map<
+  Layer,
+  LayerData<KeyValue>
+>;
+
 /**
  * Internal core to handle simple data storage, mutation and retrieval. Also
  * handles the special monolithic segment.
@@ -24,10 +37,7 @@ export class LayeredStorageCore<
   /**
    * Data stored as layer → segment → key → value.
    */
-  private _data = new Map<
-    Layer,
-    Map<Segment, Map<keyof KeyValue, KeyValue[keyof KeyValue]>>
-  >();
+  private _data: Data<KeyValue, Layer> = new Map();
 
   /**
    * An ordered list of layers. The highest priority (equals highest number)
@@ -90,12 +100,12 @@ export class LayeredStorageCore<
     segment: Segment,
     key: Key
   ): { has: boolean; value: KeyValue[Key] | undefined } {
-    const sCache =
+    const segmentCache =
       this._topLevelCache.get(segment) ||
       this._topLevelCache.set(segment, new Map()).get(segment)!;
 
     // Return cached value if it exists.
-    const cached = sCache.get(key);
+    const cached = segmentCache.get(key);
     if (cached) {
       return cached;
     }
@@ -103,23 +113,24 @@ export class LayeredStorageCore<
     // Search the layers from highest to lowest priority.
     for (const layer of this._layers) {
       // Check the segmented first and quit if found.
-      const lsData = this._getLSData(layer, segment);
-      if (lsData.has(key)) {
-        const value = { has: true, value: lsData.get(key)! };
+      const segmentData = this._getLSData(layer, segment).segmentData;
+      if (segmentData.has(key)) {
+        const value = { has: true, value: segmentData.get(key)! };
 
         // Save to the cache.
-        sCache.set(key, value);
+        segmentCache.set(key, value);
 
         return value;
       }
 
       // Check the monolithic and quit if found.
-      const lmData = this._getLSData(layer, this.monolithic);
-      if (lmData.has(key)) {
-        const value = { has: true, value: lmData.get(key)! };
+      const monolithicData = this._getLSData(layer, this.monolithic)
+        .segmentData;
+      if (monolithicData.has(key)) {
+        const value = { has: true, value: monolithicData.get(key)! };
 
         // Save to the cache.
-        sCache.set(key, value);
+        segmentCache.set(key, value);
 
         return value;
       }
@@ -142,26 +153,26 @@ export class LayeredStorageCore<
   private _getLSData(
     layer: Layer,
     segment: Segment
-  ): Map<keyof KeyValue, KeyValue[keyof KeyValue]> {
+  ): { layerData: LayerData<KeyValue>; segmentData: SegmentData<KeyValue> } {
     // Get or create the requested layer.
-    let lData = this._data.get(layer);
-    if (lData == null) {
-      lData = new Map();
-      this._data.set(layer, lData);
+    let layerData = this._data.get(layer);
+    if (layerData == null) {
+      layerData = new Map();
+      this._data.set(layer, layerData);
 
       this._layers = [...this._data.keys()].sort(reverseNumeric);
     }
 
     // Get or create the requested segment on the layer.
-    let lsData = lData.get(segment);
-    if (lsData == null) {
-      lsData = new Map();
-      lData.set(segment, lsData);
+    let segmentData = layerData.get(segment);
+    if (segmentData == null) {
+      segmentData = new Map();
+      layerData.set(segment, segmentData);
 
       this._segments.add(segment);
     }
 
-    return lsData;
+    return { layerData, segmentData };
   }
 
   /**
@@ -209,8 +220,8 @@ export class LayeredStorageCore<
       throw new TypeError("Layers have to be numbers.");
     }
 
-    const lsData = this._getLSData(layer, segment);
-    lsData.set(key, value);
+    const { segmentData } = this._getLSData(layer, segment);
+    segmentData.set(key, value);
 
     this._cleanCache(key);
   }
@@ -231,8 +242,18 @@ export class LayeredStorageCore<
       throw new TypeError("Layers have to be numbers.");
     }
 
-    const lsData = this._getLSData(layer, segment);
-    lsData.delete(key);
+    const { layerData, segmentData } = this._getLSData(layer, segment);
+    segmentData.delete(key);
+
+    // Purge the segment if empty.
+    if (segmentData.size === 0) {
+      layerData.delete(segment);
+    }
+
+    // Purge the layer if empty.
+    if (layerData.size === 0) {
+      this._data.delete(layer);
+    }
 
     this._cleanCache(key);
   }
@@ -248,8 +269,8 @@ export class LayeredStorageCore<
    * @param segment - The segment whose data should be deleted.
    */
   public deleteSegmentData(segment: Segment): void {
-    for (const lData of this._data.values()) {
-      lData.delete(segment);
+    for (const layerData of this._data.values()) {
+      layerData.delete(segment);
     }
     this._topLevelCache.delete(segment);
     this._segments.delete(segment);
@@ -266,9 +287,9 @@ export class LayeredStorageCore<
     console.log("Segments:", [...this._segments.values()]);
 
     console.groupCollapsed("Cache");
-    for (const [segment, cData] of this._topLevelCache.entries()) {
+    for (const [segment, cacheData] of this._topLevelCache.entries()) {
       console.groupCollapsed(`Segment: ${String(segment)}`);
-      for (const [key, value] of cData.entries()) {
+      for (const [key, value] of cacheData.entries()) {
         console.log([key, value]);
       }
       console.groupEnd();
@@ -278,9 +299,9 @@ export class LayeredStorageCore<
     console.groupCollapsed("Data");
     for (const [layer, lData] of this._data.entries()) {
       console.groupCollapsed(`Layer: ${layer}`);
-      for (const [segment, lsData] of lData.entries()) {
+      for (const [segment, segmentData] of lData.entries()) {
         console.groupCollapsed(`Segment: ${String(segment)}`);
-        for (const [key, value] of lsData.entries()) {
+        for (const [key, value] of segmentData.entries()) {
           console.log([key, value]);
         }
         console.groupEnd();
