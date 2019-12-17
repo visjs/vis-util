@@ -1,4 +1,4 @@
-import { KeyRange, KeyValueLookup, LayerRange, Segment } from "./common";
+import { KeyValueLookup, LayerRange, Segment } from "./common";
 import { LayeredStorageCore } from "./core";
 import { LayeredStorageSegment } from "./segment";
 import {
