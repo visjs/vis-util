@@ -1,4 +1,4 @@
-import { KeyValueLookup, LayerRange, Segment, EventCallback } from "./common";
+import { KeyValueLookup, LayerRange, Segment } from "./common";
 import {
   LayeredStorage,
   LayeredStorageSegmentTransaction
@@ -111,20 +111,5 @@ export class LayeredStorageSegment<
    */
   public close(): void {
     this._layeredStorage.deleteSegmentData(this._segment);
-  }
-
-  /**
-   * Bind a listener to given changes.
-   *
-   * @param keys - These determine which keys is the listener interested in.
-   * @param callback - Will be called when interesting changes are detected.
-   *
-   * @returns An off function that can be used to unbind the listener later.
-   */
-  public on(
-    keys: (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
-    callback: EventCallback<keyof KeyValue>
-  ): () => void {
-    return this._layeredStorage.on(this._segment, keys, callback);
   }
 }

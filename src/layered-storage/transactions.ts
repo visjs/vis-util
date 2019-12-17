@@ -1,24 +1,5 @@
-import {
-  KeyRange,
-  KeyValueLookup,
-  LayerRange,
-  Segment,
-  EventCallback
-} from "./common";
+import { KeyValueLookup, LayerRange, Segment } from "./common";
 import { LayeredStorageCore } from "./core";
-
-/**
- * Internal data structure for holding listener related data.
- */
-export type Listener<Key> = {
-  test: (key: KeyRange) => boolean;
-  callback: EventCallback<Key>;
-};
-
-/**
- * Internal data structure for holding listeners observing each segment.
- */
-export type Listeners<Key> = Map<Segment, Listener<Key>[]>;
 
 /**
  * This is used through composition to create monolithic and segmented
@@ -39,10 +20,6 @@ class TransactionCore<
    * `LayeredStorageCore`.
    */
   private _actions: (() => void)[] = [];
-  /**
-   * Lists the changes from `_actions` in a way for easy event dispatching.
-   */
-  private _events = new Map<Segment, Set<keyof KeyValue>>();
 
   /**
    * Create a new instance of transaction core.
@@ -52,8 +29,7 @@ class TransactionCore<
    * was commited.
    */
   public constructor(
-    private _storageCore: LayeredStorageCore<KeyValue, Layer>,
-    private _listeners: Listeners<keyof KeyValue>
+    private _storageCore: LayeredStorageCore<KeyValue, Layer>
   ) {}
 
   /**
@@ -73,8 +49,6 @@ class TransactionCore<
     this._actions.push(
       this._storageCore.set.bind(this._storageCore, layer, segment, key, value)
     );
-
-    this._addEvent(segment, key);
   }
 
   /**
@@ -92,61 +66,15 @@ class TransactionCore<
     this._actions.push(
       this._storageCore.delete.bind(this._storageCore, layer, segment, key)
     );
-
-    this._addEvent(segment, key);
   }
 
   /**
    * Commit all queued operations.
    */
   public commit(): void {
-    // Reset the structures for next transaction.
-    const actions = this._actions;
-    this._actions = [];
-    const events = this._events;
-    this._events = new Map();
-
-    // Run the mutations.
-    actions.forEach((action): void => {
+    // Run the mutations and clean the array for next use.
+    this._actions.splice(0).forEach((action): void => {
       action();
-    });
-
-    // Inform monolithic listeners about the mutations.
-    const monolithicKeySet = events.get(this._storageCore.monolithic);
-    if (monolithicKeySet) {
-      const allKeys = [...monolithicKeySet];
-
-      [...this._listeners.values()]
-        .flat()
-        .forEach(({ test, callback }): void => {
-          const keys = allKeys.filter((key): boolean => test(key));
-          if (keys.length === 0) {
-            return;
-          }
-
-          callback(keys);
-        });
-
-      events.delete(this._storageCore.monolithic);
-    }
-
-    // Inform listeners on segments about the changes.
-    events.forEach((keySet, segment): void => {
-      const allKeys = [...keySet];
-
-      const segmentListeners = this._listeners.get(segment);
-      if (segmentListeners == null) {
-        return;
-      }
-
-      segmentListeners.forEach(({ test, callback }): void => {
-        const keys = allKeys.filter((key): boolean => test(key));
-        if (keys.length === 0) {
-          return;
-        }
-
-        callback(keys);
-      });
     });
   }
 
@@ -155,20 +83,6 @@ class TransactionCore<
    */
   public abort(): void {
     this._actions = [];
-    this._events = new Map();
-  }
-
-  /**
-   * Record which segments and keys were affected by the queued mutations.
-   *
-   * @param segment - Which segment does this mutation belong to.
-   * @param key - Which key's value does this mutation affect.
-   */
-  private _addEvent(segment: Segment, key: keyof KeyValue): void {
-    (
-      this._events.get(segment) ||
-      this._events.set(segment, new Set()).get(segment)!
-    ).add(key);
   }
 }
 
@@ -257,12 +171,9 @@ export class MonolithicTransaction<
    * @param listeners - Listeners that should be notified after a transaction
    * was commited.
    */
-  public constructor(
-    storageCore: LayeredStorageCore<KeyValue, Layer>,
-    listeners: Listeners<keyof KeyValue>
-  ) {
+  public constructor(storageCore: LayeredStorageCore<KeyValue, Layer>) {
     this._monolithic = storageCore.monolithic;
-    this._transactionCore = new TransactionCore(storageCore, listeners);
+    this._transactionCore = new TransactionCore(storageCore);
   }
 
   public set<Key extends keyof KeyValue>(
@@ -372,10 +283,9 @@ export class SegmentTransaction<
    */
   public constructor(
     storageCore: LayeredStorageCore<KeyValue, Layer>,
-    listeners: Listeners<keyof KeyValue>,
     private readonly _segment: Segment
   ) {
-    this._transactionCore = new TransactionCore(storageCore, listeners);
+    this._transactionCore = new TransactionCore(storageCore);
   }
 
   /** @inheritdoc */

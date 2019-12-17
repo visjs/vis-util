@@ -1,19 +1,11 @@
-import {
-  KeyRange,
-  KeyValueLookup,
-  LayerRange,
-  Segment,
-  EventCallback
-} from "./common";
+import { KeyRange, KeyValueLookup, LayerRange, Segment } from "./common";
 import { LayeredStorageCore } from "./core";
 import { LayeredStorageSegment } from "./segment";
 import {
   LayeredStorageSegmentTransaction,
   LayeredStorageTransaction,
-  Listeners,
   MonolithicTransaction,
-  SegmentTransaction,
-  Listener
+  SegmentTransaction
 } from "./transactions";
 
 export {
@@ -41,7 +33,6 @@ export class LayeredStorage<
   Layer extends LayerRange
 > {
   private _core = new LayeredStorageCore<KeyValue, Layer>();
-  private _listeners: Listeners<keyof KeyValue> = new Map();
 
   /**
    * @param segment - Which segment to search through in addition to the monolithic part of the storage.
@@ -179,12 +170,8 @@ export class LayeredStorage<
     | LayeredStorageSegmentTransaction<KeyValue, Layer>
     | LayeredStorageTransaction<KeyValue, Layer> {
     return segment == null
-      ? new MonolithicTransaction<KeyValue, Layer>(this._core, this._listeners)
-      : new SegmentTransaction<KeyValue, Layer>(
-          this._core,
-          this._listeners,
-          segment
-        );
+      ? new MonolithicTransaction<KeyValue, Layer>(this._core)
+      : new SegmentTransaction<KeyValue, Layer>(this._core, segment);
   }
 
   /**
@@ -262,108 +249,6 @@ export class LayeredStorage<
    */
   public deleteSegmentData(segment: Segment): void {
     this._core.deleteSegmentData(segment);
-  }
-
-  /**
-   * @param segment - Which segment does the listener observe.
-   * @param keys - These determine which keys is the listener interested in.
-   * @param callback - Will be called when interesting changes are detected.
-   */
-  public on(
-    segment: Segment,
-    keys: (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
-    callback: EventCallback<keyof KeyValue>
-  ): () => void;
-  /**
-   * @param keys - These determine which keys is the listener interested in.
-   * @param callback - Will be called when interesting changes are detected.
-   */
-  public on(
-    keys: (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
-    callback: EventCallback<keyof KeyValue>
-  ): () => void;
-  /**
-   * Bind a listener to given changes.
-   *
-   * @returns An off function that can be used to unbind the listener later.
-   */
-  public on(
-    ...rest:
-      | [
-          Segment,
-          (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
-          EventCallback<keyof KeyValue>
-        ]
-      | [
-          (keyof KeyValue | RegExp) | (keyof KeyValue | RegExp)[],
-          EventCallback<keyof KeyValue>
-        ]
-  ): () => void {
-    return rest.length === 2
-      ? this._on(
-          this._core.monolithic,
-          Array.isArray(rest[0]) ? rest[0] : [rest[0]],
-          rest[1]
-        )
-      : this._on(
-          rest[0],
-          Array.isArray(rest[1]) ? rest[1] : [rest[1]],
-          rest[2]
-        );
-  }
-
-  /**
-   * Bind a listener to given changes.
-   *
-   * @param segment - Which segment does the listener observe.
-   * @param keys - These determine which keys is the listener interested in.
-   * @param callback - Will be called when interesting changes are detected.
-   *
-   * @returns An off function that can be used to unbind the listener later.
-   */
-  private _on(
-    segment: Segment,
-    keys: (keyof KeyValue | RegExp)[],
-    callback: EventCallback<keyof KeyValue>
-  ): () => void {
-    const literals = keys.filter(
-      (value): value is keyof KeyValue => !(value instanceof RegExp)
-    );
-    const functions = keys
-      .filter((value): value is RegExp => value instanceof RegExp)
-      .map((regexp): ((input: string) => boolean) => regexp.test.bind(regexp));
-
-    const test = (key: KeyRange): boolean =>
-      literals.includes(key) ||
-      (typeof key === "string" && functions.some((func): boolean => func(key)));
-
-    const listener: Listener<keyof KeyValue> = { test, callback };
-
-    (
-      this._listeners.get(segment) ||
-      this._listeners.set(segment, []).get(segment)!
-    ).push(listener);
-
-    return this._off.bind(this, segment, listener);
-  }
-
-  /**
-   * Remove given listener.
-   *
-   * @remarks
-   * This is internal method that should be exposed only as fully bound
-   * function returned from the on method.
-   *
-   * @param segment - Which segment does the listener observe.
-   * @param listener - The listener object itself.
-   */
-  private _off(segment: Segment, listener: Listener<keyof KeyValue>): void {
-    const listeners = this._listeners.get(segment);
-    if (listeners == null) {
-      return;
-    }
-
-    listeners.splice(listeners.indexOf(listener), 1);
   }
 
   /**
