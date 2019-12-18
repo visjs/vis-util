@@ -252,6 +252,36 @@ export class LayeredStorage<
   }
 
   /**
+   * Set a handler for invalid values.
+   *
+   * @param handler - The function that will be called with the key, invalid
+   * value and a message from the failed validator.
+   */
+  public setInvalidHandler(
+    handler: <Key extends keyof KeyValue>(
+      key: Key,
+      value: KeyValue[Key],
+      message: string
+    ) => void
+  ): void {
+    this._core.setInvalidHandler(handler);
+  }
+
+  /**
+   * Add validators for given key.
+   *
+   * @param key - The key whose values will be validated by this validator.
+   * @param validators - The functions that return true if valid or a string
+   * explaining what's wrong with the value.
+   */
+  public addValidators<Key extends keyof KeyValue>(
+    key: Key,
+    ...validators: ((value: KeyValue[Key]) => true | string)[]
+  ): void {
+    this._core.addValidators(key, ...validators);
+  }
+
+  /**
    * Log the content of the storage into the console.
    */
   public dumpContent(): void {

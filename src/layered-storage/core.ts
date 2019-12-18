@@ -15,6 +15,12 @@ type Data<KeyValue extends KeyValueLookup, Layer extends LayerRange> = Map<
   LayerData<KeyValue>
 >;
 
+interface TypedMap<KeyValue extends KeyValueLookup>
+  extends Map<keyof KeyValue, KeyValue[keyof KeyValue]> {
+  get<Key extends keyof KeyValue>(key: Key): undefined | KeyValue[Key];
+  set<Key extends keyof KeyValue>(key: Key, value: KeyValue[Key]): this;
+}
+
 /**
  * Internal core to handle simple data storage, mutation and retrieval. Also
  * handles the special monolithic segment.
@@ -49,6 +55,30 @@ export class LayeredStorageCore<
    * A set of segments that keeps track what segments have data in the storage.
    */
   private readonly _segments = new Set<Segment>();
+
+  /**
+   * A list of validators for each key.
+   */
+  private readonly _validators: TypedMap<
+    {
+      [Key in keyof KeyValue]: ((value: KeyValue[Key]) => true | string)[];
+    }
+  > = new Map();
+
+  /**
+   * This is called whenever a validity test fails.
+   *
+   * @param key - The key of the invalid value.
+   * @param value - The invalid value itself.
+   * @param message - The message returned by the validator that failed.
+   */
+  private _invalidHandler: <Key extends keyof KeyValue>(
+    key: Key,
+    value: KeyValue[Key],
+    message: string
+  ) => void = (key, value, message): void => {
+    console.error("Invalid value was ignored.", { key, value, message });
+  };
 
   /**
    * This is used to speed up retrieval of data upon request. Since the storage
@@ -225,6 +255,21 @@ export class LayeredStorageCore<
       throw new TypeError("Layers have to be numbers.");
     }
 
+    for (const validator of this._validators.get(key) || []) {
+      const message = validator(value);
+      if (message === true) {
+        // The value is valid. Proceed with another test or save the value into
+        // the storage if this was the last one.
+        continue;
+      } else {
+        // The value is invalid. Call the invalid value handler and, if the
+        // handler didn't throw, stop execution of this function to prevent the
+        // value from being saved into the storage.
+        this._invalidHandler(key, value, message);
+        return;
+      }
+    }
+
     const { segmentData } = this._getLSData(layer, segment);
     segmentData.set(key, value);
 
@@ -279,6 +324,38 @@ export class LayeredStorageCore<
     }
     this._topLevelCache.delete(segment);
     this._segments.delete(segment);
+  }
+
+  /**
+   * Set a handler for invalid values.
+   *
+   * @param handler - The function that will be called with the key, invalid
+   * value and a message from the failed validator.
+   */
+  public setInvalidHandler(
+    handler: <Key extends keyof KeyValue>(
+      key: Key,
+      value: KeyValue[Key],
+      message: string
+    ) => void
+  ): void {
+    this._invalidHandler = handler;
+  }
+
+  /**
+   * Add validators for given key.
+   *
+   * @param key - The key whose values will be validated by this validator.
+   * @param validators - The functions that return true if valid or a string
+   * explaining what's wrong with the value.
+   */
+  public addValidators<Key extends keyof KeyValue>(
+    key: Key,
+    ...validators: ((value: KeyValue[Key]) => true | string)[]
+  ): void {
+    (this._validators.get(key) || this._validators.set(key, []).get(key)!).push(
+      ...validators
+    );
   }
 
   /**
