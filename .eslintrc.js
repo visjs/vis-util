@@ -50,6 +50,8 @@ module.exports = {
       },
     ],
 
+    // Empty functions are useful sometimes.
+    '@typescript-eslint/no-empty-function': 'off',
     // This is really crazy given the functions in this package.
     '@typescript-eslint/no-explicit-any': 'off',
     // These are hoisted, I have no idea why it reports them by default.
