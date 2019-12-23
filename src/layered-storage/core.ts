@@ -94,17 +94,37 @@ export class LayeredStorageCore<
   /**
    * Remove outdated values from the cache.
    *
+   * @param segment - Which segment to clean.
    * @param key - The key that was subject to the mutation.
    */
-  private _cleanCache(key: keyof KeyValue): void {
-    // Run the search for each segment to clean the cached top level value for
-    // each of them.
-    for (const segment of this._segments) {
+  private _cleanCache(segment: Segment, key: keyof KeyValue): void {
+    if (segment === this.monolithic) {
+      // Run the search for each segment to clean the cached top level value
+      // for each of them. The reason for this is that the monolithic segment
+      // affects all other segments.
+      for (const segment of this._segments) {
+        const sCache = this._topLevelCache.get(segment);
+
+        if (!sCache) {
+          // This segment has no cache yet.
+          continue;
+        }
+
+        // Delete the outdated value.
+        sCache.delete(key);
+
+        // Delete the whole segment if empty.
+        if (sCache.size === 0) {
+          this._topLevelCache.delete(segment);
+        }
+      }
+    } else {
+      // Clean only the relevant segment.
       const sCache = this._topLevelCache.get(segment);
 
       if (!sCache) {
         // This segment has no cache yet.
-        continue;
+        return;
       }
 
       // Delete the outdated value.
@@ -273,7 +293,7 @@ export class LayeredStorageCore<
     const { segmentData } = this._getLSData(layer, segment);
     segmentData.set(key, value);
 
-    this._cleanCache(key);
+    this._cleanCache(segment, key);
   }
 
   /**
@@ -305,7 +325,7 @@ export class LayeredStorageCore<
       this._data.delete(layer);
     }
 
-    this._cleanCache(key);
+    this._cleanCache(segment, key);
   }
 
   /**
