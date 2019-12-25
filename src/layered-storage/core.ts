@@ -21,6 +21,19 @@ interface TypedMap<KeyValue extends KeyValueLookup>
   set<Key extends keyof KeyValue>(key: Key, value: KeyValue[Key]): this;
 }
 
+interface CachedValue<Value> {
+  has: boolean;
+  value: undefined | Value;
+}
+interface EmptyCacheValue {
+  has: false;
+  value: undefined;
+}
+const emptyCacheValue: EmptyCacheValue = {
+  has: false,
+  value: undefined
+};
+
 /**
  * Internal core to handle simple data storage, mutation and retrieval. Also
  * handles the special monolithic segment.
@@ -88,7 +101,7 @@ export class LayeredStorageCore<
    */
   private readonly _topLevelCache = new Map<
     Segment,
-    Map<keyof KeyValue, { has: boolean; value: KeyValue[keyof KeyValue] }>
+    TypedMap<{ [Key in keyof KeyValue]: CachedValue<KeyValue[Key]> }>
   >();
 
   /**
@@ -149,7 +162,7 @@ export class LayeredStorageCore<
   private _findValue<Key extends keyof KeyValue>(
     segment: Segment,
     key: Key
-  ): { has: boolean; value: KeyValue[Key] | undefined } {
+  ): CachedValue<KeyValue[Key]> | EmptyCacheValue {
     const segmentCache =
       this._topLevelCache.get(segment) ||
       this._topLevelCache.set(segment, new Map()).get(segment)!;
@@ -192,7 +205,12 @@ export class LayeredStorageCore<
     }
 
     // If nothing was found by now there are no values for the key.
-    return { has: false, value: undefined };
+
+    // Save to the cache.
+    segmentCache.set(key, emptyCacheValue);
+
+    // Return the empty value.
+    return emptyCacheValue;
   }
 
   /**
