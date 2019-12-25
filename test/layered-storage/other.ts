@@ -23,6 +23,12 @@ export function other(): void {
       );
     }, 0);
 
+  const getCacheSize = (ls: LayeredStorage<KV, 1 | 4 | 9>): number =>
+    // Ignore private property access errors. It's no big deal since this
+    // is a unit test.
+    // @ts-ignore
+    ls._core._topLevelCache.size;
+
   it("Empty data structure purging", function(): void {
     const ls = new LayeredStorage<KV, 1 | 4 | 9>();
 
@@ -76,6 +82,41 @@ export function other(): void {
     expect(getStructCount(ls)).to.equal(
       0 // no layers, no segments, no values
     );
+  });
+
+  it("Cache purging", function(): void {
+    const ls = new LayeredStorage<KV, 1>();
+
+    expect(getCacheSize(ls)).to.equal(0);
+
+    ls.set(1, "test.value1", 7);
+    ls.set(1, "a", "test.value1", 7);
+    ls.set(1, "b", "test.value1", 7);
+    ls.set(1, "c", "test.value1", 7);
+
+    expect(getCacheSize(ls)).to.equal(0);
+
+    ls.get("test.value1");
+    ls.get("a", "test.value1");
+    ls.get("b", "test.value1");
+    ls.get("c", "test.value1");
+    ls.get("test.value2");
+    ls.get("a", "test.value2");
+    ls.get("b", "test.value2");
+    ls.get("c", "test.value2");
+
+    expect(getCacheSize(ls)).to.equal(4);
+
+    ls.set(1, "test.value1", 7);
+    ls.set(1, "a", "test.value1", 7);
+    ls.set(1, "b", "test.value1", 7);
+    ls.set(1, "c", "test.value1", 7);
+
+    expect(getCacheSize(ls)).to.equal(4);
+
+    ls.set(1, "test.value2", 7);
+
+    expect(getCacheSize(ls)).to.equal(0);
   });
 
   it("Empty data structure creation", function(): void {

@@ -112,23 +112,18 @@ export class LayeredStorageCore<
    */
   private _cleanCache(segment: Segment, key: keyof KeyValue): void {
     if (segment === this.monolithic) {
-      // Run the search for each segment to clean the cached top level value
-      // for each of them. The reason for this is that the monolithic segment
-      // affects all other segments.
-      for (const segment of this._segments) {
-        const sCache = this._topLevelCache.get(segment);
-
-        if (!sCache) {
-          // This segment has no cache yet.
-          continue;
-        }
+      // Run the search for each cached segment to clean the cached top level
+      // value for each of them. The reason for this is that the monolithic
+      // segment affects all other segments.
+      for (const cache of this._topLevelCache) {
+        const sCache = cache[1];
 
         // Delete the outdated value.
         sCache.delete(key);
 
         // Delete the whole segment if empty.
         if (sCache.size === 0) {
-          this._topLevelCache.delete(segment);
+          this._topLevelCache.delete(cache[0]);
         }
       }
     } else {
