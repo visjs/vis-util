@@ -52,35 +52,30 @@ export function validation(): void {
             }
 
             // Add validators.
-            ls.addValidators(
-              "test.boolean",
+            ls.setValidators("test.boolean", [
               (value: unknown): true | string =>
                 typeof value === "boolean" || "it's not valid"
-            );
-            ls.addValidators(
-              "test.fail",
+            ]);
+            ls.setValidators("test.fail", [
               (): true | string => false || "it's not valid"
-            );
-            ls.addValidators(
-              "test.integer",
+            ]);
+            ls.setValidators("test.integer", [
               // This tests multiple validators.
               (value: unknown): true | string =>
                 typeof value === "number" || "it's not valid",
               (value: unknown): true | string =>
                 (typeof value === "number" && value % 1 === 0) ||
                 "it's not valid"
-            );
-            ls.addValidators(
-              "test.number",
+            ]);
+            ls.setValidators("test.number", [
               (value: unknown): true | string =>
                 typeof value === "number" || "it's not valid"
-            );
-            ls.addValidators("test.pass", (): true | string => true);
-            ls.addValidators(
-              "test.string",
+            ]);
+            ls.setValidators("test.pass", [(): true | string => true]);
+            ls.setValidators("test.string", [
               (value: unknown): true | string =>
                 typeof value === "string" || "it's not valid"
-            );
+            ]);
 
             if (valid) {
               expect((): void => {
@@ -111,6 +106,17 @@ export function validation(): void {
           });
         });
       });
+    });
+
+    it("Setting validators twice", function(): void {
+      const ls = new LayeredStorage<KV, 0>();
+
+      expect((): void => {
+        ls.setValidators("test.fail", [
+          (): true | string => false || "it's not valid"
+        ]);
+        ls.setValidators("test.fail", [(): true | string => true]);
+      }, "Setting validators repeatedly without replace shoudn't be allowed.").to.throw();
     });
   });
 }

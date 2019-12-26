@@ -1,9 +1,7 @@
 import {
   LayeredStorage,
-  KeyValuePair,
   FilteredKeyValuePair
 } from "../../src/layered-storage";
-import { deepFreeze } from "../helpers";
 import { expect } from "chai";
 
 interface KV {
@@ -25,7 +23,7 @@ export function expanders(): void {
     ] as const;
     const expander = (
       input: string
-    ): FilteredKeyValuePair<
+    ): readonly FilteredKeyValuePair<
       KV,
       "test.boolean" | "test.number" | "test.string"
     >[] => {
@@ -34,7 +32,7 @@ export function expanders(): void {
         ["test.boolean", boolean === "true" ? true : false],
         ["test.number", +number],
         ["test.string", string]
-      ];
+      ] as const;
     };
     const invalidHandler = (): never => {
       throw new Error("Invalid input.");
@@ -60,11 +58,10 @@ export function expanders(): void {
     it("Invalid short value", function(): void {
       const ls = new LayeredStorage<KV, 0>();
 
-      ls.addValidators(
-        "test",
+      ls.setValidators("test", [
         (value): true | string =>
           /^(true|false) \d+ .*$/.test(value) || "Invalid."
-      );
+      ]);
       ls.setInvalidHandler(invalidHandler);
       ls.setExpander("test", expanderAffects, expander);
 
@@ -79,10 +76,9 @@ export function expanders(): void {
     it("Invalid expanded value", function(): void {
       const ls = new LayeredStorage<KV, 0>();
 
-      ls.addValidators(
-        "test.number",
+      ls.setValidators("test.number", [
         (value): true | string => value < 7 || "Invalid input."
-      );
+      ]);
       ls.setInvalidHandler(invalidHandler);
       ls.setExpander("test", expanderAffects, expander);
 

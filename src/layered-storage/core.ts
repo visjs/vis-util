@@ -83,7 +83,7 @@ export class LayeredStorageCore<
    */
   private readonly _setExpanders: TypedMap<
     {
-      [Key in keyof KV]: (value: KV[Key]) => KeyValuePair<KV>[];
+      [Key in keyof KV]: (value: KV[Key]) => readonly KeyValuePair<KV>[];
     }
   > = new Map();
 
@@ -396,19 +396,24 @@ export class LayeredStorageCore<
   }
 
   /**
-   * Add validators for given key.
+   * Set validators for given key.
    *
    * @param key - The key whose values will be validated by this validator.
    * @param validators - The functions that return true if valid or a string
    * explaining what's wrong with the value.
+   * @param replace - If true existing validators will be replaced, if false an
+   * error will be thrown if some validators already exist for given key.
    */
-  public addValidators<Key extends keyof KV>(
+  public setValidators<Key extends keyof KV>(
     key: Key,
-    ...validators: ((value: KV[Key]) => true | string)[]
+    validators: ((value: KV[Key]) => true | string)[],
+    replace: boolean
   ): void {
-    (this._validators.get(key) || this._validators.set(key, []).get(key)!).push(
-      ...validators
-    );
+    if (!replace && this._validators.has(key)) {
+      throw new Error("Some validators for this key already exist.");
+    }
+
+    this._validators.set(key, validators);
   }
 
   /**
@@ -423,13 +428,13 @@ export class LayeredStorageCore<
    * expaner and also deleted if this key is deleted.
    * @param expander - The functions that returns an array of expanded key
    * value pairs.
-   * @param replace - If true existing expander will be relaced, if false an
+   * @param replace - If true existing expander will be replaced, if false an
    * error will be thrown if an expander already exists for given key.
    */
   public setExpander<Key extends keyof KV, Affects extends keyof KV>(
     key: Key,
     affects: readonly Affects[],
-    expander: (value: KV[Key]) => FilteredKeyValuePair<KV, Affects>[],
+    expander: (value: KV[Key]) => readonly FilteredKeyValuePair<KV, Affects>[],
     replace: boolean
   ): void {
     if (
@@ -454,7 +459,7 @@ export class LayeredStorageCore<
   public expandSet<Key extends keyof KV>(
     key: Key,
     value: KV[Key]
-  ): KeyValuePair<KV>[] {
+  ): readonly KeyValuePair<KV>[] {
     const validators = this._validators.get(key);
     if (validators) {
       for (const validator of validators) {

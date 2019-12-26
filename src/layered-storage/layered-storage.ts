@@ -2,7 +2,6 @@ import {
   KeyValueLookup,
   LayerRange,
   Segment,
-  KeyValuePair,
   FilteredKeyValuePair
 } from "./common";
 import { LayeredStorageCore } from "./core";
@@ -267,17 +266,20 @@ export class LayeredStorage<
   }
 
   /**
-   * Add validators for given key.
+   * Set validators for given key.
    *
    * @param key - The key whose values will be validated by this validator.
    * @param validators - The functions that return true if valid or a string
    * explaining what's wrong with the value.
+   * @param replace - If true existing validators will be replaced, if false an
+   * error will be thrown if some validators already exist for given key.
    */
-  public addValidators<Key extends keyof KV>(
+  public setValidators<Key extends keyof KV>(
     key: Key,
-    ...validators: ((value: KV[Key]) => true | string)[]
+    validators: ((value: KV[Key]) => true | string)[],
+    replace = false
   ): void {
-    this._core.addValidators(key, ...validators);
+    this._core.setValidators(key, validators, replace);
   }
 
   /**
@@ -294,7 +296,7 @@ export class LayeredStorage<
   public setExpander<Key extends keyof KV, Affects extends keyof KV>(
     key: Key,
     affects: readonly Affects[],
-    expander: (value: KV[Key]) => FilteredKeyValuePair<KV, Affects>[],
+    expander: (value: KV[Key]) => readonly FilteredKeyValuePair<KV, Affects>[],
     replace = false
   ): void {
     this._core.setExpander(key, affects, expander, replace);
