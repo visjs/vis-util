@@ -8,13 +8,13 @@ import {
  * This is similar as `LayeredStorage` except that it is permanently bound to
  * given `LayeredStorage` and can only access a single `Segment`.
  *
- * @typeparam KeyValue - Sets the value types associeated with their keys.
+ * @typeparam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
  * @typeparam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export class LayeredStorageSegment<
-  KeyValue extends KeyValueLookup,
+  KV extends KeyValueLookup,
   Layer extends LayerRange
 > {
   /**
@@ -24,7 +24,7 @@ export class LayeredStorageSegment<
    * @param _segment - The segment this instance will manage.
    */
   public constructor(
-    private _layeredStorage: LayeredStorage<KeyValue, Layer>,
+    private _layeredStorage: LayeredStorage<KV, Layer>,
     private _segment: Segment
   ) {}
 
@@ -35,7 +35,7 @@ export class LayeredStorageSegment<
    *
    * @returns The value or undefined if not found.
    */
-  public get<Key extends keyof KeyValue>(key: Key): KeyValue[Key] | undefined {
+  public get<Key extends keyof KV>(key: Key): KV[Key] | undefined {
     return this._layeredStorage.get(this._segment, key);
   }
 
@@ -46,7 +46,7 @@ export class LayeredStorageSegment<
    *
    * @returns True if found, false otherwise.
    */
-  public has<Key extends keyof KeyValue>(key: Key): boolean {
+  public has<Key extends keyof KV>(key: Key): boolean {
     return this._layeredStorage.has(this._segment, key);
   }
 
@@ -57,10 +57,10 @@ export class LayeredStorageSegment<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends keyof KeyValue>(
+  public set<Key extends keyof KV>(
     layer: Layer,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void {
     this._layeredStorage.set(layer, this._segment, key, value);
   }
@@ -71,7 +71,7 @@ export class LayeredStorageSegment<
    * @param layer - Which layer to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends keyof KeyValue>(layer: Layer, key: Key): void {
+  public delete<Key extends keyof KV>(layer: Layer, key: Key): void {
     this._layeredStorage.delete(layer, this._segment, key);
   }
 
@@ -84,7 +84,7 @@ export class LayeredStorageSegment<
    *
    * @returns The new transaction that can be used to set or delete values.
    */
-  public openTransaction(): LayeredStorageSegmentTransaction<KeyValue, Layer> {
+  public openTransaction(): LayeredStorageSegmentTransaction<KV, Layer> {
     return this._layeredStorage.openTransaction(this._segment);
   }
 
@@ -99,9 +99,7 @@ export class LayeredStorageSegment<
    * @param callback - This callback will be called with the transaction as
    */
   public runTransaction(
-    callback: (
-      transaction: LayeredStorageSegmentTransaction<KeyValue, Layer>
-    ) => void
+    callback: (transaction: LayeredStorageSegmentTransaction<KV, Layer>) => void
   ): void {
     this._layeredStorage.runTransaction(this._segment, callback);
   }

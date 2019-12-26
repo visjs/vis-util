@@ -1,4 +1,10 @@
-import { KeyValueLookup, LayerRange, Segment } from "./common";
+import {
+  KeyValueLookup,
+  LayerRange,
+  Segment,
+  KeyValuePair,
+  FilteredKeyValuePair
+} from "./common";
 import { LayeredStorageCore } from "./core";
 import { LayeredStorageSegment } from "./segment";
 import {
@@ -23,37 +29,37 @@ export {
  * - Each layer can be segmented using arbitrary values.
  * - Segmented value overrides monolithic (nonsegmented) value.
  *
- * @typeparam KeyValue - Sets the value types associeated with their keys.
+ * @typeparam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
  * @typeparam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export class LayeredStorage<
-  KeyValue extends KeyValueLookup,
+  KV extends KeyValueLookup,
   Layer extends LayerRange
 > {
-  private _core = new LayeredStorageCore<KeyValue, Layer>();
+  private _core = new LayeredStorageCore<KV, Layer>();
 
   /**
    * @param segment - Which segment to search through in addition to the monolithic part of the storage.
    * @param key - The key corresponding to the requested value.
    */
-  public get<Key extends keyof KeyValue>(
+  public get<Key extends keyof KV>(
     segment: Segment,
     key: Key
-  ): KeyValue[Key] | undefined;
+  ): KV[Key] | undefined;
   /**
    * @param key - The key corresponding to the requested value.
    */
-  public get<Key extends keyof KeyValue>(key: Key): KeyValue[Key] | undefined;
+  public get<Key extends keyof KV>(key: Key): KV[Key] | undefined;
   /**
    * Retrieve a value.
    *
    * @returns The value or undefined if not found.
    */
-  public get<Key extends keyof KeyValue>(
+  public get<Key extends keyof KV>(
     ...rest: [Key] | [Segment, Key]
-  ): KeyValue[Key] | undefined {
+  ): KV[Key] | undefined {
     return rest.length === 1
       ? this._core.get(this._core.monolithic, rest[0])
       : this._core.get(rest[0], rest[1]);
@@ -63,17 +69,17 @@ export class LayeredStorage<
    * @param segment - Which segment to search through in addition to the monolithic part of the storage.
    * @param key - The key corresponding to the requested value.
    */
-  public has<Key extends keyof KeyValue>(segment: Segment, key: Key): boolean;
+  public has<Key extends keyof KV>(segment: Segment, key: Key): boolean;
   /**
    * @param key - The key corresponding to the requested value.
    */
-  public has<Key extends keyof KeyValue>(key: Key): boolean;
+  public has<Key extends keyof KV>(key: Key): boolean;
   /**
    * Check if a value is present.
    *
    * @returns True if found, false otherwise.
    */
-  public has(...rest: [keyof KeyValue] | [Segment, keyof KeyValue]): boolean {
+  public has(...rest: [keyof KV] | [Segment, keyof KV]): boolean {
     return rest.length === 1
       ? this._core.has(this._core.monolithic, rest[0])
       : this._core.has(rest[0], rest[1]);
@@ -85,27 +91,27 @@ export class LayeredStorage<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends keyof KeyValue>(
+  public set<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void;
   /**
    * @param layer - Which layer to save the value into.
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends keyof KeyValue>(
+  public set<Key extends keyof KV>(
     layer: Layer,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void;
   /**
    * Save a value.
    */
-  public set<Key extends keyof KeyValue>(
-    ...rest: [Layer, Segment, Key, KeyValue[Key]] | [Layer, Key, KeyValue[Key]]
+  public set<Key extends keyof KV>(
+    ...rest: [Layer, Segment, Key, KV[Key]] | [Layer, Key, KV[Key]]
   ): void {
     this.runTransaction(
       (transaction): void =>
@@ -120,23 +126,20 @@ export class LayeredStorage<
    * @param segment - Which segment to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends keyof KeyValue>(
+  public delete<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key
-  ): KeyValue[Key];
+  ): KV[Key];
   /**
    * @param layer - Which layer to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends keyof KeyValue>(
-    layer: Layer,
-    key: Key
-  ): KeyValue[Key];
+  public delete<Key extends keyof KV>(layer: Layer, key: Key): KV[Key];
   /**
    * Delete a value from the storage.
    */
-  public delete<Key extends keyof KeyValue>(
+  public delete<Key extends keyof KV>(
     ...rest: [Layer, Segment, Key] | [Layer, Key]
   ): void {
     this.runTransaction(
@@ -149,8 +152,8 @@ export class LayeredStorage<
 
   public openTransaction(
     segment: Segment
-  ): LayeredStorageSegmentTransaction<KeyValue, Layer>;
-  public openTransaction(): LayeredStorageTransaction<KeyValue, Layer>;
+  ): LayeredStorageSegmentTransaction<KV, Layer>;
+  public openTransaction(): LayeredStorageTransaction<KV, Layer>;
   /**
    * Open a new transaction.
    *
@@ -167,11 +170,11 @@ export class LayeredStorage<
   public openTransaction(
     segment?: Segment
   ):
-    | LayeredStorageSegmentTransaction<KeyValue, Layer>
-    | LayeredStorageTransaction<KeyValue, Layer> {
+    | LayeredStorageSegmentTransaction<KV, Layer>
+    | LayeredStorageTransaction<KV, Layer> {
     return segment == null
-      ? new MonolithicTransaction<KeyValue, Layer>(this._core)
-      : new SegmentTransaction<KeyValue, Layer>(this._core, segment);
+      ? new MonolithicTransaction<KV, Layer>(this._core)
+      : new SegmentTransaction<KV, Layer>(this._core, segment);
   }
 
   /**
@@ -181,16 +184,14 @@ export class LayeredStorage<
    */
   public runTransaction(
     segment: Segment,
-    callback: (
-      transaction: LayeredStorageSegmentTransaction<KeyValue, Layer>
-    ) => void
+    callback: (transaction: LayeredStorageSegmentTransaction<KV, Layer>) => void
   ): void;
   /**
    * @param callback - This callback will be called with the transaction as
    * it's sole parameter.
    */
   public runTransaction(
-    callback: (transaction: LayeredStorageTransaction<KeyValue, Layer>) => void
+    callback: (transaction: LayeredStorageTransaction<KV, Layer>) => void
   ): void;
   /**
    * Run a new transaction.
@@ -204,11 +205,9 @@ export class LayeredStorage<
     ...rest:
       | [
           Segment,
-          (
-            transaction: LayeredStorageSegmentTransaction<KeyValue, Layer>
-          ) => void
+          (transaction: LayeredStorageSegmentTransaction<KV, Layer>) => void
         ]
-      | [(transaction: LayeredStorageTransaction<KeyValue, Layer>) => void]
+      | [(transaction: LayeredStorageTransaction<KV, Layer>) => void]
   ): void {
     if (rest.length === 1) {
       const callback = rest[0];
@@ -238,7 +237,7 @@ export class LayeredStorage<
    *
    * @returns A new segmented instance permanently bound to this instance.
    */
-  public openSegment(segment: Segment): LayeredStorageSegment<KeyValue, Layer> {
+  public openSegment(segment: Segment): LayeredStorageSegment<KV, Layer> {
     return new LayeredStorageSegment(this, segment);
   }
 
@@ -258,9 +257,9 @@ export class LayeredStorage<
    * value and a message from the failed validator.
    */
   public setInvalidHandler(
-    handler: <Key extends keyof KeyValue>(
+    handler: <Key extends keyof KV>(
       key: Key,
-      value: KeyValue[Key],
+      value: KV[Key],
       message: string
     ) => void
   ): void {
@@ -274,11 +273,31 @@ export class LayeredStorage<
    * @param validators - The functions that return true if valid or a string
    * explaining what's wrong with the value.
    */
-  public addValidators<Key extends keyof KeyValue>(
+  public addValidators<Key extends keyof KV>(
     key: Key,
-    ...validators: ((value: KeyValue[Key]) => true | string)[]
+    ...validators: ((value: KV[Key]) => true | string)[]
   ): void {
     this._core.addValidators(key, ...validators);
+  }
+
+  /**
+   * Set an expander for given key.
+   *
+   * @param key - The key whose values will be expanded by this expander.
+   * @param affects - The expanded keys that will be returned by the
+   * expaner and also deleted if this key is deleted.
+   * @param expander - The functions that returns an array of expanded key
+   * value pairs.
+   * @param replace - If true existing expander will be relaced, if false an
+   * error will be thrown if an expander already exists for given key.
+   */
+  public setExpander<Key extends keyof KV, Affects extends keyof KV>(
+    key: Key,
+    affects: readonly Affects[],
+    expander: (value: KV[Key]) => FilteredKeyValuePair<KV, Affects>[],
+    replace = false
+  ): void {
+    this._core.setExpander(key, affects, expander, replace);
   }
 
   /**

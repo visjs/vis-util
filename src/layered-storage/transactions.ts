@@ -5,15 +5,12 @@ import { LayeredStorageCore } from "./core";
  * This is used through composition to create monolithic and segmented
  * transactions without massive code duplicities.
  *
- * @typeparam KeyValue - Sets the value types associeated with their keys.
+ * @typeparam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
  * @typeparam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
-class TransactionCore<
-  KeyValue extends KeyValueLookup,
-  Layer extends LayerRange
-> {
+class TransactionCore<KV extends KeyValueLookup, Layer extends LayerRange> {
   /**
    * Functions that perform requested mutations when executed without any
    * arguments or this. Intended to be filled bound set and delete methods from
@@ -28,9 +25,7 @@ class TransactionCore<
    * @param _listeners - Listeners that should be notified after a transaction
    * was commited.
    */
-  public constructor(
-    private _storageCore: LayeredStorageCore<KeyValue, Layer>
-  ) {}
+  public constructor(private _storageCore: LayeredStorageCore<KV, Layer>) {}
 
   /**
    * Queue set mutation.
@@ -40,15 +35,24 @@ class TransactionCore<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends keyof KeyValue>(
+  public set<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void {
-    this._actions.push(
-      this._storageCore.set.bind(this._storageCore, layer, segment, key, value)
-    );
+    const expandedPairs = this._storageCore.expandSet(key, value);
+    for (const expanded of expandedPairs) {
+      this._actions.push(
+        this._storageCore.set.bind(
+          this._storageCore,
+          layer,
+          segment,
+          expanded[0],
+          expanded[1]
+        )
+      );
+    }
   }
 
   /**
@@ -58,14 +62,21 @@ class TransactionCore<
    * @param segment - Which segment to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends keyof KeyValue>(
+  public delete<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key
   ): void {
-    this._actions.push(
-      this._storageCore.delete.bind(this._storageCore, layer, segment, key)
-    );
+    for (const expandedKey of this._storageCore.expandDelete(key)) {
+      this._actions.push(
+        this._storageCore.delete.bind(
+          this._storageCore,
+          layer,
+          segment,
+          expandedKey
+        )
+      );
+    }
   }
 
   /**
@@ -89,13 +100,13 @@ class TransactionCore<
 /**
  * A transaction working with the whole storage.
  *
- * @typeparam KeyValue - Sets the value types associeated with their keys.
+ * @typeparam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
  * @typeparam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export interface LayeredStorageTransaction<
-  KeyValue extends KeyValueLookup,
+  KV extends KeyValueLookup,
   Layer extends LayerRange
 > {
   /**
@@ -106,11 +117,11 @@ export interface LayeredStorageTransaction<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  set<Key extends keyof KeyValue>(
+  set<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void;
   /**
    * Queue a value to be set.
@@ -119,11 +130,7 @@ export interface LayeredStorageTransaction<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  set<Key extends keyof KeyValue>(
-    layer: Layer,
-    key: Key,
-    value: KeyValue[Key]
-  ): void;
+  set<Key extends keyof KV>(layer: Layer, key: Key, value: KV[Key]): void;
 
   /**
    * Queue a value to be deleted.
@@ -132,18 +139,14 @@ export interface LayeredStorageTransaction<
    * @param segment - Which segment to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  delete<Key extends keyof KeyValue>(
-    layer: Layer,
-    segment: Segment,
-    key: Key
-  ): void;
+  delete<Key extends keyof KV>(layer: Layer, segment: Segment, key: Key): void;
   /**
    * Queue a value to be deleted.
    *
    * @param layer - Which layer to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  delete<Key extends keyof KeyValue>(layer: Layer, key: Key): void;
+  delete<Key extends keyof KV>(layer: Layer, key: Key): void;
 
   /**
    * Commit all queued operations.
@@ -158,10 +161,10 @@ export interface LayeredStorageTransaction<
 
 /** @inheritdoc */
 export class MonolithicTransaction<
-  KeyValue extends KeyValueLookup,
+  KV extends KeyValueLookup,
   Layer extends LayerRange
-> implements LayeredStorageTransaction<KeyValue, Layer> {
-  private readonly _transactionCore: TransactionCore<KeyValue, Layer>;
+> implements LayeredStorageTransaction<KV, Layer> {
+  private readonly _transactionCore: TransactionCore<KV, Layer>;
   private readonly _monolithic: symbol;
 
   /**
@@ -171,39 +174,39 @@ export class MonolithicTransaction<
    * @param listeners - Listeners that should be notified after a transaction
    * was commited.
    */
-  public constructor(storageCore: LayeredStorageCore<KeyValue, Layer>) {
+  public constructor(storageCore: LayeredStorageCore<KV, Layer>) {
     this._monolithic = storageCore.monolithic;
     this._transactionCore = new TransactionCore(storageCore);
   }
 
-  public set<Key extends keyof KeyValue>(
+  public set<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void;
-  public set<Key extends keyof KeyValue>(
+  public set<Key extends keyof KV>(
     layer: Layer,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void;
   /** @inheritdoc */
-  public set<Key extends keyof KeyValue>(
-    ...rest: [Layer, Segment, Key, KeyValue[Key]] | [Layer, Key, KeyValue[Key]]
+  public set<Key extends keyof KV>(
+    ...rest: [Layer, Segment, Key, KV[Key]] | [Layer, Key, KV[Key]]
   ): void {
     return rest.length === 3
       ? this._transactionCore.set(rest[0], this._monolithic, rest[1], rest[2])
       : this._transactionCore.set(rest[0], rest[1], rest[2], rest[3]);
   }
 
-  public delete<Key extends keyof KeyValue>(
+  public delete<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key
   ): void;
-  public delete<Key extends keyof KeyValue>(layer: Layer, key: Key): void;
+  public delete<Key extends keyof KV>(layer: Layer, key: Key): void;
   /** @inheritdoc */
-  public delete<Key extends keyof KeyValue>(
+  public delete<Key extends keyof KV>(
     ...rest: [Layer, Segment, Key] | [Layer, Key]
   ): void {
     return rest.length === 2
@@ -224,7 +227,7 @@ export class MonolithicTransaction<
 
 /** @inheritdoc */
 export interface LayeredStorageSegmentTransaction<
-  KeyValue extends KeyValueLookup,
+  KV extends KeyValueLookup,
   Layer extends LayerRange
 > {
   /**
@@ -234,11 +237,7 @@ export interface LayeredStorageSegmentTransaction<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  set<Key extends keyof KeyValue>(
-    layer: Layer,
-    key: Key,
-    value: KeyValue[Key]
-  ): void;
+  set<Key extends keyof KV>(layer: Layer, key: Key, value: KV[Key]): void;
 
   /**
    * Queue a value to be deleted.
@@ -246,7 +245,7 @@ export interface LayeredStorageSegmentTransaction<
    * @param layer - Which layer to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  delete<Key extends keyof KeyValue>(layer: Layer, key: Key): void;
+  delete<Key extends keyof KV>(layer: Layer, key: Key): void;
 
   /**
    * Commit all queued operations.
@@ -262,16 +261,16 @@ export interface LayeredStorageSegmentTransaction<
 /**
  * A transaction working with a single segment.
  *
- * @typeparam KeyValue - Sets the value types associeated with their keys.
+ * @typeparam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
  * @typeparam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export class SegmentTransaction<
-  KeyValue extends KeyValueLookup,
+  KV extends KeyValueLookup,
   Layer extends LayerRange
-> implements LayeredStorageSegmentTransaction<KeyValue, Layer> {
-  private readonly _transactionCore: TransactionCore<KeyValue, Layer>;
+> implements LayeredStorageSegmentTransaction<KV, Layer> {
+  private readonly _transactionCore: TransactionCore<KV, Layer>;
 
   /**
    * Create a new transaction for a segment of given storage.
@@ -282,23 +281,23 @@ export class SegmentTransaction<
    * @param _segment - The segment this instance will manage.
    */
   public constructor(
-    storageCore: LayeredStorageCore<KeyValue, Layer>,
+    storageCore: LayeredStorageCore<KV, Layer>,
     private readonly _segment: Segment
   ) {
     this._transactionCore = new TransactionCore(storageCore);
   }
 
   /** @inheritdoc */
-  public set<Key extends keyof KeyValue>(
+  public set<Key extends keyof KV>(
     layer: Layer,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void {
     return this._transactionCore.set(layer, this._segment, key, value);
   }
 
   /** @inheritdoc */
-  public delete<Key extends keyof KeyValue>(layer: Layer, key: Key): void {
+  public delete<Key extends keyof KV>(layer: Layer, key: Key): void {
     return this._transactionCore.delete(layer, this._segment, key);
   }
 

@@ -1,24 +1,24 @@
-import { KeyValueLookup, LayerRange, Segment } from "./common";
+import {
+  KeyValueLookup,
+  LayerRange,
+  Segment,
+  KeyValuePair,
+  FilteredKeyValuePair
+} from "./common";
 
 const reverseNumeric = (a: number, b: number): number => b - a;
 
-type SegmentData<KeyValue extends KeyValueLookup> = Map<
-  keyof KeyValue,
-  KeyValue[keyof KeyValue]
->;
-type LayerData<KeyValue extends KeyValueLookup> = Map<
-  Segment,
-  SegmentData<KeyValue>
->;
-type Data<KeyValue extends KeyValueLookup, Layer extends LayerRange> = Map<
+type SegmentData<KV extends KeyValueLookup> = Map<keyof KV, KV[keyof KV]>;
+type LayerData<KV extends KeyValueLookup> = Map<Segment, SegmentData<KV>>;
+type Data<KV extends KeyValueLookup, Layer extends LayerRange> = Map<
   Layer,
-  LayerData<KeyValue>
+  LayerData<KV>
 >;
 
-interface TypedMap<KeyValue extends KeyValueLookup>
-  extends Map<keyof KeyValue, KeyValue[keyof KeyValue]> {
-  get<Key extends keyof KeyValue>(key: Key): undefined | KeyValue[Key];
-  set<Key extends keyof KeyValue>(key: Key, value: KeyValue[Key]): this;
+interface TypedMap<KV extends KeyValueLookup>
+  extends Map<keyof KV, KV[keyof KV]> {
+  get<Key extends keyof KV>(key: Key): undefined | KV[Key];
+  set<Key extends keyof KV>(key: Key, value: KV[Key]): this;
 }
 
 interface CachedValue<Value> {
@@ -38,13 +38,13 @@ const emptyCacheValue: EmptyCacheValue = {
  * Internal core to handle simple data storage, mutation and retrieval. Also
  * handles the special monolithic segment.
  *
- * @typeparam KeyValue - Sets the value types associeated with their keys.
+ * @typeparam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
  * @typeparam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export class LayeredStorageCore<
-  KeyValue extends KeyValueLookup,
+  KV extends KeyValueLookup,
   Layer extends LayerRange
 > {
   /**
@@ -56,7 +56,7 @@ export class LayeredStorageCore<
   /**
    * Data stored as layer → segment → key → value.
    */
-  private _data: Data<KeyValue, Layer> = new Map();
+  private _data: Data<KV, Layer> = new Map();
 
   /**
    * An ordered list of layers. The highest priority (equals highest number)
@@ -74,8 +74,25 @@ export class LayeredStorageCore<
    */
   private readonly _validators: TypedMap<
     {
-      [Key in keyof KeyValue]: ((value: KeyValue[Key]) => true | string)[];
+      [Key in keyof KV]: ((value: KV[Key]) => true | string)[];
     }
+  > = new Map();
+
+  /**
+   * An expander for each key.
+   */
+  private readonly _setExpanders: TypedMap<
+    {
+      [Key in keyof KV]: (value: KV[Key]) => KeyValuePair<KV>[];
+    }
+  > = new Map();
+
+  /**
+   * An expander for each key.
+   */
+  private readonly _deleteExpanders: Map<
+    keyof KV,
+    readonly (keyof KV)[]
   > = new Map();
 
   /**
@@ -85,9 +102,9 @@ export class LayeredStorageCore<
    * @param value - The invalid value itself.
    * @param message - The message returned by the validator that failed.
    */
-  private _invalidHandler: <Key extends keyof KeyValue>(
+  private _invalidHandler: <Key extends keyof KV>(
     key: Key,
-    value: KeyValue[Key],
+    value: KV[Key],
     message: string
   ) => void = (key, value, message): void => {
     console.error("Invalid value was ignored.", { key, value, message });
@@ -101,7 +118,7 @@ export class LayeredStorageCore<
    */
   private readonly _topLevelCache = new Map<
     Segment,
-    TypedMap<{ [Key in keyof KeyValue]: CachedValue<KeyValue[Key]> }>
+    TypedMap<{ [Key in keyof KV]: CachedValue<KV[Key]> }>
   >();
 
   /**
@@ -110,7 +127,7 @@ export class LayeredStorageCore<
    * @param segment - Which segment to clean.
    * @param key - The key that was subject to the mutation.
    */
-  private _cleanCache(segment: Segment, key: keyof KeyValue): void {
+  private _cleanCache(segment: Segment, key: keyof KV): void {
     if (segment === this.monolithic) {
       // Run the search for each cached segment to clean the cached top level
       // value for each of them. The reason for this is that the monolithic
@@ -154,10 +171,10 @@ export class LayeredStorageCore<
    *
    * @returns Whether such value exists (`has`) and the value itself (`value`).
    */
-  private _findValue<Key extends keyof KeyValue>(
+  private _findValue<Key extends keyof KV>(
     segment: Segment,
     key: Key
-  ): CachedValue<KeyValue[Key]> | EmptyCacheValue {
+  ): CachedValue<KV[Key]> | EmptyCacheValue {
     const segmentCache =
       this._topLevelCache.get(segment) ||
       this._topLevelCache.set(segment, new Map()).get(segment)!;
@@ -221,7 +238,7 @@ export class LayeredStorageCore<
   private _getLSData(
     layer: Layer,
     segment: Segment
-  ): { layerData: LayerData<KeyValue>; segmentData: SegmentData<KeyValue> } {
+  ): { layerData: LayerData<KV>; segmentData: SegmentData<KV> } {
     // Get or create the requested layer.
     let layerData = this._data.get(layer);
     if (layerData == null) {
@@ -251,10 +268,10 @@ export class LayeredStorageCore<
    *
    * @returns The value or undefined if not found.
    */
-  public get<Key extends keyof KeyValue>(
+  public get<Key extends keyof KV>(
     segment: Segment,
     key: Key
-  ): KeyValue[Key] | undefined {
+  ): KV[Key] | undefined {
     return this._findValue(segment, key).value;
   }
 
@@ -266,7 +283,7 @@ export class LayeredStorageCore<
    *
    * @returns True if found, false otherwise.
    */
-  public has<Key extends keyof KeyValue>(segment: Segment, key: Key): boolean {
+  public has<Key extends keyof KV>(segment: Segment, key: Key): boolean {
     return this._findValue(segment, key).has;
   }
 
@@ -278,28 +295,31 @@ export class LayeredStorageCore<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends keyof KeyValue>(
+  public set<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key,
-    value: KeyValue[Key]
+    value: KV[Key]
   ): void {
     if (typeof layer !== "number") {
       throw new TypeError("Layers have to be numbers.");
     }
 
-    for (const validator of this._validators.get(key) || []) {
-      const message = validator(value);
-      if (message === true) {
-        // The value is valid. Proceed with another test or save the value into
-        // the storage if this was the last one.
-        continue;
-      } else {
-        // The value is invalid. Call the invalid value handler and, if the
-        // handler didn't throw, stop execution of this function to prevent the
-        // value from being saved into the storage.
-        this._invalidHandler(key, value, message);
-        return;
+    const validators = this._validators.get(key);
+    if (validators) {
+      for (const validator of validators) {
+        const message = validator(value);
+        if (message === true) {
+          // The value is valid. Proceed with another test or save the value
+          // into the storage if this was the last one.
+          continue;
+        } else {
+          // The value is invalid. Call the invalid value handler and, if the
+          // handler didn't throw, stop execution of this function to prevent
+          // the value from being saved into the storage.
+          this._invalidHandler(key, value, message);
+          return;
+        }
       }
     }
 
@@ -316,7 +336,7 @@ export class LayeredStorageCore<
    * @param segment - Which segment to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends keyof KeyValue>(
+  public delete<Key extends keyof KV>(
     layer: Layer,
     segment: Segment,
     key: Key
@@ -366,9 +386,9 @@ export class LayeredStorageCore<
    * value and a message from the failed validator.
    */
   public setInvalidHandler(
-    handler: <Key extends keyof KeyValue>(
+    handler: <Key extends keyof KV>(
       key: Key,
-      value: KeyValue[Key],
+      value: KV[Key],
       message: string
     ) => void
   ): void {
@@ -382,13 +402,95 @@ export class LayeredStorageCore<
    * @param validators - The functions that return true if valid or a string
    * explaining what's wrong with the value.
    */
-  public addValidators<Key extends keyof KeyValue>(
+  public addValidators<Key extends keyof KV>(
     key: Key,
-    ...validators: ((value: KeyValue[Key]) => true | string)[]
+    ...validators: ((value: KV[Key]) => true | string)[]
   ): void {
     (this._validators.get(key) || this._validators.set(key, []).get(key)!).push(
       ...validators
     );
+  }
+
+  /**
+   * Set an expander for given key.
+   *
+   * @remarks
+   * These are used in transactions to expand keys prior to them being
+   * applied. Using them here would prevent transactions from being atomic.
+   *
+   * @param key - The key whose values will be expanded by this expander.
+   * @param affects - The expanded keys that will be returned by the
+   * expaner and also deleted if this key is deleted.
+   * @param expander - The functions that returns an array of expanded key
+   * value pairs.
+   * @param replace - If true existing expander will be relaced, if false an
+   * error will be thrown if an expander already exists for given key.
+   */
+  public setExpander<Key extends keyof KV, Affects extends keyof KV>(
+    key: Key,
+    affects: readonly Affects[],
+    expander: (value: KV[Key]) => FilteredKeyValuePair<KV, Affects>[],
+    replace: boolean
+  ): void {
+    if (
+      !replace &&
+      (this._setExpanders.has(key) || this._deleteExpanders.has(key))
+    ) {
+      throw new Error("An expander for this key already exists.");
+    }
+
+    this._setExpanders.set(key, expander);
+    this._deleteExpanders.set(key, affects);
+  }
+
+  /**
+   * Expand given value.
+   *
+   * @param key - Which key this value belongs to.
+   * @param value - The value to be expanded.
+   *
+   * @returns Expanded key value pairs or empty array for invalid input.
+   */
+  public expandSet<Key extends keyof KV>(
+    key: Key,
+    value: KV[Key]
+  ): KeyValuePair<KV>[] {
+    const validators = this._validators.get(key);
+    if (validators) {
+      for (const validator of validators) {
+        const message = validator(value);
+        if (message === true) {
+          // The value is valid. Proceed with another test or save the value
+          // into the storage if this was the last one.
+          continue;
+        } else {
+          // The value is invalid. Call the invalid value handler and, if the
+          // handler didn't throw, stop execution of this function to prevent
+          // the value from being saved into the storage.
+          this._invalidHandler(key, value, message);
+          return [];
+        }
+      }
+    }
+
+    const expand = this._setExpanders.get(key);
+    if (expand) {
+      return expand(value);
+    } else {
+      return [[key, value]];
+    }
+  }
+
+  /**
+   * Expand given value.
+   *
+   * @param key - Which key this value belongs to.
+   * @param value - The value to be expanded.
+   *
+   * @returns Expanded key value pairs or empty array for invalid input.
+   */
+  public expandDelete<Key extends keyof KV>(key: Key): readonly (keyof KV)[] {
+    return this._deleteExpanders.get(key) || [key];
   }
 
   /**
