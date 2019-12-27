@@ -2,7 +2,7 @@ import {
   KeyValueLookup,
   LayerRange,
   Segment,
-  FilteredKeyValuePair
+  FilteredKeyValueEntry
 } from "./common";
 import { LayeredStorageCore } from "./core";
 import { LayeredStorageSegment } from "./segment";
@@ -315,7 +315,7 @@ export class LayeredStorage<
   public setExpander<Key extends keyof KV, Affects extends keyof KV>(
     key: Key,
     affects: readonly Affects[],
-    expander: (value: KV[Key]) => readonly FilteredKeyValuePair<KV, Affects>[],
+    expander: (value: KV[Key]) => readonly FilteredKeyValueEntry<KV, Affects>[],
     replace = false
   ): void {
     this._core.setExpander(key, affects, expander, replace);

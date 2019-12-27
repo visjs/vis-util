@@ -1,6 +1,6 @@
 import {
   LayeredStorage,
-  FilteredKeyValuePair
+  FilteredKeyValueEntry
 } from "../../src/layered-storage";
 import { expect } from "chai";
 
@@ -23,7 +23,7 @@ export function expanders(): void {
     ] as const;
     const expander = (
       input: string
-    ): readonly FilteredKeyValuePair<
+    ): readonly FilteredKeyValueEntry<
       KV,
       "test.boolean" | "test.number" | "test.string"
     >[] => {

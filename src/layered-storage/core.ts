@@ -2,8 +2,8 @@ import {
   KeyValueLookup,
   LayerRange,
   Segment,
-  KeyValuePair,
-  FilteredKeyValuePair
+  KeyValueEntry,
+  FilteredKeyValueEntry
 } from "./common";
 
 const reverseNumeric = (a: number, b: number): number => b - a;
@@ -83,7 +83,7 @@ export class LayeredStorageCore<
    */
   private readonly _setExpanders: TypedMap<
     {
-      [Key in keyof KV]: (value: KV[Key]) => readonly KeyValuePair<KV>[];
+      [Key in keyof KV]: (value: KV[Key]) => readonly KeyValueEntry<KV>[];
     }
   > = new Map();
 
@@ -466,7 +466,7 @@ export class LayeredStorageCore<
   public setExpander<Key extends keyof KV, Affects extends keyof KV>(
     key: Key,
     affects: readonly Affects[],
-    expander: (value: KV[Key]) => readonly FilteredKeyValuePair<KV, Affects>[],
+    expander: (value: KV[Key]) => readonly FilteredKeyValueEntry<KV, Affects>[],
     replace: boolean
   ): void {
     if (
@@ -491,7 +491,7 @@ export class LayeredStorageCore<
   public expandSet<Key extends keyof KV>(
     key: Key,
     value: KV[Key]
-  ): readonly KeyValuePair<KV>[] {
+  ): readonly KeyValueEntry<KV>[] {
     const validators = this._validators.get(key);
     if (validators) {
       for (const validator of validators) {
