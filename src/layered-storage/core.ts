@@ -536,8 +536,10 @@ export class LayeredStorageCore<
   public dumpContent(): void {
     console.groupCollapsed("Storage content dump");
 
+    const layers = [...this._layers.values()];
+
     console.log("Time:", new Date());
-    console.log("Layers:", [...this._layers.values()]);
+    console.log("Layers:", layers);
     console.log("Segments:", [...this._segments.values()]);
 
     console.groupCollapsed("Cache");
@@ -551,11 +553,12 @@ export class LayeredStorageCore<
     console.groupEnd();
 
     console.groupCollapsed("Data");
-    for (const [layer, lData] of this._data.entries()) {
+    for (const layer of layers) {
+      const lData = this._data.get(layer)!;
       console.groupCollapsed(`Layer: ${layer}`);
       for (const [segment, segmentData] of lData.entries()) {
         console.groupCollapsed(`Segment: ${String(segment)}`);
-        for (const [key, value] of segmentData.entries()) {
+        for (const [key, value] of [...segmentData.entries()].sort()) {
           console.log([key, value]);
         }
         console.groupEnd();
