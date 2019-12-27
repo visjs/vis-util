@@ -241,6 +241,25 @@ export class LayeredStorage<
   }
 
   /**
+   * Create a new segmented instance for working with a single segment with a
+   * copy of another segments data.
+   *
+   * @param sourceSegment - The existing segment to be cloned.
+   * @param targetSegment - The target segment which should be created.
+   *
+   * @throws If the target segment already exists.
+   *
+   * @returns A new segmented instance permanently bound to this instance.
+   */
+  public cloneSegment(
+    sourceSegment: Segment,
+    targetSegment: Segment
+  ): LayeredStorageSegment<KV, Layer> {
+    this._core.cloneSegmentData(sourceSegment, targetSegment);
+    return new LayeredStorageSegment(this, targetSegment);
+  }
+
+  /**
    * Delete all data belonging to a segment.
    *
    * @param segment - The segment whose data will be deleted.

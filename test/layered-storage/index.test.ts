@@ -1,4 +1,5 @@
 import { allCombined } from "./all-combined";
+import { cloning } from "./cloning";
 import { expanders } from "./expanders";
 import { multipleKeys } from "./multiple-keys";
 import { multipleLayers } from "./multiple-layers";
@@ -9,6 +10,7 @@ import { validation } from "./validation";
 
 describe("Layered storage", function(): void {
   allCombined();
+  cloning();
   expanders();
   multipleKeys();
   multipleLayers();

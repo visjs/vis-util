@@ -51,12 +51,12 @@ export class LayeredStorageCore<
    * This is a special segment that is used as fallback if the requested
    * segment doesn't have a value in given layer.
    */
-  public monolithic = Symbol("Monolithic");
+  public readonly monolithic = Symbol("Monolithic");
 
   /**
    * Data stored as layer → segment → key → value.
    */
-  private _data: Data<KV, Layer> = new Map();
+  private readonly _data: Data<KV, Layer> = new Map();
 
   /**
    * An ordered list of layers. The highest priority (equals highest number)
@@ -359,6 +359,38 @@ export class LayeredStorageCore<
     }
 
     this._cleanCache(segment, key);
+  }
+
+  /**
+   * Clone all data from one segment to another.
+   *
+   * @param sourceSegment - The existing segment to be cloned.
+   * @param targetSegment - The target segment which should be created.
+   *
+   * @throws If the target segment already exists.
+   */
+  public cloneSegmentData(
+    sourceSegment: Segment,
+    targetSegment: Segment
+  ): void {
+    if (this._segments.has(targetSegment)) {
+      throw new Error(
+        "The target segment already exists. If this was intentional delete it's data before cloning, please."
+      );
+    }
+
+    for (const layerData of this._data.values()) {
+      const sourceSegmentData = layerData.get(sourceSegment);
+      if (sourceSegmentData) {
+        const sourceSegmentCopy: SegmentData<KV> = new Map();
+        for (const entry of sourceSegmentData.entries()) {
+          sourceSegmentCopy.set(entry[0], entry[1]);
+        }
+        layerData.set(targetSegment, sourceSegmentCopy);
+      }
+    }
+
+    this._segments.add(targetSegment);
   }
 
   /**

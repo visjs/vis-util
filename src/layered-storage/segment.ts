@@ -76,6 +76,22 @@ export class LayeredStorageSegment<
   }
 
   /**
+   * Create a new segmented instance for working with a single segment with a
+   * copy of another segments data.
+   *
+   * @param targetSegment - The target segment which should be created.
+   *
+   * @throws If the target segment already exists.
+   *
+   * @returns A new segmented instance permanently bound to this instance.
+   */
+  public cloneSegment(
+    targetSegment: Segment
+  ): LayeredStorageSegment<KV, Layer> {
+    return this._layeredStorage.cloneSegment(this._segment, targetSegment);
+  }
+
+  /**
    * Open a new transaction.
    *
    * @remarks
