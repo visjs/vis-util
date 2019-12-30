@@ -2,10 +2,10 @@ import babel from "rollup-plugin-babel";
 import commonjs from "rollup-plugin-commonjs";
 import copyGlob from "rollup-plugin-copy-glob";
 import resolve from "rollup-plugin-node-resolve";
-import { readFileSync } from "fs";
+import { generateHeader } from "vis-dev-utils";
 import { terser } from "rollup-plugin-terser";
 
-const babelrc = JSON.parse(readFileSync("./.babelrc"));
+const banner = generateHeader();
 
 const commonPlugins = [
   resolve({
@@ -13,8 +13,6 @@ const commonPlugins = [
   }),
   commonjs(),
   babel({
-    ...babelrc,
-    babelrc: false,
     extensions: [".ts", ".js"],
     runtimeHelpers: true
   })
@@ -37,10 +35,12 @@ const configs = [
     input: "src/index.ts",
     output: [
       {
+        banner,
         file: "esm/vis-util.js",
         format: "esm"
       },
       {
+        banner,
         exports: "named",
         extend: true,
         file: "umd/vis-util.js",
