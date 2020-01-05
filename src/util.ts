@@ -18,15 +18,15 @@ const rgbaRE = /^rgba\( *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25
  */
 export interface HSV {
   /**
-   * Hue <0, 1>.
+   * Hue \<0, 1\>.
    */
   h: number;
   /**
-   * Saturation <0, 1>.
+   * Saturation \<0, 1\>.
    */
   s: number;
   /**
-   * Value <0, 1>.
+   * Value \<0, 1\>.
    */
   v: number;
 }
@@ -36,15 +36,15 @@ export interface HSV {
  */
 export interface RGB {
   /**
-   * Red <0, 255> integer.
+   * Red \<0, 255\> integer.
    */
   r: number;
   /**
-   * Green <0, 255> integer.
+   * Green \<0, 255\> integer.
    */
   g: number;
   /**
-   * Blue <0, 255> integer.
+   * Blue \<0, 255\> integer.
    */
   b: number;
 }
@@ -54,25 +54,25 @@ export interface RGB {
  */
 export interface RGBA {
   /**
-   * Red <0, 255> integer.
+   * Red \<0, 255\> integer.
    */
   r: number;
   /**
-   * Green <0, 255> integer.
+   * Green \<0, 255\> integer.
    */
   g: number;
   /**
-   * Blue <0, 255> integer.
+   * Blue \<0, 255\> integer.
    */
   b: number;
   /**
-   * Alpha <0, 1>.
+   * Alpha \<0, 1\>.
    */
   a: number;
 }
 
 /**
- * Test whether given object is a number
+ * Test whether given object is a number.
  *
  * @param value - Input value of unknown type.
  *
@@ -83,7 +83,7 @@ export function isNumber(value: unknown): value is number {
 }
 
 /**
- * Remove everything in the DOM object
+ * Remove everything in the DOM object.
  *
  * @param DOMobject - Node whose child nodes will be recursively deleted.
  */
@@ -100,7 +100,7 @@ export function recursiveDOMDelete(DOMobject: Node | null | undefined): void {
 }
 
 /**
- * Test whether given object is a string
+ * Test whether given object is a string.
  *
  * @param value - Input value of unknown type.
  *
@@ -122,7 +122,7 @@ export function isObject(value: unknown): value is object {
 }
 
 /**
- * Test whether given object is a Date, or a String containing a Date
+ * Test whether given object is a Date, or a String containing a Date.
  *
  * @param value - Input value of unknown type.
  *
@@ -153,7 +153,7 @@ export function isDate(value: unknown): value is Date | string {
  * @param a - Target object.
  * @param b - Source object.
  * @param prop - Name of property to copy from b to a.
- * @param allowDeletion  if true, delete property in a if explicitly set to null in b
+ * @param allowDeletion - If true, delete property in a if explicitly set to null in b.
  */
 function copyOrDelete(
   a: any,
@@ -181,7 +181,7 @@ function copyOrDelete(
  *
  * @param a - The object that will have it's properties updated.
  * @param b - The object with property updates.
- * @param allowDeletion - if true, delete properties in a that are explicitly set to null in b
+ * @param allowDeletion - If true, delete properties in a that are explicitly set to null in b.
  */
 export function fillIfDefined<T extends object>(
   a: T,
@@ -213,13 +213,15 @@ export function fillIfDefined<T extends object>(
  * @param target - The target object to copy to.
  * @param source - The source object from which to copy properties.
  *
- * @return The target object.
+ * @returns The target object.
  */
 export const extend = Object.assign;
 
 /**
- * Extend object a with selected properties of object b or a series of objects
- * Only properties with defined values are copied
+ * Extend object a with selected properties of object b or a series of objects.
+ *
+ * @remarks
+ * Only properties with defined values are copied.
  *
  * @param props - Properties to be copied to a.
  * @param a - The target.
@@ -251,10 +253,10 @@ export function selectiveExtend(
  * Extend object a with selected properties of object b.
  * Only properties with defined values are copied.
  *
- * **Note:** Previous version of this routine implied that multiple source objects
- *           could be used; however, the implementation was **wrong**.
- *           Since multiple (>1) sources weren't used anywhere in the `vis.js` code,
- *           this has been removed
+ * @remarks
+ * Previous version of this routine implied that multiple source objects could
+ * be used; however, the implementation was **wrong**. Since multiple (\>1)
+ * sources weren't used anywhere in the `vis.js` code, this has been removed
  *
  * @param props - Names of first-level properties to copy over.
  * @param a - Target object.
@@ -297,17 +299,19 @@ export function selectiveDeepExtend(
 }
 
 /**
- * Extend object `a` with properties of object `b`, ignoring properties which are explicitly
- * specified to be excluded.
+ * Extend object `a` with properties of object `b`, ignoring properties which
+ * are explicitly specified to be excluded.
  *
- * The properties of `b` are considered for copying.
- * Properties which are themselves objects are are also extended.
- * Only properties with defined values are copied
+ * @remarks
+ * The properties of `b` are considered for copying. Properties which are
+ * themselves objects are are also extended. Only properties with defined
+ * values are copied.
  *
  * @param propsToExclude - Names of properties which should *not* be copied.
  * @param a - Object to extend.
  * @param b - Object to take properties from for extension.
- * @param allowDeletion - If true, delete properties in a that are explicitly set to null in b.
+ * @param allowDeletion - If true, delete properties in a that are explicitly
+ * set to null in b.
  *
  * @returns Argument a.
  */
@@ -354,12 +358,13 @@ export function selectiveNotDeepExtend(
 }
 
 /**
- * Deep extend an object a with the properties of object b
+ * Deep extend an object a with the properties of object b.
  *
  * @param a - Target object.
  * @param b - Source object.
- * @param protoExtend - If true, the prototype values will also be extended
- * (ie. the options objects that inherit from others will also get the inherited options).
+ * @param protoExtend - If true, the prototype values will also be extended.
+ * (That is the options objects that inherit from others will also get the
+ * inherited options).
  * @param allowDeletion - If true, the values of fields that are null will be deleted.
  *
  * @returns Argument a.
@@ -421,7 +426,7 @@ export function equalArray(a: unknown[], b: unknown[]): boolean {
 }
 
 /**
- * Get the type of an object, for example exports.getType([]) returns 'Array'
+ * Get the type of an object, for example exports.getType([]) returns 'Array'.
  *
  * @param object - Input value of unknown type.
  *
@@ -500,7 +505,7 @@ export function copyArray<T>(arr: readonly T[]): T[] {
 }
 
 /**
- * Retrieve the absolute left value of a DOM element
+ * Retrieve the absolute left value of a DOM element.
  *
  * @param elem - A dom element, for example a div.
  *
@@ -511,7 +516,7 @@ export function getAbsoluteLeft(elem: Element): number {
 }
 
 /**
- * Retrieve the absolute right value of a DOM element
+ * Retrieve the absolute right value of a DOM element.
  *
  * @param elem - A dom element, for example a div.
  *
@@ -522,7 +527,7 @@ export function getAbsoluteRight(elem: Element): number {
 }
 
 /**
- * Retrieve the absolute top value of a DOM element
+ * Retrieve the absolute top value of a DOM element.
  *
  * @param elem - A dom element, for example a div.
  *
@@ -607,7 +612,7 @@ export function forEach(object: any, callback: any): void {
 export const toArray = Object.values;
 
 /**
- * Update a property in an object
+ * Update a property in an object.
  *
  * @param object - The object whose property will be updated.
  * @param key - Name of the property to be updated.
@@ -683,7 +688,7 @@ export function addEventListener<E extends Element>(
 }
 
 /**
- * Remove an event listener from an element
+ * Remove an event listener from an element.
  *
  * @param element - The element to bind the event listener to.
  * @param action - Same as Element.removeEventListener(action, —, —).
@@ -774,7 +779,7 @@ export function getTarget(
 }
 
 /**
- * Check if given element contains given parent somewhere in the DOM tree
+ * Check if given element contains given parent somewhere in the DOM tree.
  *
  * @param element - The element to be tested.
  * @param parent - The ancestor (not necessarily parent) of the element.
@@ -801,7 +806,7 @@ export const option = {
   /**
    * Convert a value into a boolean.
    *
-   * @param value - Value to be converted intoboolean, a function will be executed as (() => unknown).
+   * @param value - Value to be converted intoboolean, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
    *
    * @returns Corresponding boolean value, if none then the default value, if none then null.
@@ -821,7 +826,7 @@ export const option = {
   /**
    * Convert a value into a number.
    *
-   * @param value - Value to be converted intonumber, a function will be executed as (() => unknown).
+   * @param value - Value to be converted intonumber, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
    *
    * @returns Corresponding **boxed** number value, if none then the default value, if none then null.
@@ -841,7 +846,7 @@ export const option = {
   /**
    * Convert a value into a string.
    *
-   * @param value - Value to be converted intostring, a function will be executed as (() => unknown).
+   * @param value - Value to be converted intostring, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
    *
    * @returns Corresponding **boxed** string value, if none then the default value, if none then null.
@@ -861,7 +866,7 @@ export const option = {
   /**
    * Convert a value into a size.
    *
-   * @param value - Value to be converted intosize, a function will be executed as (() => unknown).
+   * @param value - Value to be converted intosize, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
    *
    * @returns Corresponding string value (number + 'px'), if none then the default value, if none then null.
@@ -883,7 +888,7 @@ export const option = {
   /**
    * Convert a value into a DOM Element.
    *
-   * @param value - Value to be converted into DOM Element, a function will be executed as (() => unknown).
+   * @param value - Value to be converted into DOM Element, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
    *
    * @returns The DOM Element, if none then the default value, if none then null.
@@ -902,7 +907,9 @@ export const option = {
 
 /**
  * Convert hex color string into RGB color object.
- * http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+ *
+ * @remarks
+ * {@link http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb}
  *
  * @param hex - Hex color string (3 or 6 digits, with or without #).
  *
@@ -964,7 +971,7 @@ export function overrideOpacity(color: string, opacity: number): string {
 }
 
 /**
- * Convert RGB <0, 255> into hex color string.
+ * Convert RGB \<0, 255\> into hex color string.
  *
  * @param red - Red channel.
  * @param green - Green channel.
@@ -1015,7 +1022,7 @@ export function parseColor(
   defaultColor: FullColorObject
 ): FullColorObject;
 /**
- * Parse a color property into an object with border, background, and highlight colors
+ * Parse a color property into an object with border, background, and highlight colors.
  *
  * @param inputColor - Shorthand color string or input color object.
  * @param defaultColor - Full color object to fill in missing values in inputColor.
@@ -1154,8 +1161,10 @@ export function parseColor(
 }
 
 /**
- * Convert RGB <0, 255> into HSV object.
- * http://www.javascripter.net/faq/rgb2hsv.htm
+ * Convert RGB \<0, 255\> into HSV object.
+ *
+ * @remarks
+ * {@link http://www.javascripter.net/faq/rgb2hsv.htm}
  *
  * @param red - Red channel.
  * @param green - Green channel.
@@ -1216,7 +1225,7 @@ const cssUtil = {
 };
 
 /**
- * Append a string with css styles to an element
+ * Append a string with css styles to an element.
  *
  * @param element - The element that will receive new styles.
  * @param cssText - The styles to be appended.
@@ -1233,7 +1242,7 @@ export function addCssText(element: HTMLElement, cssText: string): void {
 }
 
 /**
- * Remove a string with css styles from an element
+ * Remove a string with css styles from an element.
  *
  * @param element - The element from which styles should be removed.
  * @param cssText - The styles to be removed.
@@ -1252,12 +1261,14 @@ export function removeCssText(element: HTMLElement, cssText: string): void {
 }
 
 /**
- * Convert HSV <0, 1> into RGB color object.
- * https://gist.github.com/mjijackson/5311256
+ * Convert HSV \<0, 1\> into RGB color object.
  *
- * @param h - Hue
- * @param s - Saturation
- * @param v - Value
+ * @remarks
+ * {@link https://gist.github.com/mjijackson/5311256}
+ *
+ * @param h - Hue.
+ * @param s - Saturation.
+ * @param v - Value.
  *
  * @returns RGB color object.
  */
@@ -1301,11 +1312,11 @@ export function HSVToRGB(h: number, s: number, v: number): RGB {
 }
 
 /**
- * Convert HSV <0, 1> into hex color string.
+ * Convert HSV \<0, 1\> into hex color string.
  *
- * @param h - Hue
- * @param s - Saturation
- * @param v - Value
+ * @param h - Hue.
+ * @param s - Saturation.
+ * @param v - Value.
  *
  * @returns Hex color string.
  */
@@ -1315,7 +1326,7 @@ export function HSVToHex(h: number, s: number, v: number): string {
 }
 
 /**
- * Convert hex color string into HSV <0, 1>.
+ * Convert hex color string into HSV \<0, 1\>.
  *
  * @param hex - Hex color string.
  *
@@ -1592,10 +1603,10 @@ export function binarySearchCustom<O extends object, K1 extends keyof O>(
  * This function does a binary search for a visible item in a sorted list. If we find a visible item, the code that uses
  * this function will then iterate in both directions over this sorted list to find all visible items.
  *
- * @param orderedItems - Items ordered by start
- * @param comparator - -1 is lower, 0 is equal, 1 is higher
- * @param field - Property name on an item (i.e. item[field]).
- * @param field2 - Second property name on an item (i.e. item[field][field2]).
+ * @param orderedItems - Items ordered by start.
+ * @param comparator - -1 is lower, 0 is equal, 1 is higher.
+ * @param field - Property name on an item (That is item[field]).
+ * @param field2 - Second property name on an item (That is item[field][field2]).
  *
  * @returns Index of the found item or -1 if nothing was found.
  */
@@ -1635,15 +1646,16 @@ export function binarySearchCustom(
 }
 
 /**
- * This function does a binary search for a specific value in a sorted array. If it does not exist but is in between of
- * two values, we return either the one before or the one after, depending on user input
- * If it is found, we return the index, else -1.
+ * This function does a binary search for a specific value in a sorted array.
+ * If it does not exist but is in between of two values, we return either the
+ * one before or the one after, depending on user input If it is found, we
+ * return the index, else -1.
  *
  * @param orderedItems - Sorted array.
  * @param target - The searched value.
  * @param field - Name of the property in items to be searched.
  * @param sidePreference - If the target is between two values, should the index of the before or the after be returned?
- * @param comparator - An optional comparator, returning -1, 0, 1 for <, ===, >.
+ * @param comparator - An optional comparator, returning -1, 0, 1 for \<, ===, \>.
  *
  * @returns The index of found value or -1 if nothing was found.
  */
@@ -1721,7 +1733,7 @@ export function binarySearchValue<T extends string>(
  */
 export const easingFunctions = {
   /**
-   * no easing, no acceleration
+   * Provides no easing and no acceleration.
    *
    * @param t - Time.
    *
@@ -1732,7 +1744,7 @@ export const easingFunctions = {
   },
 
   /**
-   * accelerating from zero velocity
+   * Accelerate from zero velocity.
    *
    * @param t - Time.
    *
@@ -1743,7 +1755,7 @@ export const easingFunctions = {
   },
 
   /**
-   * decelerating to zero velocity
+   * Decelerate to zero velocity.
    *
    * @param t - Time.
    *
@@ -1754,7 +1766,7 @@ export const easingFunctions = {
   },
 
   /**
-   * acceleration until halfway, then deceleration
+   * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
    *
@@ -1765,7 +1777,7 @@ export const easingFunctions = {
   },
 
   /**
-   * accelerating from zero velocity
+   * Accelerate from zero velocity.
    *
    * @param t - Time.
    *
@@ -1776,7 +1788,7 @@ export const easingFunctions = {
   },
 
   /**
-   * decelerating to zero velocity
+   * Decelerate to zero velocity.
    *
    * @param t - Time.
    *
@@ -1787,7 +1799,7 @@ export const easingFunctions = {
   },
 
   /**
-   * acceleration until halfway, then deceleration
+   * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
    *
@@ -1798,7 +1810,7 @@ export const easingFunctions = {
   },
 
   /**
-   * accelerating from zero velocity
+   * Accelerate from zero velocity.
    *
    * @param t - Time.
    *
@@ -1809,7 +1821,7 @@ export const easingFunctions = {
   },
 
   /**
-   * decelerating to zero velocity
+   * Decelerate to zero velocity.
    *
    * @param t - Time.
    *
@@ -1820,7 +1832,7 @@ export const easingFunctions = {
   },
 
   /**
-   * acceleration until halfway, then deceleration
+   * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
    *
@@ -1831,7 +1843,7 @@ export const easingFunctions = {
   },
 
   /**
-   * accelerating from zero velocity
+   * Accelerate from zero velocity.
    *
    * @param t - Time.
    *
@@ -1842,7 +1854,7 @@ export const easingFunctions = {
   },
 
   /**
-   * decelerating to zero velocity
+   * Decelerate to zero velocity.
    *
    * @param t - Time.
    *
@@ -1853,7 +1865,7 @@ export const easingFunctions = {
   },
 
   /**
-   * acceleration until halfway, then deceleration
+   * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
    *
@@ -1916,7 +1928,8 @@ export function getScrollBarWidth(): number {
  * Get the top most property value from a pile of objects.
  *
  * @param pile - Array of objects, no required format.
- * @param accessors - Array of property names (e.g. object['foo']['bar'] → ['foo', 'bar']).
+ * @param accessors - Array of property names.
+ * For example `object['foo']['bar']` → `['foo', 'bar']`.
  *
  * @returns Value of the property with given accessors path from the first pile item where it's not undefined.
  */
