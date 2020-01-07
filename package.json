@@ -49,6 +49,12 @@
       "pre-push": "run-s type-check test lint"
     }
   },
+  "config": {
+    "snap-shot-it": {
+      "sortSnapshots": true,
+      "useRelativePath": true
+    }
+  },
   "engines": {
     "node": ">=8"
   },
@@ -121,6 +127,7 @@
     "rollup-plugin-terser": "^5.1.3",
     "semantic-release": "^16.0.0",
     "sinon": "^8.0.1",
+    "snap-shot-it": "^7.9.1",
     "stryker-cli": "^1.0.0",
     "typedoc": "^0.16.0",
     "typescript": "^3.7.4",
