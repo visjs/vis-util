@@ -123,7 +123,7 @@ describe("deepExtend", function(): void {
           p3: "S"
         },
         objectFromNull: {},
-        objectFromObject: {},
+        objectFromObject: Object.create(Object),
         objectFromMap: new Map()
       }
     });
