@@ -122,7 +122,7 @@
     "semantic-release": "^15.14.0",
     "sinon": "^8.0.1",
     "stryker-cli": "^1.0.0",
-    "typedoc": "^0.15.6",
+    "typedoc": "^0.15.8",
     "typescript": "^3.7.4",
     "vis-dev-utils": "^1.2.0",
     "vis-uuid": "1.1.4"
