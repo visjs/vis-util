@@ -124,7 +124,7 @@
     "stryker-cli": "^1.0.0",
     "typedoc": "^0.16.0",
     "typescript": "^3.7.4",
-    "vis-dev-utils": "^1.2.0",
+    "vis-dev-utils": "^2.1.0",
     "vis-uuid": "1.1.4"
   }
 }
