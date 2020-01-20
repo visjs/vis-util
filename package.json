@@ -111,7 +111,7 @@
     "eslint-plugin-tsdoc": "^0.2.0",
     "git-authors-cli": "^1.0.18",
     "husky": "^4.0.2",
-    "jsdom": "^15.2.1",
+    "jsdom": "^16.0.1",
     "jsdom-global": "^3.0.2",
     "lint-staged": "^9.5.0",
     "mocha": "^6.2.2",
