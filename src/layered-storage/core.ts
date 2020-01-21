@@ -6,7 +6,10 @@ import {
   FilteredKeyValueEntry
 } from "./common";
 
-const reverseNumeric = (a: number, b: number): number => b - a;
+const entriesByKeyPriority = (
+  a: [number, unknown],
+  b: [number, unknown]
+): number => b[0] - a[0];
 
 type SegmentData<KV extends KeyValueLookup> = Map<keyof KV, KV[keyof KV]>;
 type LayerData<KV extends KeyValueLookup> = Map<Segment, SegmentData<KV>>;
@@ -59,10 +62,10 @@ export class LayeredStorageCore<
   private readonly _data: Data<KV, Layer> = new Map();
 
   /**
-   * An ordered list of layers. The highest priority (equals highest number)
-   * layer is first.
+   * An ordered list of layer datas. The highest priority (equals highest
+   * number) layer is first.
    */
-  private _layers: Layer[] = [];
+  private _layerDatas: LayerData<KV>[] = [];
 
   /**
    * A set of segments that keeps track what segments have data in the storage.
@@ -175,9 +178,11 @@ export class LayeredStorageCore<
     segment: Segment,
     key: Key
   ): CachedValue<KV[Key]> | EmptyCacheValue {
-    const segmentCache =
-      this._topLevelCache.get(segment) ||
-      this._topLevelCache.set(segment, new Map()).get(segment)!;
+    let segmentCache = this._topLevelCache.get(segment);
+    if (typeof segmentCache === "undefined") {
+      segmentCache = new Map();
+      this._topLevelCache.set(segment, segmentCache);
+    }
 
     // Return cached value if it exists.
     const cached = segmentCache.get(key);
@@ -186,33 +191,38 @@ export class LayeredStorageCore<
     }
 
     // Search the layers from highest to lowest priority.
-    for (const layer of this._layers) {
-      // Check the segmented first and quit if found.
-      const layerData = this._data.get(layer);
+    for (const layerData of this._layerDatas) {
       if (layerData == null) {
         // Empty layer.
         continue;
       }
 
+      // Check the segment and quit if found.
       const segmentData = layerData.get(segment);
-      if (segmentData != null && segmentData.has(key)) {
-        const value = { has: true, value: segmentData.get(key)! };
+      if (typeof segmentData !== "undefined") {
+        const value = segmentData.get(key);
+        if (typeof value !== "undefined" || segmentData.has(key)) {
+          const cachedValue = { has: true, value };
 
-        // Save to the cache.
-        segmentCache.set(key, value);
+          // Save to the cache.
+          segmentCache.set(key, cachedValue);
 
-        return value;
+          return cachedValue;
+        }
       }
 
       // Check the monolithic and quit if found.
       const monolithicData = layerData.get(this.monolithic);
-      if (monolithicData != null && monolithicData.has(key)) {
-        const value = { has: true, value: monolithicData.get(key)! };
+      if (typeof monolithicData !== "undefined") {
+        const value = monolithicData.get(key);
+        if (typeof value !== "undefined" || monolithicData.has(key)) {
+          const cachedValue = { has: true, value };
 
-        // Save to the cache.
-        segmentCache.set(key, value);
+          // Save to the cache.
+          segmentCache.set(key, cachedValue);
 
-        return value;
+          return cachedValue;
+        }
       }
     }
 
@@ -245,7 +255,9 @@ export class LayeredStorageCore<
       layerData = new Map();
       this._data.set(layer, layerData);
 
-      this._layers = [...this._data.keys()].sort(reverseNumeric);
+      this._layerDatas = [...this._data.entries()]
+        .sort(entriesByKeyPriority)
+        .map((pair): LayerData<KV> => pair[1]);
     }
 
     // Get or create the requested segment on the layer.
@@ -535,7 +547,9 @@ export class LayeredStorageCore<
   public dumpContent(): void {
     console.groupCollapsed("Storage content dump");
 
-    const layers = [...this._layers.values()];
+    const layers = [...this._data.entries()]
+      .sort(entriesByKeyPriority)
+      .map((pair): Layer => pair[0]);
 
     console.log("Time:", new Date());
     console.log("Layers:", layers);
