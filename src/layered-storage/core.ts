@@ -114,10 +114,8 @@ export class LayeredStorageCore<
   };
 
   /**
-   * This is used to speed up retrieval of data upon request. Since the storage
-   * is seen as mostly static this structure is populated up front and updated
-   * with each change. Thanks to this quering data from the storage is always
-   * just `Map.get().get()` away.
+   * This is used to speed up retrieval of data upon request. Thanks to this
+   * quering data from the storage is always just `Map.get().get()` away.
    */
   private readonly _topLevelCache = new Map<
     Segment,
