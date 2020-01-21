@@ -184,13 +184,13 @@ export class LayeredStorageCore<
 
     // Return cached value if it exists.
     const cached = segmentCache.get(key);
-    if (cached) {
+    if (typeof cached !== "undefined") {
       return cached;
     }
 
     // Search the layers from highest to lowest priority.
     for (const layerData of this._layerDatas) {
-      if (layerData == null) {
+      if (typeof layerData === "undefined") {
         // Empty layer.
         continue;
       }
@@ -249,7 +249,7 @@ export class LayeredStorageCore<
   ): { layerData: LayerData<KV>; segmentData: SegmentData<KV> } {
     // Get or create the requested layer.
     let layerData = this._data.get(layer);
-    if (layerData == null) {
+    if (typeof layerData === "undefined") {
       layerData = new Map();
       this._data.set(layer, layerData);
 
@@ -260,7 +260,7 @@ export class LayeredStorageCore<
 
     // Get or create the requested segment on the layer.
     let segmentData = layerData.get(segment);
-    if (segmentData == null) {
+    if (typeof segmentData === "undefined") {
       segmentData = new Map();
       layerData.set(segment, segmentData);
 
