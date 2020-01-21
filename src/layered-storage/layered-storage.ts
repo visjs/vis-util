@@ -28,9 +28,9 @@ export {
  * - Each layer can be segmented using arbitrary values.
  * - Segmented value overrides monolithic (nonsegmented) value.
  *
- * @typeparam KV - Sets the value types associeated with their keys.
+ * @typeParam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
- * @typeparam Layer - Sets the allowed layers.
+ * @typeParam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export class LayeredStorage<
@@ -54,6 +54,9 @@ export class LayeredStorage<
   /**
    * Retrieve a value.
    *
+   * @param rest - Either a key only for monolithic or segment and key for
+   * specific segment.
+   *
    * @returns The value or undefined if not found.
    */
   public get<Key extends keyof KV>(
@@ -75,6 +78,9 @@ export class LayeredStorage<
   public has<Key extends keyof KV>(key: Key): boolean;
   /**
    * Check if a value is present.
+   *
+   * @param rest - Either a key only for monolithic or segment and key for
+   * specific segment.
    *
    * @returns True if found, false otherwise.
    */
@@ -108,6 +114,9 @@ export class LayeredStorage<
   ): void;
   /**
    * Save a value.
+   *
+   * @param rest - Either layer, key and value only for monolithic or with
+   * segment for specific segment.
    */
   public set<Key extends keyof KV>(
     ...rest: [Layer, Segment, Key, KV[Key]] | [Layer, Key, KV[Key]]
@@ -137,6 +146,9 @@ export class LayeredStorage<
   public delete<Key extends keyof KV>(layer: Layer, key: Key): KV[Key];
   /**
    * Delete a value from the storage.
+   *
+   * @param rest - Either a key only for monolithic or segment and key for
+   * specific segment.
    */
   public delete<Key extends keyof KV>(
     ...rest: [Layer, Segment, Key] | [Layer, Key]
@@ -199,6 +211,9 @@ export class LayeredStorage<
    * This is the same as `openTransaction` except that it automatically commits
    * when the callback finishes execution. It is still possible to commit
    * within the body of the callback though.
+   *
+   * @param rest - Either a callback only for monolithic or segment and
+   * callback for specific segment.
    */
   public runTransaction(
     ...rest:

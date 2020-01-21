@@ -8,9 +8,9 @@ import {
  * This is similar as `LayeredStorage` except that it is permanently bound to
  * given `LayeredStorage` and can only access a single `Segment`.
  *
- * @typeparam KV - Sets the value types associeated with their keys.
+ * @typeParam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
- * @typeparam Layer - Sets the allowed layers.
+ * @typeParam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export class LayeredStorageSegment<
@@ -113,6 +113,7 @@ export class LayeredStorageSegment<
    * within the body of the callback though.
    *
    * @param callback - This callback will be called with the transaction as
+   * it's sole argument.
    */
   public runTransaction(
     callback: (transaction: LayeredStorageSegmentTransaction<KV, Layer>) => void

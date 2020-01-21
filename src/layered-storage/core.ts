@@ -38,9 +38,9 @@ const emptyCacheValue: EmptyCacheValue = {
  * Internal core to handle simple data storage, mutation and retrieval. Also
  * handles the special monolithic segment.
  *
- * @typeparam KV - Sets the value types associeated with their keys.
+ * @typeParam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
- * @typeparam Layer - Sets the allowed layers.
+ * @typeParam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export class LayeredStorageCore<
@@ -522,7 +522,6 @@ export class LayeredStorageCore<
    * Expand given value.
    *
    * @param key - Which key this value belongs to.
-   * @param value - The value to be expanded.
    *
    * @returns Expanded key value pairs or empty array for invalid input.
    */

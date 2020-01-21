@@ -5,9 +5,9 @@ import { LayeredStorageCore } from "./core";
  * This is used through composition to create monolithic and segmented
  * transactions without massive code duplicities.
  *
- * @typeparam KV - Sets the value types associeated with their keys.
+ * @typeParam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
- * @typeparam Layer - Sets the allowed layers.
+ * @typeParam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 class TransactionCore<KV extends KeyValueLookup, Layer extends LayerRange> {
@@ -22,8 +22,6 @@ class TransactionCore<KV extends KeyValueLookup, Layer extends LayerRange> {
    * Create a new instance of transaction core.
    *
    * @param _storageCore - The core that this instance will save mutations to.
-   * @param _listeners - Listeners that should be notified after a transaction
-   * was commited.
    */
   public constructor(private _storageCore: LayeredStorageCore<KV, Layer>) {}
 
@@ -100,9 +98,9 @@ class TransactionCore<KV extends KeyValueLookup, Layer extends LayerRange> {
 /**
  * A transaction working with the whole storage.
  *
- * @typeparam KV - Sets the value types associeated with their keys.
+ * @typeParam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
- * @typeparam Layer - Sets the allowed layers.
+ * @typeParam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export interface LayeredStorageTransaction<
@@ -171,8 +169,6 @@ export class MonolithicTransaction<
    * Create a new transaction for given storage.
    *
    * @param storageCore - The core that this instance will save mutations to.
-   * @param listeners - Listeners that should be notified after a transaction
-   * was commited.
    */
   public constructor(storageCore: LayeredStorageCore<KV, Layer>) {
     this._monolithic = storageCore.monolithic;
@@ -261,9 +257,9 @@ export interface LayeredStorageSegmentTransaction<
 /**
  * A transaction working with a single segment.
  *
- * @typeparam KV - Sets the value types associeated with their keys.
+ * @typeParam KV - Sets the value types associeated with their keys.
  * (TS only, ignored in JS).
- * @typeparam Layer - Sets the allowed layers.
+ * @typeParam Layer - Sets the allowed layers.
  * (TS only, ignored in JS).
  */
 export class SegmentTransaction<
@@ -276,8 +272,6 @@ export class SegmentTransaction<
    * Create a new transaction for a segment of given storage.
    *
    * @param storageCore - The core that this instance will save mutations to.
-   * @param listeners - Listeners that should be notified after a transaction
-   * was commited.
    * @param _segment - The segment this instance will manage.
    */
   public constructor(
