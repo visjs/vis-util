@@ -1,13 +1,15 @@
 export type KeyRange = number | string | symbol;
-export type KeyValueLookup = Record<KeyRange, any>;
 export type LayerRange = number;
 export type Segment = boolean | number | object | string | symbol;
-export type KeyValueEntry<KV extends KeyValueLookup> = {
-  [Key in keyof KV]: readonly [Key, KV[Key]];
-}[keyof KV];
-export type FilteredKeyValueEntry<
-  KV extends KeyValueLookup,
-  Keys extends keyof KV
+
+export type KeyValueLookup<Keys extends KeyRange> = Record<
+  Keys,
+  boolean | number | object | string | symbol
+>;
+
+export type KeyValueEntry<
+  KV extends object,
+  Key extends keyof KV = keyof KV
 > = {
-  [Key in Keys]: readonly [Key, KV[Key]];
-}[Keys];
+  [Key in keyof KV]: readonly [Key, KV[Key]];
+}[Key];

@@ -1,9 +1,9 @@
 import {
+  KeyRange,
+  KeyValueEntry,
   KeyValueLookup,
   LayerRange,
-  Segment,
-  KeyValueEntry,
-  FilteredKeyValueEntry
+  Segment
 } from "./common";
 
 const entriesByKeyPriority = (
@@ -11,61 +11,60 @@ const entriesByKeyPriority = (
   b: [number, unknown]
 ): number => b[0] - a[0];
 
-type SegmentData<KV extends KeyValueLookup> = Map<keyof KV, KV[keyof KV]>;
-type LayerData<KV extends KeyValueLookup> = Map<Segment, SegmentData<KV>>;
-type Data<KV extends KeyValueLookup, Layer extends LayerRange> = Map<
-  Layer,
-  LayerData<KV>
+type SegmentData<
+  KV extends KeyValueLookup<Keys>,
+  Keys extends KeyRange = keyof KV
+> = TypedMap<KV, Keys>;
+type LayerData<KV extends KeyValueLookup<Keys>, Keys extends KeyRange> = Map<
+  Segment,
+  SegmentData<KV, Keys>
 >;
+type Data<
+  Layer extends LayerRange,
+  KV extends KeyValueLookup<Keys>,
+  Keys extends KeyRange = keyof KV
+> = Map<Layer, LayerData<KV, Keys>>;
 
-interface TypedMap<KV extends KeyValueLookup>
-  extends Map<keyof KV, KV[keyof KV]> {
-  get<Key extends keyof KV>(key: Key): undefined | KV[Key];
-  set<Key extends keyof KV>(key: Key, value: KV[Key]): this;
+interface TypedMap<
+  KV extends Record<Keys, any>,
+  Keys extends KeyRange = keyof KV
+> extends Map<Keys, KV[Keys]> {
+  get<Key extends Keys>(key: Key): undefined | KV[Key];
+  set<Key extends Keys>(key: Key, value: KV[Key]): this;
 }
-
-interface CachedValue<Value> {
-  has: boolean;
-  value: undefined | Value;
-}
-interface EmptyCacheValue {
-  has: false;
-  value: undefined;
-}
-const emptyCacheValue: EmptyCacheValue = {
-  has: false,
-  value: undefined
-};
 
 /**
  * Internal core to handle simple data storage, mutation and retrieval. Also
- * handles the special monolithic segment.
+ * handles the special global segment.
  *
- * @typeParam KV - Sets the value types associeated with their keys.
+ * @typeParam Layer - The allowed layers.
  * (TS only, ignored in JS).
- * @typeParam Layer - Sets the allowed layers.
+ * @typeParam KV - The value types associeated with their keys.
+ * (TS only, ignored in JS).
+ * @typeParam Keys - The allowed keys.
  * (TS only, ignored in JS).
  */
 export class LayeredStorageCore<
-  KV extends KeyValueLookup,
-  Layer extends LayerRange
+  Layer extends LayerRange,
+  KV extends KeyValueLookup<Keys>,
+  Keys extends KeyRange = keyof KV
 > {
   /**
    * This is a special segment that is used as fallback if the requested
    * segment doesn't have a value in given layer.
    */
-  public readonly monolithic = Symbol("Monolithic");
+  public readonly globalSegment = Symbol("Global Segment");
 
   /**
    * Data stored as layer → segment → key → value.
    */
-  private readonly _data: Data<KV, Layer> = new Map();
+  private readonly _data: Data<Layer, KV, Keys> = new Map();
 
   /**
    * An ordered list of layer datas. The highest priority (equals highest
    * number) layer is first.
    */
-  private _layerDatas: LayerData<KV>[] = [];
+  private _layerDatas: LayerData<KV, Keys>[] = [];
 
   /**
    * A set of segments that keeps track what segments have data in the storage.
@@ -77,8 +76,9 @@ export class LayeredStorageCore<
    */
   private readonly _validators: TypedMap<
     {
-      [Key in keyof KV]: ((value: KV[Key]) => true | string)[];
-    }
+      [Key in Keys]: ((value: KV[Key]) => true | string)[];
+    },
+    Keys
   > = new Map();
 
   /**
@@ -86,17 +86,15 @@ export class LayeredStorageCore<
    */
   private readonly _setExpanders: TypedMap<
     {
-      [Key in keyof KV]: (value: KV[Key]) => readonly KeyValueEntry<KV>[];
-    }
+      [Key in Keys]: (value: KV[Key]) => readonly KeyValueEntry<KV, Keys>[];
+    },
+    Keys
   > = new Map();
 
   /**
    * An expander for each key.
    */
-  private readonly _deleteExpanders: Map<
-    keyof KV,
-    readonly (keyof KV)[]
-  > = new Map();
+  private readonly _deleteExpanders: Map<Keys, readonly Keys[]> = new Map();
 
   /**
    * This is called whenever a validity test fails.
@@ -105,7 +103,7 @@ export class LayeredStorageCore<
    * @param value - The invalid value itself.
    * @param message - The message returned by the validator that failed.
    */
-  private _invalidHandler: <Key extends keyof KV>(
+  private _invalidHandler: <Key extends Keys>(
     key: Key,
     value: KV[Key],
     message: string
@@ -115,11 +113,14 @@ export class LayeredStorageCore<
 
   /**
    * This is used to speed up retrieval of data upon request. Thanks to this
-   * quering data from the storage is always just `Map.get().get()` away.
+   * quering data from the storage is almost always just `Map.get().get()` away.
+   *
+   * @remarks
+   * The `null` stands for value that was looked up but is not set.
    */
   private readonly _topLevelCache = new Map<
     Segment,
-    TypedMap<{ [Key in keyof KV]: CachedValue<KV[Key]> }>
+    TypedMap<{ [Key in Keys]: KV[Key] | null }, Keys>
   >();
 
   /**
@@ -128,11 +129,11 @@ export class LayeredStorageCore<
    * @param segment - Which segment to clean.
    * @param key - The key that was subject to the mutation.
    */
-  private _cleanCache(segment: Segment, key: keyof KV): void {
-    if (segment === this.monolithic) {
+  private _cleanCache(segment: Segment, key: Keys): void {
+    if (segment === this.globalSegment) {
       // Run the search for each cached segment to clean the cached top level
-      // value for each of them. The reason for this is that the monolithic
-      // segment affects all other segments.
+      // value for each of them. The reason for this is that the global segment
+      // affects all other segments.
       for (const cache of this._topLevelCache) {
         const sCache = cache[1];
 
@@ -164,76 +165,6 @@ export class LayeredStorageCore<
   }
 
   /**
-   * Find a top level value.
-   *
-   * @param segment - Which segment to look into (monolithic is always used as
-   * fallback on each level).
-   * @param key - The key identifying requested value.
-   *
-   * @returns Whether such value exists (`has`) and the value itself (`value`).
-   */
-  private _findValue<Key extends keyof KV>(
-    segment: Segment,
-    key: Key
-  ): CachedValue<KV[Key]> | EmptyCacheValue {
-    let segmentCache = this._topLevelCache.get(segment);
-    if (typeof segmentCache === "undefined") {
-      segmentCache = new Map();
-      this._topLevelCache.set(segment, segmentCache);
-    }
-
-    // Return cached value if it exists.
-    const cached = segmentCache.get(key);
-    if (typeof cached !== "undefined") {
-      return cached;
-    }
-
-    // Search the layers from highest to lowest priority.
-    for (const layerData of this._layerDatas) {
-      if (typeof layerData === "undefined") {
-        // Empty layer.
-        continue;
-      }
-
-      // Check the segment and quit if found.
-      const segmentData = layerData.get(segment);
-      if (typeof segmentData !== "undefined") {
-        const value = segmentData.get(key);
-        if (typeof value !== "undefined" || segmentData.has(key)) {
-          const cachedValue = { has: true, value };
-
-          // Save to the cache.
-          segmentCache.set(key, cachedValue);
-
-          return cachedValue;
-        }
-      }
-
-      // Check the monolithic and quit if found.
-      const monolithicData = layerData.get(this.monolithic);
-      if (typeof monolithicData !== "undefined") {
-        const value = monolithicData.get(key);
-        if (typeof value !== "undefined" || monolithicData.has(key)) {
-          const cachedValue = { has: true, value };
-
-          // Save to the cache.
-          segmentCache.set(key, cachedValue);
-
-          return cachedValue;
-        }
-      }
-    }
-
-    // If nothing was found by now there are no values for the key.
-
-    // Save to the cache.
-    segmentCache.set(key, emptyCacheValue);
-
-    // Return the empty value.
-    return emptyCacheValue;
-  }
-
-  /**
    * Fetch the key value map for given segment on given layer. Nonexistent
    * layers and segments will be automatically created and the new instances
    * returned.
@@ -246,7 +177,7 @@ export class LayeredStorageCore<
   private _getLSData(
     layer: Layer,
     segment: Segment
-  ): { layerData: LayerData<KV>; segmentData: SegmentData<KV> } {
+  ): { layerData: LayerData<KV, Keys>; segmentData: SegmentData<KV, Keys> } {
     // Get or create the requested layer.
     let layerData = this._data.get(layer);
     if (typeof layerData === "undefined") {
@@ -255,7 +186,7 @@ export class LayeredStorageCore<
 
       this._layerDatas = [...this._data.entries()]
         .sort(entriesByKeyPriority)
-        .map((pair): LayerData<KV> => pair[1]);
+        .map((pair): LayerData<KV, Keys> => pair[1]);
     }
 
     // Get or create the requested segment on the layer.
@@ -273,28 +204,81 @@ export class LayeredStorageCore<
   /**
    * Retrieve a value.
    *
-   * @param segment - Which segment to search through in addition to the monolithic part of the storage.
+   * @param segment - Which segment to search through in addition to the global
+   * segment which is used as the fallback on each level.
    * @param key - The key corresponding to the requested value.
    *
-   * @returns The value or undefined if not found.
+   * @returns The value or undefined if it wasn't found.
    */
-  public get<Key extends keyof KV>(
+  public get<Key extends Keys>(
     segment: Segment,
     key: Key
   ): KV[Key] | undefined {
-    return this._findValue(segment, key).value;
+    let segmentCache = this._topLevelCache.get(segment);
+    if (typeof segmentCache === "undefined") {
+      segmentCache = new Map();
+      this._topLevelCache.set(segment, segmentCache);
+    }
+
+    // Return cached value if it exists.
+    const cached = segmentCache.get(key);
+    if (typeof cached !== "undefined") {
+      // TODO: The non null assertion shouldn't be necessary.
+      return cached === null ? void 0 : cached!;
+    }
+
+    // Search the layers from highest to lowest priority.
+    for (const layerData of this._layerDatas) {
+      if (typeof layerData === "undefined") {
+        // Empty layer.
+        continue;
+      }
+
+      // Check the segment and quit if found.
+      const segmentData = layerData.get(segment);
+      if (typeof segmentData !== "undefined") {
+        const value = segmentData.get(key);
+        if (typeof value !== "undefined") {
+          // Save to the cache.
+          segmentCache.set(key, value);
+
+          return value;
+        }
+      }
+
+      // Check the global segment and quit if found.
+      const globalData = layerData.get(this.globalSegment);
+      if (typeof globalData !== "undefined") {
+        const value = globalData.get(key);
+        if (typeof value !== "undefined") {
+          // Save to the cache.
+          segmentCache.set(key, value);
+
+          return value;
+        }
+      }
+    }
+
+    // If nothing was found by now there are no values for the key.
+
+    // Save to the cache.
+    segmentCache.set(key, null);
+
+    // Return the empty value.
+    return;
   }
 
   /**
    * Check if a value is present.
    *
-   * @param segment - Which segment to search through in addition to the monolithic part of the storage.
+   * @param segment - Which segment to search through in addition to the global
+   * segment which is used as the fallback on each level.
    * @param key - The key corresponding to the requested value.
    *
    * @returns True if found, false otherwise.
    */
-  public has<Key extends keyof KV>(segment: Segment, key: Key): boolean {
-    return this._findValue(segment, key).has;
+  public has<Key extends Keys>(segment: Segment, key: Key): boolean {
+    return typeof this.get(segment, key) !== "undefined";
   }
 
   /**
@@ -305,7 +289,7 @@ export class LayeredStorageCore<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends keyof KV>(
+  public set<Key extends Keys>(
     layer: Layer,
     segment: Segment,
     key: Key,
@@ -346,7 +330,7 @@ export class LayeredStorageCore<
    * @param segment - Which segment to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends keyof KV>(
+  public delete<Key extends Keys>(
     layer: Layer,
     segment: Segment,
     key: Key
@@ -392,7 +376,7 @@ export class LayeredStorageCore<
     for (const layerData of this._data.values()) {
       const sourceSegmentData = layerData.get(sourceSegment);
       if (sourceSegmentData) {
-        const sourceSegmentCopy: SegmentData<KV> = new Map();
+        const sourceSegmentCopy: SegmentData<KV, Keys> = new Map();
         for (const entry of sourceSegmentData.entries()) {
           sourceSegmentCopy.set(entry[0], entry[1]);
         }
@@ -428,7 +412,7 @@ export class LayeredStorageCore<
    * value and a message from the failed validator.
    */
   public setInvalidHandler(
-    handler: <Key extends keyof KV>(
+    handler: <Key extends Keys>(
       key: Key,
       value: KV[Key],
       message: string
@@ -446,7 +430,7 @@ export class LayeredStorageCore<
    * @param replace - If true existing validators will be replaced, if false an
    * error will be thrown if some validators already exist for given key.
    */
-  public setValidators<Key extends keyof KV>(
+  public setValidators<Key extends Keys>(
     key: Key,
     validators: ((value: KV[Key]) => true | string)[],
     replace: boolean
@@ -473,10 +457,10 @@ export class LayeredStorageCore<
    * @param replace - If true existing expander will be replaced, if false an
    * error will be thrown if an expander already exists for given key.
    */
-  public setExpander<Key extends keyof KV, Affects extends keyof KV>(
+  public setExpander<Key extends Keys, Affects extends Keys>(
     key: Key,
     affects: readonly Affects[],
-    expander: (value: KV[Key]) => readonly FilteredKeyValueEntry<KV, Affects>[],
+    expander: (value: KV[Key]) => readonly KeyValueEntry<KV, Affects>[],
     replace: boolean
   ): void {
     if (
@@ -496,12 +480,14 @@ export class LayeredStorageCore<
    * @param key - Which key this value belongs to.
    * @param value - The value to be expanded.
    *
+   * @throws If the value is invalid and the invalid handler throws.
+   *
    * @returns Expanded key value pairs or empty array for invalid input.
    */
-  public expandSet<Key extends keyof KV>(
+  public expandSet<Key extends Keys>(
     key: Key,
     value: KV[Key]
-  ): readonly KeyValueEntry<KV>[] {
+  ): readonly KeyValueEntry<KV, Keys>[] {
     const validators = this._validators.get(key);
     if (validators) {
       for (const validator of validators) {
@@ -535,7 +521,7 @@ export class LayeredStorageCore<
    *
    * @returns Expanded key value pairs or empty array for invalid input.
    */
-  public expandDelete<Key extends keyof KV>(key: Key): readonly (keyof KV)[] {
+  public expandDelete<Key extends Keys>(key: Key): readonly Keys[] {
     return this._deleteExpanders.get(key) || [key];
   }
 

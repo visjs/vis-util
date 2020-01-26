@@ -30,110 +30,110 @@ export function multipleLayers(): void {
     });
 
     it("Set and get", function(): void {
-      const ls = new LayeredStorage<KV, 1 | 2 | 3 | 4>();
+      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
 
-      ls.set(1, "test.value", testValue1);
+      ls.global.set(1, "test.value", testValue1);
       expect(
-        ls.get("test.value"),
+        ls.global.get("test.value"),
         "The first layer should be returned since it's the highest."
       ).to.equal(testValue1);
 
-      ls.set(2, "test.value", testValue2);
+      ls.global.set(2, "test.value", testValue2);
       expect(
-        ls.get("test.value"),
+        ls.global.get("test.value"),
         "The second layer should be returned since it's the highest."
       ).to.equal(testValue2);
 
-      ls.set(4, "test.value", testValue4);
+      ls.global.set(4, "test.value", testValue4);
       expect(
-        ls.get("test.value"),
+        ls.global.get("test.value"),
         "The fourth layer should be returned since it's the highest now."
       ).to.equal(testValue4);
     });
 
     it("Set and has", function(): void {
-      const ls = new LayeredStorage<KV, 1 | 2 | 3 | 4>();
+      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
 
       expect(
-        ls.has("test.value"),
+        ls.global.has("test.value"),
         "There is no value yet so it shouldn't be reported as empty."
       ).to.be.false;
 
-      ls.set(3, "test.value", testValue3);
+      ls.global.set(3, "test.value", testValue3);
       expect(
-        ls.has("test.value"),
+        ls.global.has("test.value"),
         "There is one value so it should be reported as present."
       ).to.be.true;
 
-      ls.set(2, "test.value", testValue2);
+      ls.global.set(2, "test.value", testValue2);
       expect(
-        ls.has("test.value"),
+        ls.global.has("test.value"),
         "There are two value so it should be reported as present."
       ).to.be.true;
     });
 
     it("Set, delete and get", function(): void {
-      const ls = new LayeredStorage<KV, 1 | 2 | 3 | 4>();
+      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
 
       expect(
-        ls.get("test.value"),
+        ls.global.get("test.value"),
         "There is no value yet so it should be undefined."
       ).to.be.undefined;
 
-      ls.set(3, "test.value", testValue3);
+      ls.global.set(3, "test.value", testValue3);
       expect(
-        ls.get("test.value"),
+        ls.global.get("test.value"),
         "Layer three has a value that should be returned."
       ).to.equal(testValue3);
 
-      ls.set(2, "test.value", testValue2);
+      ls.global.set(2, "test.value", testValue2);
       expect(
-        ls.get("test.value"),
+        ls.global.get("test.value"),
         "Layer three has a value that should be returned."
       ).to.equal(testValue3);
 
-      ls.delete(3, "test.value");
+      ls.global.delete(3, "test.value");
       expect(
-        ls.get("test.value"),
+        ls.global.get("test.value"),
         "Layer two has a value that should be returned."
       ).to.equal(testValue2);
 
-      ls.delete(2, "test.value");
+      ls.global.delete(2, "test.value");
       expect(
-        ls.get("test.value"),
+        ls.global.get("test.value"),
         "There isn't any value anymore so it should be undefined."
       ).to.be.undefined;
     });
 
     it("Set, delete and has", function(): void {
-      const ls = new LayeredStorage<KV, 1 | 2 | 3 | 4>();
+      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
 
       expect(
-        ls.has("test.value"),
+        ls.global.has("test.value"),
         "There is no value yet so it should be reported as empty."
       ).to.be.false;
 
-      ls.set(3, "test.value", testValue3);
+      ls.global.set(3, "test.value", testValue3);
       expect(
-        ls.has("test.value"),
+        ls.global.has("test.value"),
         "There is one value so it should be reported as present."
       ).to.be.true;
 
-      ls.set(2, "test.value", testValue2);
+      ls.global.set(2, "test.value", testValue2);
       expect(
-        ls.has("test.value"),
+        ls.global.has("test.value"),
         "There are two value so it should be reported as present."
       ).to.be.true;
 
-      ls.delete(2, "test.value");
+      ls.global.delete(2, "test.value");
       expect(
-        ls.has("test.value"),
+        ls.global.has("test.value"),
         "There is one value so it should be reported as present."
       ).to.be.true;
 
-      ls.delete(3, "test.value");
+      ls.global.delete(3, "test.value");
       expect(
-        ls.has("test.value"),
+        ls.global.has("test.value"),
         "There isn't any value anymore so it should be reported as empty."
       ).to.be.false;
     });

@@ -1,31 +1,34 @@
-import { KeyValueLookup, LayerRange, Segment } from "./common";
-import {
-  LayeredStorage,
-  LayeredStorageSegmentTransaction
-} from "./layered-storage";
+import { KeyValueLookup, LayerRange, Segment, KeyRange } from "./common";
+import { LayeredStorage, LayeredStorageTransaction } from "./layered-storage";
+import { LayeredStorageCore } from "./core";
 
 /**
  * This is similar as `LayeredStorage` except that it is permanently bound to
  * given `LayeredStorage` and can only access a single `Segment`.
  *
- * @typeParam KV - Sets the value types associeated with their keys.
+ * @typeParam Layer - The allowed layers.
  * (TS only, ignored in JS).
- * @typeParam Layer - Sets the allowed layers.
+ * @typeParam KV - The value types associeated with their keys.
+ * (TS only, ignored in JS).
+ * @typeParam Keys - The allowed keys.
  * (TS only, ignored in JS).
  */
 export class LayeredStorageSegment<
-  KV extends KeyValueLookup,
-  Layer extends LayerRange
+  Layer extends LayerRange,
+  KV extends KeyValueLookup<Keys>,
+  Keys extends KeyRange = keyof KV
 > {
   /**
    * Create a new storage instance for given segment.
    *
    * @param _layeredStorage - The storage that this instance will be bound to.
-   * @param _segment - The segment this instance will manage.
+   * @param _core - The core of the Layered Storage instance.
+   * @param segment - The segment this instance will manage.
    */
   public constructor(
-    private _layeredStorage: LayeredStorage<KV, Layer>,
-    private _segment: Segment
+    private readonly _layeredStorage: LayeredStorage<Layer, KV, Keys>,
+    private readonly _core: LayeredStorageCore<Layer, KV, Keys>,
+    public readonly segment: Segment
   ) {}
 
   /**
@@ -35,8 +38,8 @@ export class LayeredStorageSegment<
    *
    * @returns The value or undefined if not found.
    */
-  public get<Key extends keyof KV>(key: Key): KV[Key] | undefined {
-    return this._layeredStorage.get(this._segment, key);
+  public get<Key extends Keys>(key: Key): KV[Key] | undefined {
+    return this._core.get(this.segment, key);
   }
 
   /**
@@ -46,8 +49,8 @@ export class LayeredStorageSegment<
    *
    * @returns True if found, false otherwise.
    */
-  public has<Key extends keyof KV>(key: Key): boolean {
-    return this._layeredStorage.has(this._segment, key);
+  public has<Key extends Keys>(key: Key): boolean {
+    return this._core.has(this.segment, key);
   }
 
   /**
@@ -57,12 +60,10 @@ export class LayeredStorageSegment<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends keyof KV>(
-    layer: Layer,
-    key: Key,
-    value: KV[Key]
-  ): void {
-    this._layeredStorage.set(layer, this._segment, key, value);
+  public set<Key extends Keys>(layer: Layer, key: Key, value: KV[Key]): void {
+    this.runTransaction((transaction): void => {
+      transaction.set(layer, key, value);
+    });
   }
 
   /**
@@ -71,8 +72,10 @@ export class LayeredStorageSegment<
    * @param layer - Which layer to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends keyof KV>(layer: Layer, key: Key): void {
-    this._layeredStorage.delete(layer, this._segment, key);
+  public delete<Key extends Keys>(layer: Layer, key: Key): void {
+    this.runTransaction((transaction): void => {
+      transaction.delete(layer, key);
+    });
   }
 
   /**
@@ -87,8 +90,8 @@ export class LayeredStorageSegment<
    */
   public cloneSegment(
     targetSegment: Segment
-  ): LayeredStorageSegment<KV, Layer> {
-    return this._layeredStorage.cloneSegment(this._segment, targetSegment);
+  ): LayeredStorageSegment<Layer, KV, Keys> {
+    return this._layeredStorage.cloneSegment(this.segment, targetSegment);
   }
 
   /**
@@ -100,8 +103,11 @@ export class LayeredStorageSegment<
    *
    * @returns The new transaction that can be used to set or delete values.
    */
-  public openTransaction(): LayeredStorageSegmentTransaction<KV, Layer> {
-    return this._layeredStorage.openTransaction(this._segment);
+  public openTransaction(): LayeredStorageTransaction<Layer, KV, Keys> {
+    return new LayeredStorageTransaction<Layer, KV, Keys>(
+      this._core,
+      this.segment
+    );
   }
 
   /**
@@ -116,15 +122,21 @@ export class LayeredStorageSegment<
    * it's sole argument.
    */
   public runTransaction(
-    callback: (transaction: LayeredStorageSegmentTransaction<KV, Layer>) => void
+    callback: (transaction: LayeredStorageTransaction<Layer, KV, Keys>) => void
   ): void {
-    this._layeredStorage.runTransaction(this._segment, callback);
+    const transaction = this.openTransaction();
+
+    // If the following throws uncommited changes will get out of scope and will
+    // be discarded and garbage collected.
+    callback(transaction);
+
+    transaction.commit();
   }
 
   /**
    * Delete all data belonging to this segment.
    */
   public close(): void {
-    this._layeredStorage.deleteSegmentData(this._segment);
+    this._layeredStorage.deleteSegmentData(this.segment);
   }
 }

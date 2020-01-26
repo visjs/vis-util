@@ -1,7 +1,4 @@
-import {
-  LayeredStorage,
-  FilteredKeyValueEntry
-} from "../../src/layered-storage";
+import { KeyValueEntry, LayeredStorage } from "../../src/layered-storage";
 import { expect } from "chai";
 
 interface KV {
@@ -12,7 +9,7 @@ interface KV {
 }
 
 /**
- * Test that values can be set and retrieved from single monolithic layer.
+ * Test that values can be set and retrieved from single global layer.
  */
 export function expanders(): void {
   describe("Expanders", function(): void {
@@ -23,7 +20,7 @@ export function expanders(): void {
     ] as const;
     const expander = (
       input: string
-    ): readonly FilteredKeyValueEntry<
+    ): readonly KeyValueEntry<
       KV,
       "test.boolean" | "test.number" | "test.string"
     >[] => {
@@ -39,24 +36,29 @@ export function expanders(): void {
     };
 
     it("Without validation", function(): void {
-      const ls = new LayeredStorage<KV, 0>();
+      const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.setExpander("test", expanderAffects, expander);
 
       const testValue = "false 7 seven";
 
-      ls.set(0, "test", testValue);
+      ls.global.set(0, "test", testValue);
 
-      expect(ls.has("test"), "The raw value should not be saved.").to.be.false;
+      expect(ls.global.has("test"), "The raw value should not be saved.").to.be
+        .false;
 
       expect(
-        [ls.get("test.boolean"), ls.get("test.number"), ls.get("test.string")],
+        [
+          ls.global.get("test.boolean"),
+          ls.global.get("test.number"),
+          ls.global.get("test.string")
+        ],
         "The expanded values from the expander should be returned."
       ).to.deep.equal([false, 7, "seven"]);
     });
 
     it("Invalid short value", function(): void {
-      const ls = new LayeredStorage<KV, 0>();
+      const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.setValidators("test", [
         (value): true | string =>
@@ -68,13 +70,13 @@ export function expanders(): void {
       const testValue = "false7seven";
 
       expect(
-        (): void => void ls.set(0, "test", testValue),
+        (): void => void ls.global.set(0, "test", testValue),
         "Invalid values should not pass validation."
       ).to.throw();
     });
 
     it("Invalid expanded value", function(): void {
-      const ls = new LayeredStorage<KV, 0>();
+      const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.setValidators("test.number", [
         (value): true | string => value < 7 || "Invalid input."
@@ -85,27 +87,35 @@ export function expanders(): void {
       const testValue = "false 7 seven";
 
       expect(
-        (): void => void ls.set(0, "test", testValue),
+        (): void => void ls.global.set(0, "test", testValue),
         "Invalid values should not pass validation."
       ).to.throw();
     });
 
     it("Delete expanded values", function(): void {
-      const ls = new LayeredStorage<KV, 0>();
+      const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.setExpander("test", expanderAffects, expander);
 
       const testValue = "false 7 seven";
 
-      ls.set(0, "test", testValue);
+      ls.global.set(0, "test", testValue);
       expect(
-        [ls.has("test.boolean"), ls.has("test.number"), ls.has("test.string")],
+        [
+          ls.global.has("test.boolean"),
+          ls.global.has("test.number"),
+          ls.global.has("test.string")
+        ],
         "All expanded values should be set."
       ).deep.equal([true, true, true]);
 
-      ls.delete(0, "test");
+      ls.global.delete(0, "test");
       expect(
-        [ls.has("test.boolean"), ls.has("test.number"), ls.has("test.string")],
+        [
+          ls.global.has("test.boolean"),
+          ls.global.has("test.number"),
+          ls.global.has("test.string")
+        ],
         "All expanded values should be deleted."
       ).deep.equal([false, false, false]);
     });

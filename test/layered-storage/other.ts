@@ -7,7 +7,9 @@ type KV = Record<string, number>;
  * Other tests that don't fit elsewhere.
  */
 export function other(): void {
-  const getStructCount = (ls: LayeredStorage<KV, 1 | 4 | 9>): number =>
+  const getStructCount = (
+    ls: LayeredStorage<1 | 4 | 9, KV, keyof KV>
+  ): number =>
     [
       // Ignore private property access errors. It's no big deal since this
       // is a unit test.
@@ -23,21 +25,21 @@ export function other(): void {
       );
     }, 0);
 
-  const getCacheSize = (ls: LayeredStorage<KV, 1 | 4 | 9>): number =>
+  const getCacheSize = (ls: LayeredStorage<1 | 4 | 9, KV, keyof KV>): number =>
     // Ignore private property access errors. It's no big deal since this
     // is a unit test.
     // @ts-ignore
     ls._core._topLevelCache.size;
 
   it("Empty data structure purging", function(): void {
-    const ls = new LayeredStorage<KV, 1 | 4 | 9>();
+    const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
 
     ([1, 4, 9] as const).forEach((layer): void => {
-      ls.set(layer, "test.value1", 1);
-      ls.set(layer, "test.value2", 2);
+      ls.global.set(layer, "test.value1", 1);
+      ls.global.set(layer, "test.value2", 2);
       ["a", "b", "c"].forEach((segment): void => {
-        ls.set(layer, segment, "test.value1", 1);
-        ls.set(layer, segment, "test.value2", 2);
+        ls.openSegment(segment).set(layer, "test.value1", 1);
+        ls.openSegment(segment).set(layer, "test.value2", 2);
       });
     });
 
@@ -48,9 +50,9 @@ export function other(): void {
     );
 
     ([1, 4, 9] as const).forEach((layer): void => {
-      ls.delete(layer, "test.value1");
+      ls.global.delete(layer, "test.value1");
       ["a", "b", "c"].forEach((segment): void => {
-        ls.delete(layer, segment, "test.value1");
+        ls.openSegment(segment).delete(layer, "test.value1");
       });
     });
 
@@ -61,9 +63,9 @@ export function other(): void {
     );
 
     ([1, 4, 9] as const).forEach((layer): void => {
-      ls.delete(layer, "test.value2");
+      ls.global.delete(layer, "test.value2");
       ["b"].forEach((segment): void => {
-        ls.delete(layer, segment, "test.value2");
+        ls.openSegment(segment).delete(layer, "test.value2");
       });
     });
 
@@ -75,7 +77,7 @@ export function other(): void {
 
     ([1, 4, 9] as const).forEach((layer): void => {
       ["a", "c"].forEach((segment): void => {
-        ls.delete(layer, segment, "test.value2");
+        ls.openSegment(segment).delete(layer, "test.value2");
       });
     });
 
@@ -85,52 +87,63 @@ export function other(): void {
   });
 
   it("Cache purging", function(): void {
-    const ls = new LayeredStorage<KV, 1>();
+    const ls = new LayeredStorage<1, KV, keyof KV>();
 
     expect(getCacheSize(ls)).to.equal(0);
 
-    ls.set(1, "test.value1", 7);
-    ls.set(1, "a", "test.value1", 7);
-    ls.set(1, "b", "test.value1", 7);
-    ls.set(1, "c", "test.value1", 7);
+    ls.global.set(1, "test.value1", 7);
+    ls.openSegment("a").set(1, "test.value1", 7);
+    ls.openSegment("b").set(1, "test.value1", 7);
+    ls.openSegment("c").set(1, "test.value1", 7);
 
     expect(getCacheSize(ls)).to.equal(0);
 
-    ls.get("test.value1");
-    ls.get("a", "test.value1");
-    ls.get("b", "test.value1");
-    ls.get("c", "test.value1");
-    ls.get("test.value2");
-    ls.get("a", "test.value2");
-    ls.get("b", "test.value2");
-    ls.get("c", "test.value2");
+    ls.global.get("test.value1");
+    ls.openSegment("a").get("test.value1");
+    ls.openSegment("b").get("test.value1");
+    ls.openSegment("c").get("test.value1");
+    ls.global.get("test.value2");
+    ls.openSegment("a").get("test.value2");
+    ls.openSegment("b").get("test.value2");
+    ls.openSegment("c").get("test.value2");
 
     expect(getCacheSize(ls)).to.equal(4);
 
-    ls.set(1, "test.value1", 7);
-    ls.set(1, "a", "test.value1", 7);
-    ls.set(1, "b", "test.value1", 7);
-    ls.set(1, "c", "test.value1", 7);
+    ls.global.set(1, "test.value1", 7);
+    ls.openSegment("a").set(1, "test.value1", 7);
+    ls.openSegment("b").set(1, "test.value1", 7);
+    ls.openSegment("c").set(1, "test.value1", 7);
 
     expect(getCacheSize(ls)).to.equal(4);
 
-    ls.set(1, "test.value2", 7);
+    ls.global.set(1, "test.value2", 7);
 
     expect(getCacheSize(ls)).to.equal(0);
   });
 
   it("Empty data structure creation", function(): void {
-    const ls = new LayeredStorage<KV, 1 | 4 | 9>();
+    const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
 
-    ls.set(4, "c", "test.value1", 1);
+    ls.openSegment("c").set(4, "test.value1", 1);
 
-    ls.get("test.value1");
-    ls.get("b", "test.value1");
-    ls.has("test.value2");
-    ls.has("a", "test.value2");
+    ls.global.get("test.value1");
+    ls.openSegment("b").get("test.value1");
+    ls.global.has("test.value2");
+    ls.openSegment("a").has("test.value2");
 
     expect(getStructCount(ls)).to.equal(
       3 // 1 layer, 1 segment, 1 value
     );
+  });
+
+  it("Segment storage reports it's segment", function(): void {
+    const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
+
+    expect(
+      ls.openSegment("$"),
+      "Each segment should exposes a property with the name of the segment."
+    )
+      .have.ownProperty("segment")
+      .that.equals("$");
   });
 }

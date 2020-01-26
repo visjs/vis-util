@@ -1,248 +1,43 @@
 import {
+  KeyRange,
   KeyValueLookup,
   LayerRange,
   Segment,
-  FilteredKeyValueEntry
+  KeyValueEntry
 } from "./common";
 import { LayeredStorageCore } from "./core";
 import { LayeredStorageSegment } from "./segment";
-import {
-  LayeredStorageSegmentTransaction,
-  LayeredStorageTransaction,
-  MonolithicTransaction,
-  SegmentTransaction
-} from "./transactions";
+import { LayeredStorageTransaction } from "./transactions";
 
-export {
-  LayeredStorageSegmentTransaction,
-  LayeredStorageTransaction,
-  MonolithicTransaction,
-  SegmentTransaction
-};
+export { LayeredStorageTransaction };
 
 /**
  * Stores data in layers and optionally segments.
  *
  * @remarks
- * - Higher layers override lowerlayers.
+ * - Higher layers override lower layers.
  * - Each layer can be segmented using arbitrary values.
- * - Segmented value overrides monolithic (nonsegmented) value.
+ * - Segmented value overrides global (nonsegmented) value.
  *
- * @typeParam KV - Sets the value types associeated with their keys.
+ * @typeParam Layer - The allowed layers.
  * (TS only, ignored in JS).
- * @typeParam Layer - Sets the allowed layers.
+ * @typeParam KV - The value types associeated with their keys.
+ * (TS only, ignored in JS).
+ * @typeParam Keys - The allowed keys.
  * (TS only, ignored in JS).
  */
 export class LayeredStorage<
-  KV extends KeyValueLookup,
-  Layer extends LayerRange
+  Layer extends LayerRange,
+  KV extends KeyValueLookup<Keys>,
+  Keys extends KeyRange = keyof KV
 > {
-  private _core = new LayeredStorageCore<KV, Layer>();
+  private readonly _core = new LayeredStorageCore<Layer, KV, Keys>();
 
-  /**
-   * @param segment - Which segment to search through in addition to the monolithic part of the storage.
-   * @param key - The key corresponding to the requested value.
-   */
-  public get<Key extends keyof KV>(
-    segment: Segment,
-    key: Key
-  ): KV[Key] | undefined;
-  /**
-   * @param key - The key corresponding to the requested value.
-   */
-  public get<Key extends keyof KV>(key: Key): KV[Key] | undefined;
-  /**
-   * Retrieve a value.
-   *
-   * @param rest - Either a key only for monolithic or segment and key for
-   * specific segment.
-   *
-   * @returns The value or undefined if not found.
-   */
-  public get<Key extends keyof KV>(
-    ...rest: [Key] | [Segment, Key]
-  ): KV[Key] | undefined {
-    return rest.length === 1
-      ? this._core.get(this._core.monolithic, rest[0])
-      : this._core.get(rest[0], rest[1]);
-  }
-
-  /**
-   * @param segment - Which segment to search through in addition to the monolithic part of the storage.
-   * @param key - The key corresponding to the requested value.
-   */
-  public has<Key extends keyof KV>(segment: Segment, key: Key): boolean;
-  /**
-   * @param key - The key corresponding to the requested value.
-   */
-  public has<Key extends keyof KV>(key: Key): boolean;
-  /**
-   * Check if a value is present.
-   *
-   * @param rest - Either a key only for monolithic or segment and key for
-   * specific segment.
-   *
-   * @returns True if found, false otherwise.
-   */
-  public has(...rest: [keyof KV] | [Segment, keyof KV]): boolean {
-    return rest.length === 1
-      ? this._core.has(this._core.monolithic, rest[0])
-      : this._core.has(rest[0], rest[1]);
-  }
-
-  /**
-   * @param layer - Which layer to save the value into.
-   * @param segment - Which segment to save the value into.
-   * @param key - Key that can be used to retrieve or overwrite this value later.
-   * @param value - The value to be saved.
-   */
-  public set<Key extends keyof KV>(
-    layer: Layer,
-    segment: Segment,
-    key: Key,
-    value: KV[Key]
-  ): void;
-  /**
-   * @param layer - Which layer to save the value into.
-   * @param key - Key that can be used to retrieve or overwrite this value later.
-   * @param value - The value to be saved.
-   */
-  public set<Key extends keyof KV>(
-    layer: Layer,
-    key: Key,
-    value: KV[Key]
-  ): void;
-  /**
-   * Save a value.
-   *
-   * @param rest - Either layer, key and value only for monolithic or with
-   * segment for specific segment.
-   */
-  public set<Key extends keyof KV>(
-    ...rest: [Layer, Segment, Key, KV[Key]] | [Layer, Key, KV[Key]]
-  ): void {
-    this.runTransaction(
-      (transaction): void =>
-        void (rest.length === 3
-          ? transaction.set(rest[0], rest[1], rest[2])
-          : transaction.set(rest[0], rest[1], rest[2], rest[3]))
-    );
-  }
-
-  /**
-   * @param layer - Which layer to delete from.
-   * @param segment - Which segment to delete from.
-   * @param key - The key that identifies the value to be deleted.
-   */
-  public delete<Key extends keyof KV>(
-    layer: Layer,
-    segment: Segment,
-    key: Key
-  ): KV[Key];
-  /**
-   * @param layer - Which layer to delete from.
-   * @param key - The key that identifies the value to be deleted.
-   */
-  public delete<Key extends keyof KV>(layer: Layer, key: Key): KV[Key];
-  /**
-   * Delete a value from the storage.
-   *
-   * @param rest - Either a key only for monolithic or segment and key for
-   * specific segment.
-   */
-  public delete<Key extends keyof KV>(
-    ...rest: [Layer, Segment, Key] | [Layer, Key]
-  ): void {
-    this.runTransaction(
-      (transaction): void =>
-        void (rest.length === 2
-          ? transaction.delete(rest[0], rest[1])
-          : transaction.delete(rest[0], rest[1], rest[2]))
-    );
-  }
-
-  public openTransaction(
-    segment: Segment
-  ): LayeredStorageSegmentTransaction<KV, Layer>;
-  public openTransaction(): LayeredStorageTransaction<KV, Layer>;
-  /**
-   * Open a new transaction.
-   *
-   * @remarks
-   * The transaction accumulates changes but doesn't change the content of the
-   * storage until commit is called.
-   *
-   * @param segment - If segment is passed the transaction will be locked to
-   * given segment. Otherwise the monolithic portion and all the segments will
-   * be accessible.
-   *
-   * @returns The new transaction that can be used to set or delete values.
-   */
-  public openTransaction(
-    segment?: Segment
-  ):
-    | LayeredStorageSegmentTransaction<KV, Layer>
-    | LayeredStorageTransaction<KV, Layer> {
-    return segment == null
-      ? new MonolithicTransaction<KV, Layer>(this._core)
-      : new SegmentTransaction<KV, Layer>(this._core, segment);
-  }
-
-  /**
-   * @param segment - The segment that this transaction will be limited to.
-   * @param callback - This callback will be called with the transaction as
-   * it's sole parameter.
-   */
-  public runTransaction(
-    segment: Segment,
-    callback: (transaction: LayeredStorageSegmentTransaction<KV, Layer>) => void
-  ): void;
-  /**
-   * @param callback - This callback will be called with the transaction as
-   * it's sole parameter.
-   */
-  public runTransaction(
-    callback: (transaction: LayeredStorageTransaction<KV, Layer>) => void
-  ): void;
-  /**
-   * Run a new transaction.
-   *
-   * @remarks
-   * This is the same as `openTransaction` except that it automatically commits
-   * when the callback finishes execution. It is still possible to commit
-   * within the body of the callback though.
-   *
-   * @param rest - Either a callback only for monolithic or segment and
-   * callback for specific segment.
-   */
-  public runTransaction(
-    ...rest:
-      | [
-          Segment,
-          (transaction: LayeredStorageSegmentTransaction<KV, Layer>) => void
-        ]
-      | [(transaction: LayeredStorageTransaction<KV, Layer>) => void]
-  ): void {
-    if (rest.length === 1) {
-      const callback = rest[0];
-
-      const transaction = this.openTransaction();
-
-      // If the following throws uncommited changes will be discarded.
-      callback(transaction);
-
-      transaction.commit();
-    } else {
-      const [segment, callback] = rest;
-
-      const transaction = this.openTransaction(segment);
-
-      // If the following throws uncommited changes will be discarded.
-      callback(transaction);
-
-      transaction.commit();
-    }
-  }
+  public readonly global = new LayeredStorageSegment<Layer, KV, Keys>(
+    this,
+    this._core,
+    this._core.globalSegment
+  );
 
   /**
    * Create a new segmented instance for working with a single segment.
@@ -251,8 +46,8 @@ export class LayeredStorage<
    *
    * @returns A new segmented instance permanently bound to this instance.
    */
-  public openSegment(segment: Segment): LayeredStorageSegment<KV, Layer> {
-    return new LayeredStorageSegment(this, segment);
+  public openSegment(segment: Segment): LayeredStorageSegment<Layer, KV, Keys> {
+    return new LayeredStorageSegment(this, this._core, segment);
   }
 
   /**
@@ -269,9 +64,9 @@ export class LayeredStorage<
   public cloneSegment(
     sourceSegment: Segment,
     targetSegment: Segment
-  ): LayeredStorageSegment<KV, Layer> {
+  ): LayeredStorageSegment<Layer, KV, Keys> {
     this._core.cloneSegmentData(sourceSegment, targetSegment);
-    return new LayeredStorageSegment(this, targetSegment);
+    return new LayeredStorageSegment(this, this._core, targetSegment);
   }
 
   /**
@@ -290,7 +85,7 @@ export class LayeredStorage<
    * value and a message from the failed validator.
    */
   public setInvalidHandler(
-    handler: <Key extends keyof KV>(
+    handler: <Key extends Keys>(
       key: Key,
       value: KV[Key],
       message: string
@@ -308,7 +103,7 @@ export class LayeredStorage<
    * @param replace - If true existing validators will be replaced, if false an
    * error will be thrown if some validators already exist for given key.
    */
-  public setValidators<Key extends keyof KV>(
+  public setValidators<Key extends Keys>(
     key: Key,
     validators: ((value: KV[Key]) => true | string)[],
     replace = false
@@ -327,10 +122,10 @@ export class LayeredStorage<
    * @param replace - If true existing expander will be relaced, if false an
    * error will be thrown if an expander already exists for given key.
    */
-  public setExpander<Key extends keyof KV, Affects extends keyof KV>(
+  public setExpander<Key extends Keys, Affects extends Keys>(
     key: Key,
     affects: readonly Affects[],
-    expander: (value: KV[Key]) => readonly FilteredKeyValueEntry<KV, Affects>[],
+    expander: (value: KV[Key]) => readonly KeyValueEntry<KV, Affects>[],
     replace = false
   ): void {
     this._core.setExpander(key, affects, expander, replace);

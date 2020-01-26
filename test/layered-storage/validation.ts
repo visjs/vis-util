@@ -3,15 +3,15 @@ import { expect } from "chai";
 
 interface KV {
   "test.boolean": boolean;
-  "test.fail": unknown;
+  "test.fail": any;
   "test.integer": number;
   "test.number": number;
-  "test.pass": unknown;
+  "test.pass": any;
   "test.string": string;
 }
 
 /**
- * Test that values can be set and retrieved from single monolithic layer.
+ * Test that values can be set and retrieved from single global layer.
  */
 export function validation(): void {
   describe("Validation", function(): void {
@@ -44,7 +44,7 @@ export function validation(): void {
           [true, "test.string", "test"] as const
         ].forEach(([valid, key, value]): void => {
           it(`${key}: ${value}`, function(): void {
-            const ls = new LayeredStorage<KV, 0>();
+            const ls = new LayeredStorage<0, KV, keyof KV>();
 
             // Add handler.
             if (handler != null) {
@@ -79,27 +79,27 @@ export function validation(): void {
 
             if (valid) {
               expect((): void => {
-                ls.set(0, key, value);
+                ls.global.set(0, key, value);
               }, "No error should be thrown for valid values.").to.not.throw();
               expect(
-                ls.get(key),
+                ls.global.get(key),
                 "Valid values should be saved in the storage."
               ).to.equal(value);
             } else {
               if (throws != null) {
                 expect((): void => {
-                  ls.set(0, key, value);
+                  ls.global.set(0, key, value);
                 }, "If the handler throws the set should throw too.").to.throw(
                   TypeError,
                   `${key}: ${value} (it's not valid)`
                 );
               } else {
                 expect((): void => {
-                  ls.set(0, key, value);
+                  ls.global.set(0, key, value);
                 }, "If the handler doesn't throw neither should the set.").to.not.throw();
               }
               expect(
-                ls.has(key),
+                ls.global.has(key),
                 "Invalid values should not be saved in the storage."
               ).to.be.false;
             }
@@ -109,7 +109,7 @@ export function validation(): void {
     });
 
     it("Setting validators twice", function(): void {
-      const ls = new LayeredStorage<KV, 0>();
+      const ls = new LayeredStorage<0, KV, keyof KV>();
 
       expect((): void => {
         ls.setValidators("test.fail", [
