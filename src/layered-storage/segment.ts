@@ -1,6 +1,6 @@
 import { KeyValueLookup, LayerRange, Segment, KeyRange } from "./common";
-import { LayeredStorage, LayeredStorageTransaction } from "./layered-storage";
 import { LayeredStorageCore } from "./core";
+import { LayeredStorageTransaction } from "./transactions";
 
 /**
  * This is similar as `LayeredStorage` except that it is permanently bound to
@@ -21,12 +21,10 @@ export class LayeredStorageSegment<
   /**
    * Create a new storage instance for given segment.
    *
-   * @param _layeredStorage - The storage that this instance will be bound to.
    * @param _core - The core of the Layered Storage instance.
    * @param segment - The segment this instance will manage.
    */
   public constructor(
-    private readonly _layeredStorage: LayeredStorage<Layer, KV, Keys>,
     private readonly _core: LayeredStorageCore<Layer, KV, Keys>,
     public readonly segment: Segment
   ) {}
@@ -91,7 +89,8 @@ export class LayeredStorageSegment<
   public cloneSegment(
     targetSegment: Segment
   ): LayeredStorageSegment<Layer, KV, Keys> {
-    return this._layeredStorage.cloneSegment(this.segment, targetSegment);
+    this._core.cloneSegmentData(this.segment, targetSegment);
+    return new LayeredStorageSegment(this._core, targetSegment);
   }
 
   /**
@@ -137,6 +136,6 @@ export class LayeredStorageSegment<
    * Delete all data belonging to this segment.
    */
   public close(): void {
-    this._layeredStorage.deleteSegmentData(this.segment);
+    this._core.deleteSegmentData(this.segment);
   }
 }

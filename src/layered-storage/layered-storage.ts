@@ -34,7 +34,6 @@ export class LayeredStorage<
   private readonly _core = new LayeredStorageCore<Layer, KV, Keys>();
 
   public readonly global = new LayeredStorageSegment<Layer, KV, Keys>(
-    this,
     this._core,
     this._core.globalSegment
   );
@@ -47,7 +46,7 @@ export class LayeredStorage<
    * @returns A new segmented instance permanently bound to this instance.
    */
   public openSegment(segment: Segment): LayeredStorageSegment<Layer, KV, Keys> {
-    return new LayeredStorageSegment(this, this._core, segment);
+    return new LayeredStorageSegment(this._core, segment);
   }
 
   /**
@@ -66,7 +65,7 @@ export class LayeredStorage<
     targetSegment: Segment
   ): LayeredStorageSegment<Layer, KV, Keys> {
     this._core.cloneSegmentData(sourceSegment, targetSegment);
-    return new LayeredStorageSegment(this, this._core, targetSegment);
+    return new LayeredStorageSegment(this._core, targetSegment);
   }
 
   /**
