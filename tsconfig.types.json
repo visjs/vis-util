@@ -1,8 +1,8 @@
 {
-    "extends": "./tsconfig",
-    "compilerOptions": {
-        "declarationDir": "types",
-        "emitDeclarationOnly": true
-    },
-    "exclude": ["test"]
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "declarationDir": "declarations",
+    "emitDeclarationOnly": true
+  },
+  "exclude": ["test"]
 }

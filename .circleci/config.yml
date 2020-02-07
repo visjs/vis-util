@@ -49,11 +49,10 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - 'esm'
-            - 'index.d.ts'
-            - 'index.js'
-            - 'types'
-            - 'umd'
+            - 'declarations'
+            - 'esnext'
+            - 'peer'
+            - 'standalone'
 
   lint:
     executor: node
