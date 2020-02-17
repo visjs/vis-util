@@ -109,7 +109,7 @@
     "eslint-plugin-jsdoc": "21.0.0",
     "eslint-plugin-prettier": "3.1.2",
     "eslint-plugin-tsdoc": "0.2.1",
-    "git-authors-cli": "1.0.20",
+    "git-authors-cli": "1.0.21",
     "husky": "4.2.3",
     "jsdom": "16.1.0",
     "jsdom-global": "3.0.2",
