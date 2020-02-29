@@ -138,7 +138,7 @@
     "snap-shot-it": "7.9.2",
     "stryker-cli": "1.0.0",
     "typedoc": "0.16.11",
-    "typescript": "3.8.2",
+    "typescript": "3.8.3",
     "vis-dev-utils": "2.2.3"
   }
 }
