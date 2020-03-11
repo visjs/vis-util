@@ -135,7 +135,7 @@
     "rollup-plugin-typescript2": "0.26.0",
     "semantic-release": "17.0.4",
     "sinon": "9.0.1",
-    "snap-shot-it": "7.9.2",
+    "snap-shot-it": "7.9.3",
     "stryker-cli": "1.0.0",
     "typedoc": "0.16.11",
     "typescript": "3.8.3",
