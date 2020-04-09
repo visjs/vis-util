@@ -117,7 +117,7 @@
     "eslint-plugin-prettier": "3.1.2",
     "eslint-plugin-tsdoc": "0.2.4",
     "git-authors-cli": "1.0.24",
-    "husky": "4.2.3",
+    "husky": "4.2.4",
     "jsdom": "16.2.2",
     "jsdom-global": "3.0.2",
     "lint-staged": "10.1.2",
