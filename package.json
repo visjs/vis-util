@@ -113,7 +113,7 @@
     "core-js": "3.6.5",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.10.1",
-    "eslint-plugin-jsdoc": "22.1.0",
+    "eslint-plugin-jsdoc": "23.0.0",
     "eslint-plugin-prettier": "3.1.2",
     "eslint-plugin-tsdoc": "0.2.4",
     "git-authors-cli": "1.0.24",
