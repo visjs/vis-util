@@ -137,7 +137,7 @@
     "sinon": "9.0.2",
     "snap-shot-it": "7.9.3",
     "stryker-cli": "1.0.0",
-    "typedoc": "0.17.5",
+    "typedoc": "0.17.6",
     "typescript": "3.8.3",
     "vis-dev-utils": "2.2.6"
   }
