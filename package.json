@@ -31,7 +31,7 @@
     "build:code": "rollup -c rollup.build.js",
     "build:docs": "typedoc ./src",
     "build:types": "tsc -p tsconfig.types.json",
-    "clean": "rimraf '{coverage,docs,esm,reports,types,umd}' 'index.{d.ts,js}'",
+    "clean": "rimraf '{coverage,declarations,docs,esnext,peer,reports,standalone}' 'index.{d.ts,js}'",
     "lint": "eslint '{src,test}/**/*.{m,}{j,t}s{x,}'",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
