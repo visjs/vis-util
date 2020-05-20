@@ -115,7 +115,7 @@ export type Mashable = number | string | boolean | object | bigint;
 function Mash(): (data: Mashable) => number {
   let n = 0xefc8249d;
 
-  return function(data): number {
+  return function (data): number {
     const string = data.toString();
     for (let i = 0; i < string.length; i++) {
       n += string.charCodeAt(i);

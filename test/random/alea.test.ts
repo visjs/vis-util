@@ -9,7 +9,7 @@ import { Alea, RNG } from "../../src/random";
 // should remove this comment block once it becomes a standard and ESLint adds
 // it into it's list of builtin globals.
 
-describe("Alea", function(): void {
+describe("Alea", function (): void {
   this.timeout(60000);
 
   const count = 100;
@@ -17,15 +17,15 @@ describe("Alea", function(): void {
   for (const { name, get } of [
     { name: "rng()", get: (rng: RNG): number => rng() },
     { name: "rng.fract53()", get: (rng: RNG): number => rng.fract53() },
-    { name: "rng.uint32()", get: (rng: RNG): number => rng.uint32() }
+    { name: "rng.uint32()", get: (rng: RNG): number => rng.uint32() },
   ]) {
-    describe(name, function(): void {
+    describe(name, function (): void {
       for (const seed of [
         [
           "I'm an alligator",
           " I'm a mama-papa coming for you",
           " I'm the space invader",
-          " I'll be a rock 'n' rollin' bitch for you."
+          " I'll be a rock 'n' rollin' bitch for you.",
         ],
         +new Date("2020-01-01"),
         false,
@@ -37,9 +37,9 @@ describe("Alea", function(): void {
         0.1244942,
         77,
         0,
-        "We can be zeros, just for one day"
+        "We can be zeros, just for one day",
       ]) {
-        it(`Seed: ${seed.toString()}`, function(): void {
+        it(`Seed: ${seed.toString()}`, function (): void {
           const alea = Alea(seed);
 
           const values = Array(count);

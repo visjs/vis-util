@@ -2,7 +2,7 @@ import { assert, spy } from "sinon";
 
 import { throttle } from "../src";
 
-describe("throttle", function(): void {
+describe("throttle", function (): void {
   const queue: ((str: string) => void)[] = [];
   const fire = (): void => {
     queue.splice(0).forEach((fn): void => {
@@ -17,7 +17,7 @@ describe("throttle", function(): void {
     delete (global as any).requestAnimationFrame;
   });
 
-  it("called on animation frame", function(): void {
+  it("called on animation frame", function (): void {
     const throttleSpy = spy();
     const throttled = throttle(throttleSpy);
 
@@ -29,7 +29,7 @@ describe("throttle", function(): void {
     assert.alwaysCalledWith(throttleSpy);
   });
 
-  it("called only once", function(): void {
+  it("called only once", function (): void {
     const throttleSpy = spy();
     const throttled = throttle(throttleSpy);
 
@@ -44,7 +44,7 @@ describe("throttle", function(): void {
     assert.alwaysCalledWith(throttleSpy);
   });
 
-  it("called once on each animation frame", function(): void {
+  it("called once on each animation frame", function (): void {
     const throttleSpy = spy();
     const throttled = throttle(throttleSpy);
 
@@ -73,7 +73,7 @@ describe("throttle", function(): void {
     assert.alwaysCalledWith(throttleSpy);
   });
 
-  it("called only if requested before the animation frame", function(): void {
+  it("called only if requested before the animation frame", function (): void {
     const throttleSpy = spy();
     const throttled = throttle(throttleSpy);
 

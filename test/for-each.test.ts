@@ -2,8 +2,8 @@ import { assert, spy } from "sinon";
 
 import { forEach } from "../src";
 
-describe("forEach", function(): void {
-  it("Array", function(): void {
+describe("forEach", function (): void {
+  it("Array", function (): void {
     const forEachSpy = spy();
     const array = [-1, 0, 1];
 
@@ -15,10 +15,10 @@ describe("forEach", function(): void {
     assert.callCount(forEachSpy, 3);
   });
 
-  it("Object", function(): void {
+  it("Object", function (): void {
     const forEachSpy = spy();
     const objectProto = {
-      ignore: "me"
+      ignore: "me",
     };
     const object = Object.create(objectProto);
     object.a = -1;

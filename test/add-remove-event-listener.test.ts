@@ -3,10 +3,10 @@ import { deepFreeze } from "./helpers";
 
 import { addEventListener, removeEventListener } from "../src";
 
-describe("*EventListener", function(): void {
+describe("*EventListener", function (): void {
   beforeEach((): void => {
     (global as any).navigator = {
-      userAgent: "ECMAScript compliant browser"
+      userAgent: "ECMAScript compliant browser",
     };
   });
   afterEach((): void => {
@@ -18,20 +18,20 @@ describe("*EventListener", function(): void {
     {
       method: "addEventListener" as const,
       methodIE: "attachEvent" as const,
-      fn: addEventListener
+      fn: addEventListener,
     },
     {
       method: "removeEventListener" as const,
       methodIE: "detachEvent" as const,
-      fn: removeEventListener as typeof addEventListener
-    }
+      fn: removeEventListener as typeof addEventListener,
+    },
   ].forEach(({ method, methodIE, fn }): void => {
-    describe(method, function(): void {
-      describe("standard compliant", function(): void {
-        it("without use capture", function(): void {
+    describe(method, function (): void {
+      describe("standard compliant", function (): void {
+        it("without use capture", function (): void {
           const elem = {
             [method]: spy(),
-            [methodIE]: spy()
+            [methodIE]: spy(),
           };
 
           fn((elem as unknown) as HTMLDivElement, "click", eventListener);
@@ -42,10 +42,10 @@ describe("*EventListener", function(): void {
           assert.calledWithExactly(elem[method], "click", eventListener, false);
         });
 
-        it("with use capture", function(): void {
+        it("with use capture", function (): void {
           const elem = {
             [method]: spy(),
-            [methodIE]: spy()
+            [methodIE]: spy(),
           };
 
           fn(
@@ -67,20 +67,20 @@ describe("*EventListener", function(): void {
         });
       });
 
-      describe("Firefox", function(): void {
+      describe("Firefox", function (): void {
         beforeEach((): void => {
           (global as any).navigator = {
-            userAgent: "Firefox"
+            userAgent: "Firefox",
           };
         });
         afterEach((): void => {
           delete (global as any).navigator;
         });
 
-        it("mousewheel event", function(): void {
+        it("mousewheel event", function (): void {
           const elem = {
             [method]: spy(),
-            [methodIE]: spy()
+            [methodIE]: spy(),
           };
 
           fn(
@@ -102,9 +102,9 @@ describe("*EventListener", function(): void {
         });
       });
 
-      it("IE", function(): void {
+      it("IE", function (): void {
         const elem = {
-          [methodIE]: spy()
+          [methodIE]: spy(),
         };
 
         fn((elem as unknown) as HTMLDivElement, "click", eventListener, true);

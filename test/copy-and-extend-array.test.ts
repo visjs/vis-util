@@ -2,8 +2,8 @@ import { expect } from "chai";
 
 import { copyAndExtendArray } from "../src";
 
-describe("copyAndExtendArray", function(): void {
-  it("number[]", function(): void {
+describe("copyAndExtendArray", function (): void {
+  it("number[]", function (): void {
     const original = Object.freeze([-77, 14, 78]);
     const addition = Object.freeze(0);
     const copied = copyAndExtendArray(original, addition);
@@ -17,10 +17,10 @@ describe("copyAndExtendArray", function(): void {
     ).to.deep.equal([-77, 14, 78, 0]);
   });
 
-  it("object[]", function(): void {
+  it("object[]", function (): void {
     const original = Object.freeze([
       Object.freeze({ hi: ":-)" }),
-      Object.freeze({ bye: ":-(" })
+      Object.freeze({ bye: ":-(" }),
     ]);
     const addition = Object.freeze({ hello: "☺" });
     const copied = copyAndExtendArray(original, addition);

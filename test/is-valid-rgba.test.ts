@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { isValidRGBA } from "../src";
 
-describe("isValidRGBA", function(): void {
+describe("isValidRGBA", function (): void {
   const valid = [
     "RGBA(7, 200, 8, .7)",
     "RGBA(7, 200, 8, 0.7)",
@@ -12,7 +12,7 @@ describe("isValidRGBA", function(): void {
     "rGba(210, 50,220, 0.42)",
     "rgBa(210,50, 220,0.37)",
     "rgbA( 72 , 11 , 123 , 0.21 )",
-    "rgba(0,0,0,0)"
+    "rgba(0,0,0,0)",
   ];
   const invalid = [
     " ",
@@ -45,20 +45,20 @@ describe("isValidRGBA", function(): void {
     "rgba(7, 8, 9)",
     "rgba(7,8,9)",
     "the color is #00AAAA",
-    "true"
+    "true",
   ];
 
-  describe("Valid", function(): void {
+  describe("Valid", function (): void {
     valid.forEach((color): void => {
-      it(color, function(): void {
+      it(color, function (): void {
         expect(isValidRGBA(color)).to.be.true;
       });
     });
   });
 
-  describe("Invalid", function(): void {
+  describe("Invalid", function (): void {
     invalid.forEach((color): void => {
-      it(color, function(): void {
+      it(color, function (): void {
         expect(isValidRGBA(color)).to.be.false;
       });
     });

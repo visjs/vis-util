@@ -4,7 +4,7 @@ import { deepFreeze } from "./helpers";
 
 import { binarySearchCustom } from "../src";
 
-describe("binarySearchCustom", function(): void {
+describe("binarySearchCustom", function (): void {
   const orderedItems = deepFreeze([
     { prop1: -79, nested: { prop2: -0.79 } },
     { prop1: -27, nested: { prop2: -0.27 } },
@@ -21,7 +21,7 @@ describe("binarySearchCustom", function(): void {
     { prop1: 71, nested: { prop2: 0.71 } },
     { prop1: 71, nested: { prop2: 0.71 } },
     { prop1: 71, nested: { prop2: 0.71 } },
-    { prop1: 87, nested: { prop2: 0.87 } }
+    { prop1: 87, nested: { prop2: 0.87 } },
   ]);
   const comparatorFactory = (
     target: number
@@ -35,8 +35,8 @@ describe("binarySearchCustom", function(): void {
     }
   };
 
-  describe("array[index][prop1]", function(): void {
-    it("comparator args", function(): void {
+  describe("array[index][prop1]", function (): void {
+    it("comparator args", function (): void {
       const bscMock = mock();
       bscMock.returns(0);
 
@@ -52,27 +52,27 @@ describe("binarySearchCustom", function(): void {
         .that.is.a("number");
     });
 
-    it("missing item", function(): void {
+    it("missing item", function (): void {
       expect(
         binarySearchCustom(orderedItems, comparatorFactory(13), "prop1")
       ).to.equal(-1);
     });
 
-    it("present item", function(): void {
+    it("present item", function (): void {
       expect(
         binarySearchCustom(orderedItems, comparatorFactory(28), "prop1")
       ).to.equal(6);
     });
 
-    it("multiple equal items", function(): void {
+    it("multiple equal items", function (): void {
       expect(binarySearchCustom(orderedItems, comparatorFactory(71), "prop1"))
         .to.be.at.least(11)
         .and.at.most(14);
     });
   });
 
-  describe("array[index][prop1][prop2]", function(): void {
-    it("comparator args", function(): void {
+  describe("array[index][prop1][prop2]", function (): void {
+    it("comparator args", function (): void {
       const bscMock = mock();
       bscMock.returns(0);
 
@@ -88,7 +88,7 @@ describe("binarySearchCustom", function(): void {
         .that.is.a("number");
     });
 
-    it("missing item", function(): void {
+    it("missing item", function (): void {
       expect(
         binarySearchCustom(
           orderedItems,
@@ -99,7 +99,7 @@ describe("binarySearchCustom", function(): void {
       ).to.equal(-1);
     });
 
-    it("present item", function(): void {
+    it("present item", function (): void {
       expect(
         binarySearchCustom(
           orderedItems,
@@ -110,7 +110,7 @@ describe("binarySearchCustom", function(): void {
       ).to.equal(6);
     });
 
-    it("multiple equal items", function(): void {
+    it("multiple equal items", function (): void {
       expect(
         binarySearchCustom(
           orderedItems,

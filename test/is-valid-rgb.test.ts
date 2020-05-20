@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { isValidRGB } from "../src";
 
-describe("isValidRGB", function(): void {
+describe("isValidRGB", function (): void {
   const valid = [
     "RGB(7, 200, 8)",
     "RGb(255,255,255)",
@@ -11,7 +11,7 @@ describe("isValidRGB", function(): void {
     "rGb(210, 50,220)",
     "rgB(210,50, 220)",
     "rgb( 72 , 11 , 123 )",
-    "rgb(0,0,0)"
+    "rgb(0,0,0)",
   ];
   const invalid = [
     " ",
@@ -43,20 +43,20 @@ describe("isValidRGB", function(): void {
     "rgb(44, 7, 2 2 0)",
     "rgba(7,8,9,0.3)",
     "the color is #00AAAA",
-    "true"
+    "true",
   ];
 
-  describe("Valid", function(): void {
+  describe("Valid", function (): void {
     valid.forEach((color): void => {
-      it(color, function(): void {
+      it(color, function (): void {
         expect(isValidRGB(color)).to.be.true;
       });
     });
   });
 
-  describe("Invalid", function(): void {
+  describe("Invalid", function (): void {
     invalid.forEach((color): void => {
-      it(color, function(): void {
+      it(color, function (): void {
         expect(isValidRGB(color)).to.be.false;
       });
     });

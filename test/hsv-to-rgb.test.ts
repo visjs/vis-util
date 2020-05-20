@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { HSVToRGB, RGB } from "../src";
 
-describe("HSVToRGB", function(): void {
+describe("HSVToRGB", function (): void {
   const valid: { args: [number, number, number]; expected: RGB }[] = [
     { args: [0, 0, 0], expected: { r: 0, g: 0, b: 0 } },
     { args: [0.25, 0, 0], expected: { r: 0, g: 0, b: 0 } },
@@ -20,12 +20,12 @@ describe("HSVToRGB", function(): void {
     { args: [0.25, 1, 1], expected: { r: 127, g: 255, b: 0 } },
     { args: [0.5, 1, 1], expected: { r: 0, g: 255, b: 255 } },
     { args: [0.75, 1, 1], expected: { r: 127, g: 0, b: 255 } },
-    { args: [1, 1, 1], expected: { r: 255, g: 0, b: 0 } }
+    { args: [1, 1, 1], expected: { r: 255, g: 0, b: 0 } },
   ];
 
-  describe("Valid", function(): void {
+  describe("Valid", function (): void {
     valid.forEach(({ args, expected }): void => {
-      it(JSON.stringify(args), function(): void {
+      it(JSON.stringify(args), function (): void {
         expect(HSVToRGB(...args)).to.be.deep.equal(expected);
       });
     });
