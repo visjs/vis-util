@@ -32,7 +32,7 @@
     "build:docs": "typedoc ./src",
     "build:types": "tsc -p tsconfig.types.json",
     "clean": "rimraf '{coverage,declarations,docs,esnext,peer,reports,standalone}' 'index.{d.ts,js}'",
-    "lint": "eslint '{src,test}/**/*.{m,}{j,t}s{x,}'",
+    "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "test": "npm run test:coverage",

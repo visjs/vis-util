@@ -1,3 +1,10 @@
-!.eslintrc.js
-/dist/**
-test/**/*.test.js
+!/.*.*
+**/node_modules/**
+/__snapshots__/**
+/coverage/**
+/declarations/**
+/docs/**
+/esnext/**
+/peer/**
+/standalone/**
+/test/**/*.test.js
