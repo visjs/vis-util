@@ -3,8 +3,8 @@ import { deepFreeze } from "./helpers";
 
 import { deepExtend } from "../src";
 
-describe("deepExtend", function(): void {
-  it("nested strings", function(): void {
+describe("deepExtend", function (): void {
+  it("nested strings", function (): void {
     const target = {
       p1: "p1 T",
       p2: "p2 T",
@@ -13,9 +13,9 @@ describe("deepExtend", function(): void {
         p4p2: "p4p2 T",
         p4p4: {
           p4p4p1: "p4p4p1 T",
-          p4p4p2: "p4p4p2 T"
-        }
-      }
+          p4p4p2: "p4p4p2 T",
+        },
+      },
     };
     const source = deepFreeze({
       p2: "p2 S",
@@ -25,9 +25,9 @@ describe("deepExtend", function(): void {
         p4p3: "p4p3 S",
         p4p4: {
           p4p4p2: "p4p4p2 S",
-          p4p4p3: "p4p4p3 S"
-        }
-      }
+          p4p4p3: "p4p4p3 S",
+        },
+      },
     });
 
     const merged = deepExtend(target, source);
@@ -45,25 +45,25 @@ describe("deepExtend", function(): void {
           p4p4: {
             p4p4p1: "p4p4p1 T",
             p4p4p2: "p4p4p2 S",
-            p4p4p3: "p4p4p3 S"
-          }
-        }
+            p4p4p3: "p4p4p3 S",
+          },
+        },
       }
     );
   });
 
-  it("arrays", function(): void {
+  it("arrays", function (): void {
     const target = {
       arrays: {
         p1: ["T", 1, true, "T"],
-        p2: ["T", 1, true, "T"]
-      }
+        p2: ["T", 1, true, "T"],
+      },
     };
     const source = deepFreeze({
       arrays: {
         p2: ["S", false, 0, "S"],
-        p3: ["S", false, 0, "S"]
-      }
+        p3: ["S", false, 0, "S"],
+      },
     });
 
     const merged = deepExtend(target, source);
@@ -76,8 +76,8 @@ describe("deepExtend", function(): void {
       arrays: {
         p1: ["T", 1, true, "T"],
         p2: ["S", false, 0, "S"],
-        p3: ["S", false, 0, "S"]
-      }
+        p3: ["S", false, 0, "S"],
+      },
     });
 
     expect(
@@ -90,7 +90,7 @@ describe("deepExtend", function(): void {
     ).to.not.equal(source.arrays.p2);
   });
 
-  it("objects with other than Object prototype", function(): void {
+  it("objects with other than Object prototype", function (): void {
     const objectLiteral = { p3: "S" };
     const objectFromNull = Object.create(null);
     const objectFromObject = Object.create(Object);
@@ -98,16 +98,16 @@ describe("deepExtend", function(): void {
 
     const target = {
       objects: {
-        objectLiteral: { p1: "T" }
-      }
+        objectLiteral: { p1: "T" },
+      },
     };
     const source = deepFreeze({
       objects: {
         objectLiteral,
         objectFromNull,
         objectFromObject,
-        objectFromMap
-      }
+        objectFromMap,
+      },
     });
 
     const merged = deepExtend(target, source);
@@ -120,12 +120,12 @@ describe("deepExtend", function(): void {
       objects: {
         objectLiteral: {
           p1: "T",
-          p3: "S"
+          p3: "S",
         },
         objectFromNull: {},
         objectFromObject: Object.create(Object),
-        objectFromMap: new Map()
-      }
+        objectFromMap: new Map(),
+      },
     });
 
     expect(
@@ -146,13 +146,13 @@ describe("deepExtend", function(): void {
     ).to.equal(source.objects.objectFromMap);
   });
 
-  describe("inherited properties", function(): void {
-    it("ignored by default", function(): void {
+  describe("inherited properties", function (): void {
+    it("ignored by default", function (): void {
       const target = {};
       const source = deepFreeze(
         Object.create(
           deepFreeze({
-            inherited: "S"
+            inherited: "S",
           })
         )
       );
@@ -166,12 +166,12 @@ describe("deepExtend", function(): void {
       ).to.deep.equal({});
     });
 
-    it("inherited if enabled", function(): void {
+    it("inherited if enabled", function (): void {
       const target = {};
       const source = deepFreeze(
         Object.create(
           deepFreeze({
-            inherited: "S"
+            inherited: "S",
           })
         )
       );
@@ -183,20 +183,20 @@ describe("deepExtend", function(): void {
         merged,
         "Inherited properties should be inherited when enabled."
       ).to.deep.equal({
-        inherited: "S"
+        inherited: "S",
       });
     });
   });
 
-  describe("deletion", function(): void {
-    it("disabled", function(): void {
+  describe("deletion", function (): void {
+    it("disabled", function (): void {
       const target = {
         p1: "p1 T",
-        p2: "p2 T"
+        p2: "p2 T",
       };
       const source = deepFreeze({
         p2: null,
-        p3: null
+        p3: null,
       });
 
       const merged = deepExtend(target, source);
@@ -208,18 +208,18 @@ describe("deepExtend", function(): void {
       ).to.deep.equal({
         p1: "p1 T",
         p2: null,
-        p3: null
+        p3: null,
       });
     });
 
-    it("enabled", function(): void {
+    it("enabled", function (): void {
       const target = {
         p1: "p1 T",
-        p2: "p2 T"
+        p2: "p2 T",
       };
       const source = deepFreeze({
         p2: null,
-        p3: null
+        p3: null,
       });
 
       const merged = deepExtend(target, source, false, true);
@@ -230,26 +230,26 @@ describe("deepExtend", function(): void {
         "Null properties from the source should delete matching properties in the target."
       ).to.deep.equal({
         p1: "p1 T",
-        p3: null // TODO: This seems wrong.
+        p3: null, // TODO: This seems wrong.
       });
     });
   });
 
-  describe("edge cases", function(): void {
-    it("constructor property", function(): void {
+  describe("edge cases", function (): void {
+    it("constructor property", function (): void {
       const target = {
         object: {
           constructor: {
-            p1: "T"
-          }
-        }
+            p1: "T",
+          },
+        },
       };
       const source = deepFreeze({
         object: {
           constructor: {
-            p3: "S"
-          }
-        }
+            p3: "S",
+          },
+        },
       });
 
       const merged = deepExtend(target, source);
@@ -262,9 +262,9 @@ describe("deepExtend", function(): void {
         object: {
           constructor: {
             p1: "T",
-            p3: "S"
-          }
-        }
+            p3: "S",
+          },
+        },
       });
     });
   });

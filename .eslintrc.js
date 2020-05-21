@@ -3,18 +3,18 @@ module.exports = {
     browser: true,
     es6: true,
     mocha: true,
-    node: true
+    node: true,
   },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
-    "prettier/@typescript-eslint"
+    "prettier/@typescript-eslint",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     sourceType: "module",
-    ecmaVersion: 2019
+    ecmaVersion: 2019,
   },
   plugins: ["prettier", "eslint-plugin-tsdoc", "eslint-plugin-jsdoc"],
   rules: {
@@ -47,8 +47,8 @@ module.exports = {
     "jsdoc/check-tag-names": [
       "error",
       {
-        definedTags: ["remarks", "typeParam"]
-      }
+        definedTags: ["remarks", "typeParam"],
+      },
     ],
 
     // Empty functions are useful sometimes.
@@ -58,18 +58,18 @@ module.exports = {
     // These are hoisted, I have no idea why it reports them by default.
     "@typescript-eslint/no-use-before-define": [
       "error",
-      { functions: false, classes: false, typedefs: false }
+      { functions: false, classes: false, typedefs: false },
     ],
     // False positives for overloading, also tsc compiles with errors anyway.
     "no-dupe-class-members": "off",
     // Blocks typesafe exhaustive switch (switch (x) { … default: const never: never = x }).
     "no-case-declarations": "off",
     // Reports typeof bigint as an error, tsc validates this anyway so no problem turning this off.
-    "valid-typeof": "off"
+    "valid-typeof": "off",
   },
   settings: {
     jsdoc: {
-      mode: "typescript"
-    }
-  }
+      mode: "typescript",
+    },
+  },
 };

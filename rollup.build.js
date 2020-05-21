@@ -6,5 +6,5 @@ export default generateRollupConfiguration({
   libraryFilename: "vis-util",
   entryPoint: "./src",
   packageJSON,
-  tsconfig: "tsconfig.code.json"
+  tsconfig: "tsconfig.code.json",
 });
