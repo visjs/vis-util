@@ -51,6 +51,12 @@ module.exports = {
       },
     ],
 
+    // This would be a breaking change for little gain. Though there definitely
+    // is some merit in this.
+    "@typescript-eslint/ban-types": "off",
+    // Enforcing this would be a very good thing but with some of the functions
+    // I just have no idea how to type them, so disable for now.
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     // Empty functions are useful sometimes.
     "@typescript-eslint/no-empty-function": "off",
     // This is really crazy given the functions in this package.
