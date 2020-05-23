@@ -112,7 +112,7 @@
     "jsdom": "16.2.2",
     "jsdom-global": "3.0.2",
     "lint-staged": "10.2.6",
-    "mocha": "7.1.2",
+    "mocha": "7.2.0",
     "npm-run-all": "4.1.5",
     "nyc": "15.0.1",
     "prettier": "2.0.5",
