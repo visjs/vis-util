@@ -44,9 +44,14 @@ export class LayeredStorageTransaction<
   public set<Key extends Keys>(layer: Layer, key: Key, value: KV[Key]): void {
     const expandedPairs = this._storageCore.expandSet(key, value);
     for (const expanded of expandedPairs) {
-      this._actions.push((): void => {
-        this._storageCore.set(layer, this._segment, expanded[0], expanded[1]);
-      });
+      this._actions.push(
+        this._storageCore.twoPartSet(
+          layer,
+          this._segment,
+          expanded[0],
+          expanded[1]
+        )
+      );
     }
   }
 

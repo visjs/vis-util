@@ -6,6 +6,7 @@ import { multipleLayers } from "./multiple-layers";
 import { other } from "./other";
 import { segmentedLayer } from "./segmented-layer";
 import { singleLayer } from "./single-layer";
+import { transactions } from "./transactions";
 import { validation } from "./validation";
 
 describe("Layered storage", function (): void {
@@ -17,5 +18,6 @@ describe("Layered storage", function (): void {
   other();
   segmentedLayer();
   singleLayer();
+  transactions();
   validation();
 });

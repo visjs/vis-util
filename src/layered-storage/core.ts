@@ -282,19 +282,21 @@ export class LayeredStorageCore<
   }
 
   /**
-   * Save a value.
+   * Validate the value now and set it later.
    *
    * @param layer - Which layer to save the value into.
    * @param segment - Which segment to save the value into.
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
+   *
+   * @returns Function that actually sets the validated value.
    */
-  public set<Key extends Keys>(
+  public twoPartSet<Key extends Keys>(
     layer: Layer,
     segment: Segment,
     key: Key,
     value: KV[Key]
-  ): void {
+  ): () => void {
     if (typeof layer !== "number") {
       throw new TypeError("Layers have to be numbers.");
     }
@@ -309,18 +311,37 @@ export class LayeredStorageCore<
           continue;
         } else {
           // The value is invalid. Call the invalid value handler and, if the
-          // handler didn't throw, stop execution of this function to prevent
-          // the value from being saved into the storage.
+          // handler didn't throw, return empty function to prevent the value
+          // from being saved into the storage.
           this._invalidHandler(key, value, message);
-          return;
+          return (): void => {};
         }
       }
     }
 
-    const { segmentData } = this._getLSData(layer, segment);
-    segmentData.set(key, value);
+    return (): void => {
+      const { segmentData } = this._getLSData(layer, segment);
+      segmentData.set(key, value);
 
-    this._cleanCache(segment, key);
+      this._cleanCache(segment, key);
+    };
+  }
+
+  /**
+   * Save a value.
+   *
+   * @param layer - Which layer to save the value into.
+   * @param segment - Which segment to save the value into.
+   * @param key - Key that can be used to retrieve or overwrite this value later.
+   * @param value - The value to be saved.
+   */
+  public set<Key extends Keys>(
+    layer: Layer,
+    segment: Segment,
+    key: Key,
+    value: KV[Key]
+  ): void {
+    this.twoPartSet(layer, segment, key, value)();
   }
 
   /**
