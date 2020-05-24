@@ -5,6 +5,7 @@ import {
   LayerRange,
   Segment,
 } from "./common";
+import { LayeredStorageValidator } from "./validator-library";
 
 const entriesByKeyPriority = (
   a: [number, unknown],
@@ -32,6 +33,12 @@ interface TypedMap<
   get<Key extends Keys>(key: Key): undefined | KV[Key];
   set<Key extends Keys>(key: Key, value: KV[Key]): this;
 }
+
+export type LayeredStorageInvalidValueHandler<Keys extends KeyRange> = (
+  key: Keys,
+  value: unknown,
+  messages: string[]
+) => void;
 
 /**
  * Internal core to handle simple data storage, mutation and retrieval. Also
@@ -85,7 +92,7 @@ export class LayeredStorageCore<
    */
   private readonly _validators: TypedMap<
     {
-      [Key in Keys]: ((value: KV[Key]) => true | string)[];
+      [Key in Keys]: LayeredStorageValidator[];
     },
     Keys
   > = new Map();
@@ -110,14 +117,14 @@ export class LayeredStorageCore<
    *
    * @param key - The key of the invalid value.
    * @param value - The invalid value itself.
-   * @param message - The message returned by the validator that failed.
+   * @param messages - All the message returned by the validators that failed.
    */
-  private _invalidHandler: <Key extends Keys>(
-    key: Key,
-    value: KV[Key],
-    message: string
-  ) => void = (key, value, message): void => {
-    console.error("Invalid value was ignored.", { key, value, message });
+  private _invalidHandler: LayeredStorageInvalidValueHandler<Keys> = (
+    key,
+    value,
+    messages
+  ): void => {
+    console.error("Invalid value was ignored.", { key, value, messages });
   };
 
   /**
@@ -313,30 +320,21 @@ export class LayeredStorageCore<
       throw new TypeError("Layers have to be numbers.");
     }
 
-    const validators = this._validators.get(key);
-    if (validators) {
-      for (const validator of validators) {
-        const message = validator(value);
-        if (message === true) {
-          // The value is valid. Proceed with another test or save the value
-          // into the storage if this was the last one.
-          continue;
-        } else {
-          // The value is invalid. Call the invalid value handler and, if the
-          // handler didn't throw, return empty function to prevent the value
-          // from being saved into the storage.
-          this._invalidHandler(key, value, message);
-          return (): void => {};
-        }
-      }
+    const valid = this._validate(key, value);
+    if (valid) {
+      // The value is valid. It can be safely saved into the storage.
+      return (): void => {
+        const { segmentData } = this._getLSData(layer, segment);
+        segmentData.set(key, value);
+
+        this._cleanCache(segment, key);
+      };
+    } else {
+      // The value is invalid. If the invalid value handler didn't throw,
+      // return empty function to prevent the value from being saved into
+      // the storage.
+      return (): void => {};
     }
-
-    return (): void => {
-      const { segmentData } = this._getLSData(layer, segment);
-      segmentData.set(key, value);
-
-      this._cleanCache(segment, key);
-    };
   }
 
   /**
@@ -506,11 +504,7 @@ export class LayeredStorageCore<
    * value and a message from the failed validator.
    */
   public setInvalidHandler(
-    handler: <Key extends Keys>(
-      key: Key,
-      value: KV[Key],
-      message: string
-    ) => void
+    handler: LayeredStorageInvalidValueHandler<Keys>
   ): void {
     this._invalidHandler = handler;
   }
@@ -526,7 +520,7 @@ export class LayeredStorageCore<
    */
   public setValidators<Key extends Keys>(
     key: Key,
-    validators: ((value: KV[Key]) => true | string)[],
+    validators: LayeredStorageValidator[],
     replace: boolean
   ): void {
     if (!replace && this._validators.has(key)) {
@@ -534,6 +528,37 @@ export class LayeredStorageCore<
     }
 
     this._validators.set(key, validators);
+  }
+
+  /**
+   * Validate given value for given key.
+   *
+   * @param key - The key whose validators should be used.
+   * @param value - The value to be validated.
+   *
+   * @returns True if valid, false otherwise.
+   */
+  public _validate<Key extends Keys>(key: Key, value: KV[Key]): boolean {
+    const messages = [];
+
+    const validators = this._validators.get(key);
+    if (validators) {
+      for (const validator of validators) {
+        const message = validator(value) || validator.description;
+        if (message !== true) {
+          // The value is invalid. Call the invalid value handler and, if the
+          // handler didn't throw, return empty function to prevent the value
+          // from being saved into the storage.
+          messages.push(message);
+        }
+      }
+    }
+
+    if (messages.length) {
+      this._invalidHandler(key, value, messages);
+    }
+
+    return !messages.length;
   }
 
   /**
@@ -578,33 +603,22 @@ export class LayeredStorageCore<
    *
    * @returns Expanded key value pairs or empty array for invalid input.
    */
-  public expandSet<Key extends Keys>(
+  public expandValue<Key extends Keys>(
     key: Key,
     value: KV[Key]
   ): readonly KeyValueEntry<KV, Keys>[] {
-    const validators = this._validators.get(key);
-    if (validators) {
-      for (const validator of validators) {
-        const message = validator(value);
-        if (message === true) {
-          // The value is valid. Proceed with another test or save the value
-          // into the storage if this was the last one.
-          continue;
-        } else {
-          // The value is invalid. Call the invalid value handler and, if the
-          // handler didn't throw, stop execution of this function to prevent
-          // the value from being saved into the storage.
-          this._invalidHandler(key, value, message);
-          return [];
-        }
+    const valid = this._validate(key, value);
+    if (valid) {
+      const expand = this._setExpanders.get(key);
+      if (expand) {
+        return expand(value);
+      } else {
+        return [[key, value]];
       }
-    }
-
-    const expand = this._setExpanders.get(key);
-    if (expand) {
-      return expand(value);
     } else {
-      return [[key, value]];
+      // The value is invalid. If the invalid value handler didn't throw, return
+      // empty entry to prevent the value from being saved into the storage.
+      return [];
     }
   }
 

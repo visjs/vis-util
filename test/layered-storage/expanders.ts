@@ -1,4 +1,9 @@
-import { KeyValueEntry, LayeredStorage } from "../../src/layered-storage";
+import {
+  KeyValueEntry,
+  LayeredStorage,
+  match,
+  numberLowerThan,
+} from "../../src/layered-storage";
 import { expect } from "chai";
 
 interface KV {
@@ -60,10 +65,7 @@ export function expanders(): void {
     it("Invalid short value", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
-      ls.setValidators("test", [
-        (value): true | string =>
-          /^(true|false) \d+ .*$/.test(value) || "Invalid.",
-      ]);
+      ls.setValidators("test", [match(/^(true|false) \d+ .*$/)]);
       ls.setInvalidHandler(invalidHandler);
       ls.setExpander("test", expanderAffects, expander);
 
@@ -78,9 +80,7 @@ export function expanders(): void {
     it("Invalid expanded value", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
-      ls.setValidators("test.number", [
-        (value): true | string => value < 7 || "Invalid input.",
-      ]);
+      ls.setValidators("test.number", [numberLowerThan(7)]);
       ls.setInvalidHandler(invalidHandler);
       ls.setExpander("test", expanderAffects, expander);
 

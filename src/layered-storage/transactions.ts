@@ -42,7 +42,7 @@ export class LayeredStorageTransaction<
    * @param value - The value to be saved.
    */
   public set<Key extends Keys>(layer: Layer, key: Key, value: KV[Key]): void {
-    const expandedPairs = this._storageCore.expandSet(key, value);
+    const expandedPairs = this._storageCore.expandValue(key, value);
     for (const expanded of expandedPairs) {
       this._actions.push(
         this._storageCore.twoPartSet(

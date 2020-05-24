@@ -1,13 +1,14 @@
 import {
   KeyRange,
+  KeyValueEntry,
   KeyValueLookup,
   LayerRange,
   Segment,
-  KeyValueEntry,
 } from "./common";
-import { LayeredStorageCore } from "./core";
+import { LayeredStorageCore, LayeredStorageInvalidValueHandler } from "./core";
 import { LayeredStorageSegment } from "./segment";
 import { LayeredStorageTransaction } from "./transactions";
+import { LayeredStorageValidator } from "./validator-library";
 
 export { LayeredStorageTransaction };
 
@@ -84,11 +85,7 @@ export class LayeredStorage<
    * value and a message from the failed validator.
    */
   public setInvalidHandler(
-    handler: <Key extends Keys>(
-      key: Key,
-      value: KV[Key],
-      message: string
-    ) => void
+    handler: LayeredStorageInvalidValueHandler<Keys>
   ): void {
     this._core.setInvalidHandler(handler);
   }
@@ -104,7 +101,7 @@ export class LayeredStorage<
    */
   public setValidators<Key extends Keys>(
     key: Key,
-    validators: ((value: KV[Key]) => true | string)[],
+    validators: LayeredStorageValidator[],
     replace = false
   ): void {
     this._core.setValidators(key, validators, replace);

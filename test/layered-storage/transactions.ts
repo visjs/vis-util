@@ -1,4 +1,4 @@
-import { LayeredStorage } from "../../src/layered-storage";
+import { LayeredStorage, stringAtLeast } from "../../src/layered-storage";
 import { expect } from "chai";
 
 interface KV {
@@ -41,14 +41,8 @@ export function transactions(): void {
         );
       });
 
-      ls.setValidators("test.value1", [
-        (value): true | string =>
-          value.length < 4 ? "Minimum of 4 characters required" : true,
-      ]);
-      ls.setValidators("test.value2", [
-        (value): true | string =>
-          value.length < 4 ? "Minimum of 4 characters required" : true,
-      ]);
+      ls.setValidators("test.value1", [stringAtLeast(4)]);
+      ls.setValidators("test.value2", [stringAtLeast(4)]);
 
       const transaction = ls.global.openTransaction();
 
