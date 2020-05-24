@@ -1,6 +1,5 @@
 // utility functions
 
-export { uuid4 as randomUUID } from "vis-uuid";
 export * from "./layered-storage";
 
 // parse ASP.Net Date pattern,
@@ -548,7 +547,7 @@ export function addClassName(elem: Element, classNames: string): void {
   let classes = elem.className.split(" ");
   const newClasses = classNames.split(" ");
   classes = classes.concat(
-    newClasses.filter(function(className): boolean {
+    newClasses.filter(function (className): boolean {
       return classes.indexOf(className) < 0;
     })
   );
@@ -564,7 +563,7 @@ export function addClassName(elem: Element, classNames: string): void {
 export function removeClassName(elem: Element, classNames: string): void {
   let classes = elem.className.split(" ");
   const oldClasses = classNames.split(" ");
-  classes = classes.filter(function(className): boolean {
+  classes = classes.filter(function (className): boolean {
     return oldClasses.indexOf(className) < 0;
   });
   elem.className = classes.join(" ");
@@ -903,7 +902,7 @@ export const option = {
     }
 
     return value || defaultValue || null;
-  }
+  },
 };
 
 /**
@@ -926,7 +925,7 @@ export function hexToRGB(hex: string): RGB | null {
         ? {
             r: parseInt(result[1] + result[1], 16),
             g: parseInt(result[2] + result[2], 16),
-            b: parseInt(result[3] + result[3], 16)
+            b: parseInt(result[3] + result[3], 16),
           }
         : null;
     case 6:
@@ -936,7 +935,7 @@ export function hexToRGB(hex: string): RGB | null {
         ? {
             r: parseInt(result[1], 16),
             g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
+            b: parseInt(result[3], 16),
           }
         : null;
     default:
@@ -1041,7 +1040,7 @@ export function parseColor(
         .substr(4)
         .substr(0, colorStr.length - 5)
         .split(",")
-        .map(function(value): number {
+        .map(function (value): number {
           return parseInt(value);
         });
       colorStr = RGBToHex(rgb[0], rgb[1], rgb[2]);
@@ -1051,12 +1050,12 @@ export function parseColor(
       const lighterColorHSV = {
         h: hsv.h,
         s: hsv.s * 0.8,
-        v: Math.min(1, hsv.v * 1.02)
+        v: Math.min(1, hsv.v * 1.02),
       };
       const darkerColorHSV = {
         h: hsv.h,
         s: Math.min(1, hsv.s * 1.25),
-        v: hsv.v * 0.8
+        v: hsv.v * 0.8,
       };
       const darkerColorHex = HSVToHex(
         darkerColorHSV.h,
@@ -1073,12 +1072,12 @@ export function parseColor(
         border: darkerColorHex,
         highlight: {
           background: lighterColorHex,
-          border: darkerColorHex
+          border: darkerColorHex,
         },
         hover: {
           background: lighterColorHex,
-          border: darkerColorHex
-        }
+          border: darkerColorHex,
+        },
       };
     } else {
       return {
@@ -1086,12 +1085,12 @@ export function parseColor(
         border: colorStr,
         highlight: {
           background: colorStr,
-          border: colorStr
+          border: colorStr,
         },
         hover: {
           background: colorStr,
-          border: colorStr
-        }
+          border: colorStr,
+        },
       };
     }
   } else {
@@ -1102,7 +1101,7 @@ export function parseColor(
         highlight: isString(inputColor.highlight)
           ? {
               border: inputColor.highlight,
-              background: inputColor.highlight
+              background: inputColor.highlight,
             }
           : {
               background:
@@ -1110,12 +1109,12 @@ export function parseColor(
                 defaultColor.highlight.background,
               border:
                 (inputColor.highlight && inputColor.highlight.border) ||
-                defaultColor.highlight.border
+                defaultColor.highlight.border,
             },
         hover: isString(inputColor.hover)
           ? {
               border: inputColor.hover,
-              background: inputColor.hover
+              background: inputColor.hover,
             }
           : {
               border:
@@ -1123,8 +1122,8 @@ export function parseColor(
                 defaultColor.hover.border,
               background:
                 (inputColor.hover && inputColor.hover.background) ||
-                defaultColor.hover.background
-            }
+                defaultColor.hover.background,
+            },
       };
       return color;
     } else {
@@ -1134,7 +1133,7 @@ export function parseColor(
         highlight: isString(inputColor.highlight)
           ? {
               border: inputColor.highlight,
-              background: inputColor.highlight
+              background: inputColor.highlight,
             }
           : {
               background:
@@ -1142,19 +1141,19 @@ export function parseColor(
                 undefined,
               border:
                 (inputColor.highlight && inputColor.highlight.border) ||
-                undefined
+                undefined,
             },
         hover: isString(inputColor.hover)
           ? {
               border: inputColor.hover,
-              background: inputColor.hover
+              background: inputColor.hover,
             }
           : {
               border:
                 (inputColor.hover && inputColor.hover.border) || undefined,
               background:
-                (inputColor.hover && inputColor.hover.background) || undefined
-            }
+                (inputColor.hover && inputColor.hover.background) || undefined,
+            },
       };
       return color;
     }
@@ -1218,11 +1217,11 @@ const cssUtil = {
   // build a css text string from an object with key/values
   join(styles: CSSStyles): string {
     return Object.keys(styles)
-      .map(function(key): string {
+      .map(function (key): string {
         return key + ": " + styles[key];
       })
       .join("; ");
-  }
+  },
 };
 
 /**
@@ -1236,7 +1235,7 @@ export function addCssText(element: HTMLElement, cssText: string): void {
   const newStyles = cssUtil.split(cssText);
   const styles = {
     ...currentStyles,
-    ...newStyles
+    ...newStyles,
   };
 
   element.style.cssText = cssUtil.join(styles);
@@ -1308,7 +1307,7 @@ export function HSVToRGB(h: number, s: number, v: number): RGB {
   return {
     r: Math.floor((r as number) * 255),
     g: Math.floor((g as number) * 255),
-    b: Math.floor((b as number) * 255)
+    b: Math.floor((b as number) * 255),
   };
 }
 
@@ -1478,16 +1477,16 @@ export function mergeOptions(
   globalOptions: any = {}
 ): void {
   // Local helpers
-  const isPresent = function(obj: any): boolean {
+  const isPresent = function (obj: any): boolean {
     return obj !== null && obj !== undefined;
   };
 
-  const isObject = function(obj: unknown): boolean {
+  const isObject = function (obj: unknown): boolean {
     return obj !== null && typeof obj === "object";
   };
 
   // https://stackoverflow.com/a/34491287/1223531
-  const isEmpty = function(obj: object): obj is {} {
+  const isEmpty = function (obj: object): obj is {} {
     for (const x in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, x)) {
         return false;
@@ -1517,7 +1516,7 @@ export function mergeOptions(
   // Actual merge routine, separated from main logic
   // Only a single level of options is merged. Deeper levels are ref'd. This may actually be an issue.
   //
-  const doMerge = function(target: any, options: any, option: string): void {
+  const doMerge = function (target: any, options: any, option: string): void {
     if (!isObject(target[option])) {
       target[option] = {};
     }
@@ -1679,7 +1678,7 @@ export function binarySearchValue<T extends string>(
   comparator =
     comparator != undefined
       ? comparator
-      : function(a: number, b: number): -1 | 0 | 1 {
+      : function (a: number, b: number): -1 | 0 | 1 {
           return a == b ? 0 : a < b ? -1 : 1;
         };
 
@@ -1874,7 +1873,7 @@ export const easingFunctions = {
    */
   easeInOutQuint(t: number): number {
     return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
-  }
+  },
 };
 
 /**

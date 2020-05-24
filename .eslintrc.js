@@ -3,18 +3,18 @@ module.exports = {
     browser: true,
     es6: true,
     mocha: true,
-    node: true
+    node: true,
   },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
-    "prettier/@typescript-eslint"
+    "prettier/@typescript-eslint",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     sourceType: "module",
-    ecmaVersion: 2019
+    ecmaVersion: 2019,
   },
   plugins: ["prettier", "eslint-plugin-tsdoc", "eslint-plugin-jsdoc"],
   rules: {
@@ -47,10 +47,16 @@ module.exports = {
     "jsdoc/check-tag-names": [
       "error",
       {
-        definedTags: ["remarks", "typeParam"]
-      }
+        definedTags: ["remarks", "typeParam"],
+      },
     ],
 
+    // This would be a breaking change for little gain. Though there definitely
+    // is some merit in this.
+    "@typescript-eslint/ban-types": "off",
+    // Enforcing this would be a very good thing but with some of the functions
+    // I just have no idea how to type them, so disable for now.
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     // Empty functions are useful sometimes.
     "@typescript-eslint/no-empty-function": "off",
     // This would be great if TypeScript was perfect but sometimes tsc can't infer the correct type.
@@ -60,19 +66,19 @@ module.exports = {
     // These are hoisted, I have no idea why it reports them by default.
     "@typescript-eslint/no-use-before-define": [
       "error",
-      { functions: false, classes: false, typedefs: false }
+      { functions: false, classes: false, typedefs: false },
     ],
     // False positives for overloading, also tsc compiles with errors anyway.
     "no-dupe-class-members": "off",
     // Blocks typesafe exhaustive switch (switch (x) { … default: const never: never = x }).
     "no-case-declarations": "off",
     // Reports typeof bigint as an error, tsc validates this anyway so no problem turning this off.
-    "valid-typeof": "off"
+    "valid-typeof": "off",
   },
   settings: {
     jsdoc: {
-      mode: "typescript"
-    }
+      mode: "typescript",
+    },
   },
   overrides: [
     {
@@ -80,7 +86,7 @@ module.exports = {
       rules: {
         // This is useful to ignore private property access in a test.
         "@typescript-eslint/ban-ts-ignore": "off"
-      }
-    }
-  ]
+      },
+    },
+  ],
 };

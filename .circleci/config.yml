@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node:
     docker:
-      - image: circleci/node:12.7
+      - image: circleci/node:12.16
     working_directory: ~/repo
     environment:
       GIT_AUTHOR_EMAIL: visjsbot@gmail.com
@@ -49,11 +49,10 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - 'esm'
-            - 'index.d.ts'
-            - 'index.js'
-            - 'types'
-            - 'umd'
+            - 'declarations'
+            - 'esnext'
+            - 'peer'
+            - 'standalone'
 
   lint:
     executor: node

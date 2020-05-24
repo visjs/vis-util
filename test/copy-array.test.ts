@@ -2,8 +2,8 @@ import { expect } from "chai";
 
 import { copyArray } from "../src";
 
-describe("copyArray", function(): void {
-  it("number[]", function(): void {
+describe("copyArray", function (): void {
+  it("number[]", function (): void {
     const original = Object.freeze([-77, 14, 78]);
     const copied = copyArray(original);
 
@@ -13,10 +13,10 @@ describe("copyArray", function(): void {
     );
   });
 
-  it("object[]", function(): void {
+  it("object[]", function (): void {
     const original = Object.freeze([
       Object.freeze({ hi: ":-)" }),
-      Object.freeze({ bye: ":-(" })
+      Object.freeze({ bye: ":-(" }),
     ]);
     const copied = copyArray(original);
 

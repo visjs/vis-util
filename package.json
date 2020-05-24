@@ -2,9 +2,11 @@
   "name": "vis-util",
   "version": "0.0.0-no-version",
   "description": "utilitie collection for visjs",
-  "main": "umd/vis-util.js",
-  "module": "esm/vis-util.js",
-  "types": "types/index.d.ts",
+  "browser": "peer/umd/vis-util.min.js",
+  "jsnext": "esnext/esm/vis-util.js",
+  "main": "peer/umd/vis-util.js",
+  "module": "peer/esm/vis-util.js",
+  "types": "declarations/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/visjs/vis-util.git"
@@ -25,17 +27,16 @@
     "Zuko Mgwili <zuko.mgwili@chillisoft.co.za>"
   ],
   "scripts": {
-    "build": "run-s build:*",
-    "build:code": "rollup -c rollup.config.js",
+    "build": "run-s build:types build:code build:docs",
+    "build:code": "rollup -c rollup.build.js",
     "build:docs": "typedoc ./src",
     "build:types": "tsc -p tsconfig.types.json",
-    "clean": "rimraf '{coverage,docs,esm,reports,types,umd}' 'index.{d.ts,js}'",
-    "lint": "eslint '{src,test}/**/*.{m,}{j,t}s{x,}'",
+    "clean": "rimraf '{coverage,declarations,docs,esnext,peer,reports,standalone}' 'index.{d.ts,js}'",
+    "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "test": "npm run test:coverage",
     "test:coverage": "BABEL_ENV=test-cov nyc mocha",
-    "test:mutate": "BABEL_ENV=test stryker run",
     "test:unit": "BABEL_ENV=test mocha",
     "type-check": "tsc --noemit",
     "version": "npm run contributors:update && git add package.json",
@@ -44,7 +45,6 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged",
       "pre-push": "run-s type-check test lint"
     }
@@ -70,10 +70,10 @@
   "homepage": "https://github.com/visjs/vis-util",
   "files": [
     "LICENSE*",
-    "esm",
-    "index.{d.ts,js}",
-    "types",
-    "umd"
+    "standalone",
+    "peer",
+    "esnext",
+    "declarations"
   ],
   "funding": {
     "type": "opencollective",

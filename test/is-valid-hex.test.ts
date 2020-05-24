@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { isValidHex } from "../src";
 
-describe("isValidHex", function(): void {
+describe("isValidHex", function (): void {
   const valid = [
     "#000000",
     "#0acdc0",
@@ -12,7 +12,7 @@ describe("isValidHex", function(): void {
     "#0ac",
     "#0DC",
     "#09a",
-    "#fAF"
+    "#fAF",
   ];
   const invalid = [
     // without #
@@ -38,20 +38,20 @@ describe("isValidHex", function(): void {
     "garbage",
     "orange",
     "the color is #00AAAA",
-    "true"
+    "true",
   ];
 
-  describe("Valid", function(): void {
+  describe("Valid", function (): void {
     valid.forEach((color): void => {
-      it(color, function(): void {
+      it(color, function (): void {
         expect(isValidHex(color)).to.be.true;
       });
     });
   });
 
-  describe("Invalid", function(): void {
+  describe("Invalid", function (): void {
     invalid.forEach((color): void => {
-      it(color, function(): void {
+      it(color, function (): void {
         expect(isValidHex(color)).to.be.false;
       });
     });

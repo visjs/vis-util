@@ -472,6 +472,7 @@ describe('mergeOptions', function () {
 
   describe('recursiveDOMDelete', function () {
     beforeEach(function() {
+      this.timeout(10000);
       this.jsdom_global = jsdom_global();
     });
 
@@ -598,6 +599,7 @@ describe('mergeOptions', function () {
   describe('getScrollBarWidth', function () {
 
     beforeEach(function() {
+      this.timeout(10000);
       this.jsdom_global = jsdom_global();
     });
 
@@ -725,6 +727,7 @@ describe('mergeOptions', function () {
   describe('asElement', function () {
 
     before(function() {
+      this.timeout(10000);
       this.jsdom_global = jsdom_global();
       this.value  = document.createElement("div");
       this.defaultValue  = document.createElement("div");

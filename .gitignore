@@ -1,11 +1,12 @@
 .nyc_output
 /.stryker-tmp/
-/esm/
+/declarations/
+/esnext/
 /index.d.ts
 /index.js
+/peer/
 /reports/
-/types/
-/umd/
+/standalone/
 coverage
 node_modules
 vis-util-*.tgz
