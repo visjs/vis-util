@@ -9,7 +9,7 @@ interface KV {
 }
 
 /**
- * Test that values can be set accross segments and later retrieved.
+ * Test transactions.
  */
 export function transactions(): void {
   describe("Transactions", function (): void {
