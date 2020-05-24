@@ -144,6 +144,59 @@ export function segmentedLayer(): void {
       ).to.be.false;
     });
 
+    it("Export", function (): void {
+      interface LocalKV {
+        "test.deeply.nested.value": string;
+        "test.deeply.not-exported-value": string;
+        "test.deeply.value": string;
+        "test.value1": string;
+        "test.value2": string;
+      }
+
+      const ls = new LayeredStorage<0 | 2, LocalKV, keyof LocalKV>();
+
+      ls.global.runTransaction((transaction): void => {
+        transaction.set(0, "test.value1", "a value from global segment");
+        transaction.set(0, "test.value2", "a value from global segment");
+      });
+
+      ls.openSegment(a).runTransaction((transaction): void => {
+        transaction.set(2, "test.value1", "a value from different segment");
+        transaction.set(2, "test.value2", "a value from different segment");
+      });
+
+      ls.openSegment(c).runTransaction((transaction): void => {
+        transaction.set(0, "test.deeply.nested.value", "0tdnv");
+        transaction.set(2, "test.deeply.nested.value", "2tdnv");
+        transaction.set(2, "test.deeply.not-exported-value", "2tdn");
+        transaction.set(2, "test.deeply.value", "2tdv");
+        transaction.set(2, "test.value1", "2tv");
+      });
+
+      expect(
+        ls
+          .openSegment(c)
+          .exportToObject([
+            "test.deeply.nested.value",
+            "test.deeply.value",
+            "test.value1",
+            "test.value2",
+          ]),
+        "All requested values should be exported."
+      ).to.deep.equal({
+        test: {
+          value1: "2tv",
+          value2: "a value from global segment",
+          deeply: {
+            nested: {
+              value: "2tdnv",
+            },
+            value: "2tdv",
+          },
+        },
+      });
+    });
+
     describe("Invalid layer names", function (): void {
       [undefined, null, "string", true, false, {}].forEach(
         (layer: any): void => {

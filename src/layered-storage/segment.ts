@@ -133,6 +133,22 @@ export class LayeredStorageSegment<
   }
 
   /**
+   * Export data in an object format.
+   *
+   * @remarks
+   * All values will be fully expanded, all defaults will be applied etc. It's
+   * like fetching all of them through .get().
+   *
+   * @param keys - The keys to export.
+   *
+   * @returns Object representation of given segments current data for
+   * given keys.
+   */
+  public exportToObject(keys: Keys[]): void {
+    return this._core.exportToObject(this.segment, keys);
+  }
+
+  /**
    * Delete all data belonging to this segment.
    */
   public close(): void {

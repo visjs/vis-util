@@ -356,6 +356,43 @@ export class LayeredStorageCore<
   }
 
   /**
+   * Export data in an object format.
+   *
+   * @remarks
+   * All values will be fully expanded, all defaults will be applied etc. It's
+   * like fetching all of them through .get().
+   *
+   * @param segment - Which segment's data to export.
+   * @param compoundKeys - The keys to export.
+   *
+   * @returns Object representation of given segments' current data for given
+   * keys.
+   */
+  public exportToObject(segment: Segment, compoundKeys: Keys[]): any {
+    const result: any = {};
+
+    for (const compoundKey of compoundKeys) {
+      if (typeof compoundKey === "string") {
+        let obj = result;
+
+        const keyParts = compoundKey.split(".");
+        const key = keyParts.pop()!; // String.split() will always have at leas one member.
+
+        for (const keyPart of keyParts) {
+          obj[keyPart] = obj[keyPart] || {};
+          obj = obj[keyPart];
+        }
+
+        obj[key] = this.get(segment, compoundKey);
+      } else {
+        result[compoundKey] = this.get(segment, compoundKey);
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * Clone all data from one segment to another.
    *
    * @param sourceSegment - The existing segment to be cloned.

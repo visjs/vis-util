@@ -78,6 +78,42 @@ export function singleLayer(): void {
       ).to.be.false;
     });
 
+    it("Export", function (): void {
+      interface LocalKV {
+        "test.deeply.nested.value": string;
+        "test.deeply.not-exported-value": string;
+        "test.deeply.value": string;
+        "test.value": string;
+      }
+
+      const ls = new LayeredStorage<0 | 2, LocalKV, keyof LocalKV>();
+
+      ls.global.set(0, "test.value", "0tv");
+      ls.global.set(2, "test.deeply.nested.value", "2tdnv");
+      ls.global.set(2, "test.deeply.value", "2tdv");
+      ls.global.set(2, "test.deeply.not-exported-value", "2tdn");
+      ls.global.set(0, "test.deeply.nested.value", "0tdnv");
+
+      expect(
+        ls.global.exportToObject([
+          "test.deeply.nested.value",
+          "test.deeply.value",
+          "test.value",
+        ]),
+        "All requested values should be exported."
+      ).to.deep.equal({
+        test: {
+          value: "0tv",
+          deeply: {
+            nested: {
+              value: "2tdnv",
+            },
+            value: "2tdv",
+          },
+        },
+      });
+    });
+
     describe("Invalid layer names", function (): void {
       [undefined, null, "string", true, false, {}].forEach(
         (layer: any): void => {
