@@ -10,13 +10,13 @@ interface KV {
  * Test that values can be set and retrieved from single global layer.
  */
 export function singleLayer(): void {
-  describe("Single layer", function(): void {
+  describe("Single layer", function (): void {
     const testValue: KV["test.value"] = deepFreeze({
       number: 7,
-      value: { string: "test" }
+      value: { string: "test" },
     });
 
-    it("Set and get", function(): void {
+    it("Set and get", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.global.set(0, "test.value", testValue);
@@ -26,7 +26,7 @@ export function singleLayer(): void {
       ).to.equal(testValue);
     });
 
-    it("Set and has", function(): void {
+    it("Set and has", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.global.set(0, "test.value", testValue);
@@ -36,7 +36,7 @@ export function singleLayer(): void {
       ).to.be.true;
     });
 
-    it("Set, delete and get", function(): void {
+    it("Set, delete and get", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       expect(
@@ -57,7 +57,7 @@ export function singleLayer(): void {
       ).to.be.undefined;
     });
 
-    it("Set, delete and has", function(): void {
+    it("Set, delete and has", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       expect(
@@ -78,10 +78,10 @@ export function singleLayer(): void {
       ).to.be.false;
     });
 
-    describe("Invalid layer names", function(): void {
+    describe("Invalid layer names", function (): void {
       [undefined, null, "string", true, false, {}].forEach(
         (layer: any): void => {
-          it("" + layer, function(): void {
+          it("" + layer, function (): void {
             const ls = new LayeredStorage<0, KV, keyof KV>();
 
             expect(

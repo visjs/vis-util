@@ -3,7 +3,7 @@ import {
   KeyValueEntry,
   KeyValueLookup,
   LayerRange,
-  Segment
+  Segment,
 } from "./common";
 
 const entriesByKeyPriority = (

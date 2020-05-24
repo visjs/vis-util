@@ -85,7 +85,7 @@ module.exports = {
       files: ["test/**/*.ts"],
       rules: {
         // This is useful to ignore private property access in a test.
-        "@typescript-eslint/ban-ts-ignore": "off"
+        "@typescript-eslint/ban-ts-ignore": "off",
       },
     },
   ],

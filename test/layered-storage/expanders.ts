@@ -12,11 +12,11 @@ interface KV {
  * Test that values can be set and retrieved from single global layer.
  */
 export function expanders(): void {
-  describe("Expanders", function(): void {
+  describe("Expanders", function (): void {
     const expanderAffects = [
       "test.boolean",
       "test.number",
-      "test.string"
+      "test.string",
     ] as const;
     const expander = (
       input: string
@@ -28,14 +28,14 @@ export function expanders(): void {
       return [
         ["test.boolean", boolean === "true" ? true : false],
         ["test.number", +number],
-        ["test.string", string]
+        ["test.string", string],
       ] as const;
     };
     const invalidHandler = (): never => {
       throw new Error("Invalid input.");
     };
 
-    it("Without validation", function(): void {
+    it("Without validation", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.setExpander("test", expanderAffects, expander);
@@ -51,18 +51,18 @@ export function expanders(): void {
         [
           ls.global.get("test.boolean"),
           ls.global.get("test.number"),
-          ls.global.get("test.string")
+          ls.global.get("test.string"),
         ],
         "The expanded values from the expander should be returned."
       ).to.deep.equal([false, 7, "seven"]);
     });
 
-    it("Invalid short value", function(): void {
+    it("Invalid short value", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.setValidators("test", [
         (value): true | string =>
-          /^(true|false) \d+ .*$/.test(value) || "Invalid."
+          /^(true|false) \d+ .*$/.test(value) || "Invalid.",
       ]);
       ls.setInvalidHandler(invalidHandler);
       ls.setExpander("test", expanderAffects, expander);
@@ -75,11 +75,11 @@ export function expanders(): void {
       ).to.throw();
     });
 
-    it("Invalid expanded value", function(): void {
+    it("Invalid expanded value", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.setValidators("test.number", [
-        (value): true | string => value < 7 || "Invalid input."
+        (value): true | string => value < 7 || "Invalid input.",
       ]);
       ls.setInvalidHandler(invalidHandler);
       ls.setExpander("test", expanderAffects, expander);
@@ -92,7 +92,7 @@ export function expanders(): void {
       ).to.throw();
     });
 
-    it("Delete expanded values", function(): void {
+    it("Delete expanded values", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       ls.setExpander("test", expanderAffects, expander);
@@ -104,7 +104,7 @@ export function expanders(): void {
         [
           ls.global.has("test.boolean"),
           ls.global.has("test.number"),
-          ls.global.has("test.string")
+          ls.global.has("test.string"),
         ],
         "All expanded values should be set."
       ).deep.equal([true, true, true]);
@@ -114,7 +114,7 @@ export function expanders(): void {
         [
           ls.global.has("test.boolean"),
           ls.global.has("test.number"),
-          ls.global.has("test.string")
+          ls.global.has("test.string"),
         ],
         "All expanded values should be deleted."
       ).deep.equal([false, false, false]);

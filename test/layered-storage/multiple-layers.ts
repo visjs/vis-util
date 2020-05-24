@@ -11,25 +11,25 @@ interface KV {
  * they should.
  */
 export function multipleLayers(): void {
-  describe("Multiple layers", function(): void {
+  describe("Multiple layers", function (): void {
     const testValue1: KV["test.value"] = deepFreeze({
       number: 1,
-      value: { string: "test" }
+      value: { string: "test" },
     });
     const testValue2: KV["test.value"] = deepFreeze({
       number: 2,
-      value: { string: "test" }
+      value: { string: "test" },
     });
     const testValue3: KV["test.value"] = deepFreeze({
       number: 3,
-      value: { string: "test" }
+      value: { string: "test" },
     });
     const testValue4: KV["test.value"] = deepFreeze({
       number: 4,
-      value: { string: "test" }
+      value: { string: "test" },
     });
 
-    it("Set and get", function(): void {
+    it("Set and get", function (): void {
       const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
 
       ls.global.set(1, "test.value", testValue1);
@@ -51,7 +51,7 @@ export function multipleLayers(): void {
       ).to.equal(testValue4);
     });
 
-    it("Set and has", function(): void {
+    it("Set and has", function (): void {
       const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
 
       expect(
@@ -72,7 +72,7 @@ export function multipleLayers(): void {
       ).to.be.true;
     });
 
-    it("Set, delete and get", function(): void {
+    it("Set, delete and get", function (): void {
       const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
 
       expect(
@@ -105,7 +105,7 @@ export function multipleLayers(): void {
       ).to.be.undefined;
     });
 
-    it("Set, delete and has", function(): void {
+    it("Set, delete and has", function (): void {
       const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
 
       expect(

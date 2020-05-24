@@ -3,7 +3,7 @@ import {
   KeyValueLookup,
   LayerRange,
   Segment,
-  KeyValueEntry
+  KeyValueEntry,
 } from "./common";
 import { LayeredStorageCore } from "./core";
 import { LayeredStorageSegment } from "./segment";

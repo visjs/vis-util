@@ -14,7 +14,7 @@ export function other(): void {
       // Ignore private property access errors. It's no big deal since this
       // is a unit test.
       // @ts-ignore
-      ...ls._core._data.values()
+      ...ls._core._data.values(),
     ].reduce((acc, lData): number => {
       return (
         acc +
@@ -31,7 +31,7 @@ export function other(): void {
     // @ts-ignore
     ls._core._topLevelCache.size;
 
-  it("Empty data structure purging", function(): void {
+  it("Empty data structure purging", function (): void {
     const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
 
     ([1, 4, 9] as const).forEach((layer): void => {
@@ -86,7 +86,7 @@ export function other(): void {
     );
   });
 
-  it("Cache purging", function(): void {
+  it("Cache purging", function (): void {
     const ls = new LayeredStorage<1, KV, keyof KV>();
 
     expect(getCacheSize(ls)).to.equal(0);
@@ -121,7 +121,7 @@ export function other(): void {
     expect(getCacheSize(ls)).to.equal(0);
   });
 
-  it("Empty data structure creation", function(): void {
+  it("Empty data structure creation", function (): void {
     const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
 
     ls.openSegment("c").set(4, "test.value1", 1);
@@ -136,7 +136,7 @@ export function other(): void {
     );
   });
 
-  it("Segment storage reports it's segment", function(): void {
+  it("Segment storage reports it's segment", function (): void {
     const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
 
     expect(

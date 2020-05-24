@@ -14,7 +14,7 @@ interface KV {
  * Test that values can be set and retrieved from single global layer.
  */
 export function validation(): void {
-  describe("Validation", function(): void {
+  describe("Validation", function (): void {
     [
       // No handler.
       ["Default", null, null] as const,
@@ -26,10 +26,10 @@ export function validation(): void {
         TypeError,
         (key: string, value: unknown, message: string): void => {
           throw new TypeError(`${key}: ${value} (${message})`);
-        }
-      ] as const
+        },
+      ] as const,
     ].forEach(([name, throws, handler]): void => {
-      describe(name, function(): void {
+      describe(name, function (): void {
         [
           [false, "test.boolean", 77] as const,
           [false, "test.fail", null] as const,
@@ -41,9 +41,9 @@ export function validation(): void {
           [true, "test.number", 3.5] as const,
           [true, "test.number", 77] as const,
           [true, "test.pass", null] as const,
-          [true, "test.string", "test"] as const
+          [true, "test.string", "test"] as const,
         ].forEach(([valid, key, value]): void => {
-          it(`${key}: ${value}`, function(): void {
+          it(`${key}: ${value}`, function (): void {
             const ls = new LayeredStorage<0, KV, keyof KV>();
 
             // Add handler.
@@ -54,10 +54,10 @@ export function validation(): void {
             // Add validators.
             ls.setValidators("test.boolean", [
               (value: unknown): true | string =>
-                typeof value === "boolean" || "it's not valid"
+                typeof value === "boolean" || "it's not valid",
             ]);
             ls.setValidators("test.fail", [
-              (): true | string => false || "it's not valid"
+              (): true | string => false || "it's not valid",
             ]);
             ls.setValidators("test.integer", [
               // This tests multiple validators.
@@ -65,16 +65,16 @@ export function validation(): void {
                 typeof value === "number" || "it's not valid",
               (value: unknown): true | string =>
                 (typeof value === "number" && value % 1 === 0) ||
-                "it's not valid"
+                "it's not valid",
             ]);
             ls.setValidators("test.number", [
               (value: unknown): true | string =>
-                typeof value === "number" || "it's not valid"
+                typeof value === "number" || "it's not valid",
             ]);
             ls.setValidators("test.pass", [(): true | string => true]);
             ls.setValidators("test.string", [
               (value: unknown): true | string =>
-                typeof value === "string" || "it's not valid"
+                typeof value === "string" || "it's not valid",
             ]);
 
             if (valid) {
@@ -108,12 +108,12 @@ export function validation(): void {
       });
     });
 
-    it("Setting validators twice", function(): void {
+    it("Setting validators twice", function (): void {
       const ls = new LayeredStorage<0, KV, keyof KV>();
 
       expect((): void => {
         ls.setValidators("test.fail", [
-          (): true | string => false || "it's not valid"
+          (): true | string => false || "it's not valid",
         ]);
         ls.setValidators("test.fail", [(): true | string => true]);
       }, "Setting validators repeatedly without replace shoudn't be allowed.").to.throw();

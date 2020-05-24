@@ -12,12 +12,12 @@ interface KV {
  * it's own key.
  */
 export function multipleKeys(): void {
-  describe("Multiple keys", function(): void {
+  describe("Multiple keys", function (): void {
     const testValue1: KV["test.value1"] = false;
     const testValue2: KV["test.value2"] = 4;
     const testValue3: KV["test.value3"] = "abc";
 
-    it("Set and get", function(): void {
+    it("Set and get", function (): void {
       const ls = new LayeredStorage<3, KV, keyof KV>();
 
       ls.global.set(3, "test.value1", testValue1);
@@ -38,7 +38,7 @@ export function multipleKeys(): void {
       ).to.equal(testValue3);
     });
 
-    it("Set and has", function(): void {
+    it("Set and has", function (): void {
       const ls = new LayeredStorage<3, KV, keyof KV>();
 
       ls.global.set(3, "test.value1", testValue1);
@@ -59,7 +59,7 @@ export function multipleKeys(): void {
       ).to.be.true;
     });
 
-    it("Set, delete and get", function(): void {
+    it("Set, delete and get", function (): void {
       const ls = new LayeredStorage<3, KV, keyof KV>();
 
       expect(
@@ -86,7 +86,7 @@ export function multipleKeys(): void {
       ).to.be.undefined;
     });
 
-    it("Set, delete and has", function(): void {
+    it("Set, delete and has", function (): void {
       const ls = new LayeredStorage<3, KV, keyof KV>();
 
       expect(

@@ -8,7 +8,7 @@ import { segmentedLayer } from "./segmented-layer";
 import { singleLayer } from "./single-layer";
 import { validation } from "./validation";
 
-describe("Layered storage", function(): void {
+describe("Layered storage", function (): void {
   allCombined();
   cloning();
   expanders();

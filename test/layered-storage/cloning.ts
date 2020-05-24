@@ -1,6 +1,6 @@
 import {
   LayeredStorage,
-  LayeredStorageSegment
+  LayeredStorageSegment,
 } from "../../src/layered-storage";
 import { expect } from "chai";
 
@@ -12,7 +12,7 @@ interface KV {
  * Test that segments can be cloned.
  */
 export function cloning(): void {
-  describe("Cloning", function(): void {
+  describe("Cloning", function (): void {
     const configs: {
       name: string;
       clone(
@@ -23,17 +23,17 @@ export function cloning(): void {
       {
         name: "From main instance",
         clone: (ls): LayeredStorageSegment<0 | 1 | 2, KV, keyof KV> =>
-          ls.cloneSegment(1, 2)
+          ls.cloneSegment(1, 2),
       },
       {
         name: "From segment instance",
         clone: (_ls, s1): LayeredStorageSegment<0 | 1 | 2, KV, keyof KV> =>
-          s1.cloneSegment(2)
-      }
+          s1.cloneSegment(2),
+      },
     ];
 
     configs.forEach(({ name, clone }): void => {
-      it(name, function(): void {
+      it(name, function (): void {
         const ls = new LayeredStorage<0 | 1 | 2, KV, keyof KV>();
 
         const s1 = ls.openSegment(1);
@@ -70,7 +70,7 @@ export function cloning(): void {
       });
     });
 
-    it("Cloning into existing segment", function(): void {
+    it("Cloning into existing segment", function (): void {
       const ls = new LayeredStorage<1, KV, keyof KV>();
 
       const s1 = ls.openSegment(1);

@@ -8,51 +8,51 @@ const expectedResult = deepFreeze({
   global: {
     "test.value1": 5,
     "test.value2": undefined,
-    "test.value3": undefined
+    "test.value3": undefined,
   },
   a: {
     "test.value1": 5,
     "test.value2": 2,
-    "test.value3": undefined
+    "test.value3": undefined,
   },
   b: {
     "test.value1": 5,
     "test.value2": 8,
-    "test.value3": 9
+    "test.value3": 9,
   },
   c: {
     "test.value1": 3,
     "test.value2": 7,
-    "test.value3": undefined
-  }
+    "test.value3": undefined,
+  },
 });
 
 const expectedResultMinusC = deepFreeze({
   global: expectedResult.global,
   a: expectedResult.a,
   b: expectedResult.b,
-  c: expectedResult.global
+  c: expectedResult.global,
 });
 
 const expectedResultMinusAC = deepFreeze({
   global: expectedResult.global,
   a: expectedResult.global,
   b: expectedResult.b,
-  c: expectedResult.global
+  c: expectedResult.global,
 });
 
 const expectedResultMinusABC = deepFreeze({
   global: expectedResult.global,
   a: expectedResult.global,
   b: expectedResult.global,
-  c: expectedResult.global
+  c: expectedResult.global,
 });
 
 /**
  * Test all mutatins including segmented mutations with Layered Storage.
  */
 export function allCombined(): void {
-  it("All combined", function(): void {
+  it("All combined", function (): void {
     const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
 
     const a = ls.openSegment("a");
@@ -66,7 +66,7 @@ export function allCombined(): void {
         "global" as const,
         "a" as const,
         "b" as const,
-        "c" as const
+        "c" as const,
       ]) {
         data[segment] = {};
         for (const key of ["test.value1", "test.value2", "test.value3"]) {

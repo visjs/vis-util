@@ -11,25 +11,25 @@ interface KV {
  * Test that values can be set accross segments and later retrieved.
  */
 export function segmentedLayer(): void {
-  describe("Segmented layer", function(): void {
+  describe("Segmented layer", function (): void {
     const testValueA: KV["test.value"] = deepFreeze({
       number: 1,
-      value: { string: "A" }
+      value: { string: "A" },
     });
     const testValueB: KV["test.value"] = deepFreeze({
       number: 2,
-      value: { string: "B" }
+      value: { string: "B" },
     });
     const testValueC: KV["test.value"] = deepFreeze({
       number: 3,
-      value: { string: "C" }
+      value: { string: "C" },
     });
 
     const a = Symbol("A");
     const b = Symbol("B");
     const c = Symbol("C");
 
-    it("Get without set", function(): void {
+    it("Get without set", function (): void {
       const ls = new LayeredStorage<7, KV, keyof KV>();
 
       ls.global.set(7, "test.value", testValueA);
@@ -40,7 +40,7 @@ export function segmentedLayer(): void {
       ).to.equal(testValueA);
     });
 
-    it("Get without set after unrelated set", function(): void {
+    it("Get without set after unrelated set", function (): void {
       const ls = new LayeredStorage<7, KV, keyof KV>();
 
       ls.global.set(7, "test.value", testValueA);
@@ -52,7 +52,7 @@ export function segmentedLayer(): void {
       ).to.equal(testValueA);
     });
 
-    it("Set and get", function(): void {
+    it("Set and get", function (): void {
       const ls = new LayeredStorage<7, KV, keyof KV>();
 
       ls.openSegment(a).set(7, "test.value", testValueA);
@@ -78,7 +78,7 @@ export function segmentedLayer(): void {
       ).to.equal(testValueC);
     });
 
-    it("Set and has", function(): void {
+    it("Set and has", function (): void {
       const ls = new LayeredStorage<7, KV, keyof KV>();
 
       ls.openSegment(b).set(7, "test.value", testValueB);
@@ -102,7 +102,7 @@ export function segmentedLayer(): void {
       ).to.be.false;
     });
 
-    it("Set, delete and get", function(): void {
+    it("Set, delete and get", function (): void {
       const ls = new LayeredStorage<7, KV, keyof KV>();
 
       expect(
@@ -123,7 +123,7 @@ export function segmentedLayer(): void {
       ).to.be.undefined;
     });
 
-    it("Set, delete and has", function(): void {
+    it("Set, delete and has", function (): void {
       const ls = new LayeredStorage<7, KV, keyof KV>();
 
       expect(
@@ -144,10 +144,10 @@ export function segmentedLayer(): void {
       ).to.be.false;
     });
 
-    describe("Invalid layer names", function(): void {
+    describe("Invalid layer names", function (): void {
       [undefined, null, "string", true, false, {}].forEach(
         (layer: any): void => {
-          it("" + layer, function(): void {
+          it("" + layer, function (): void {
             const ls = new LayeredStorage<0, KV, keyof KV>();
 
             expect(
