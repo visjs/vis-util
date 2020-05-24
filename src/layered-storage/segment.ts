@@ -77,6 +77,16 @@ export class LayeredStorageSegment<
   }
 
   /**
+   * Set the inherance chain of this segment.
+   *
+   * @param segments - The segments from which this segment will inherit.
+   * @param global - Whether to inherit from global (as is the default) or not.
+   */
+  public setInheritance(segments: Segment[], global = true): void {
+    this._core.setInheritance(this.segment, segments, global);
+  }
+
+  /**
    * Create a new segmented instance for working with a single segment with a
    * copy of another segments data.
    *

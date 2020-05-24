@@ -72,6 +72,15 @@ export class LayeredStorageCore<
   private readonly _segments = new Set<Segment>();
 
   /**
+   * Segment inheritance chains.
+   *
+   * @remarks
+   * The first element always has to be the segment itself:
+   * [this segment, ...ancestors, global segment]
+   */
+  private readonly _inheritance = new Map<Segment, Segment[]>();
+
+  /**
    * A list of validators for each key.
    */
   private readonly _validators: TypedMap<
@@ -204,28 +213,34 @@ export class LayeredStorageCore<
   /**
    * Retrieve a value.
    *
-   * @param segment - Which segment to search through in addition to the global
+   * @param thisSegment - Which segment to search through in addition to the global
    * segment which is used as the fallback on each level.
    * @param key - The key corresponding to the requested value.
    *
    * @returns The value or undefined if it wasn't found.
    */
   public get<Key extends Keys>(
-    segment: Segment,
+    thisSegment: Segment,
     key: Key
   ): KV[Key] | undefined {
-    let segmentCache = this._topLevelCache.get(segment);
-    if (typeof segmentCache === "undefined") {
-      segmentCache = new Map();
-      this._topLevelCache.set(segment, segmentCache);
+    let thisSegmentCache = this._topLevelCache.get(thisSegment);
+    if (typeof thisSegmentCache === "undefined") {
+      thisSegmentCache = new Map();
+      this._topLevelCache.set(thisSegment, thisSegmentCache);
     }
 
     // Return cached value if it exists.
-    const cached = segmentCache.get(key);
+    const cached = thisSegmentCache.get(key);
     if (typeof cached !== "undefined") {
       // TODO: The non null assertion shouldn't be necessary.
       return cached === null ? void 0 : cached!;
     }
+
+    // Fetch the inheritance chain.
+    const segments = this._inheritance.get(thisSegment) ?? [
+      thisSegment,
+      this.globalSegment,
+    ];
 
     // Search the layers from highest to lowest priority.
     for (const layerData of this._layerDatas) {
@@ -234,35 +249,32 @@ export class LayeredStorageCore<
         continue;
       }
 
-      // Check the segment and quit if found.
-      const segmentData = layerData.get(segment);
-      if (typeof segmentData !== "undefined") {
+      // Search the inheritance chain.
+      for (const segment of segments) {
+        // Check the segment and quit if found.
+        const segmentData = layerData.get(segment);
+        if (typeof segmentData === "undefined") {
+          // Empty segment on this layer.
+          continue;
+        }
+
         const value = segmentData.get(key);
-        if (typeof value !== "undefined") {
-          // Save to the cache.
-          segmentCache.set(key, value);
-
-          return value;
+        if (typeof value === "undefined") {
+          // No value for this segment on this layer.
+          continue;
         }
-      }
 
-      // Check the global segment and quit if found.
-      const globalData = layerData.get(this.globalSegment);
-      if (typeof globalData !== "undefined") {
-        const value = globalData.get(key);
-        if (typeof value !== "undefined") {
-          // Save to the cache.
-          segmentCache.set(key, value);
+        // Save to the cache.
+        thisSegmentCache.set(key, value);
 
-          return value;
-        }
+        return value;
       }
     }
 
     // If nothing was found by now there are no values for the key.
 
     // Save to the cache.
-    segmentCache.set(key, null);
+    thisSegmentCache.set(key, null);
 
     // Return the empty value.
     return;
@@ -377,6 +389,29 @@ export class LayeredStorageCore<
   }
 
   /**
+   * Set the inherance chain of given segment.
+   *
+   * @param segment - The segment that will inherit.
+   * @param segments - The segments from which will be inherited.
+   * @param global - Whether to inherit from global (as is the default) or not.
+   */
+  public setInheritance(
+    segment: Segment,
+    segments: Segment[],
+    global = true
+  ): void {
+    this._inheritance.set(
+      segment,
+      global
+        ? [segment, ...segments, this.globalSegment]
+        : [segment, ...segments]
+    );
+
+    // Inheritance can affect anything, delete the whole cache for this segment.
+    this._topLevelCache.delete(segment);
+  }
+
+  /**
    * Export data in an object format.
    *
    * @remarks
@@ -461,6 +496,7 @@ export class LayeredStorageCore<
     }
     this._topLevelCache.delete(segment);
     this._segments.delete(segment);
+    this._inheritance.delete(segment);
   }
 
   /**
