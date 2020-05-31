@@ -101,7 +101,7 @@ export class LayeredStorageCore<
    */
   private readonly _deleteExpanders: Map<
     keyof IKV,
-    readonly (keyof OKV)[]
+    readonly (keyof IKV)[]
   > = new Map();
 
   /**
@@ -288,7 +288,7 @@ export class LayeredStorageCore<
    *
    * @returns True if found, false otherwise.
    */
-  public has<Key extends keyof OKV>(segment: Segment, key: Key): boolean {
+  public has(segment: Segment, key: keyof OKV): boolean {
     return typeof this.get(segment, key) !== "undefined";
   }
 
@@ -318,22 +318,27 @@ export class LayeredStorageCore<
       return (): void => {};
     }
 
-    const expandedEntries = this._expand(key, value)
-      // The invalid value handler may throw here and abort everything otherwise
-      // skip just the invalid ones.
-      .filter((expandedEntry): boolean =>
-        this._validate(expandedEntry[0], expandedEntry[1])
+    const expandedEntries = this._expand(key, value);
+    if (typeof expandedEntries === "undefined") {
+      // This is the final key, save it.
+      return (): void => {
+        const { segmentData } = this._getLSData(layer, segment);
+
+        segmentData.set(key, value);
+        this._cleanCache(segment, key);
+      };
+    } else {
+      // There are some expansions for this key, process them.
+      const funcs = expandedEntries.map((entry): (() => void) =>
+        this.twoPartSet(layer, segment, entry[0], entry[1])
       );
 
-    // The value is valid. It can be safely saved into the storage.
-    return (): void => {
-      const { segmentData } = this._getLSData(layer, segment);
-
-      for (const expandedEntry of expandedEntries) {
-        segmentData.set(expandedEntry[0], expandedEntry[1]);
-        this._cleanCache(segment, expandedEntry[0]);
-      }
-    };
+      return (): void => {
+        for (const func of funcs) {
+          func();
+        }
+      };
+    }
   }
 
   /**
@@ -342,25 +347,18 @@ export class LayeredStorageCore<
    * @param layer - Which layer to delete from.
    * @param segment - Which segment to delete from.
    * @param key - The key that identifies the value to be deleted.
-   *
-   * @returns Function that actually deletes the values.
    */
-  public twoPartDelete<Key extends keyof IKV>(
-    layer: Layer,
-    segment: Segment,
-    key: Key
-  ): () => void {
+  public delete(layer: Layer, segment: Segment, key: keyof IKV): void {
     if (typeof layer !== "number") {
       throw new TypeError("Layers have to be numbers.");
     }
 
-    return (): void => {
+    const expandedKeys = this._deleteExpanders.get(key);
+    if (typeof expandedKeys === "undefined") {
+      // This is the final key, delete it.
       const { layerData, segmentData } = this._getLSData(layer, segment);
 
-      const expandedKeys = this._deleteExpanders.get(key) || [key];
-      for (const expandedKey of expandedKeys) {
-        segmentData.delete(expandedKey);
-      }
+      segmentData.delete(key);
 
       // Purge the segment if empty.
       if (segmentData.size === 0) {
@@ -372,10 +370,13 @@ export class LayeredStorageCore<
         this._data.delete(layer);
       }
 
+      this._cleanCache(segment, key);
+    } else {
+      // There are some expansions for this key, process them.
       for (const expandedKey of expandedKeys) {
-        this._cleanCache(segment, expandedKey);
+        this.delete(layer, segment, expandedKey);
       }
-    };
+    }
   }
 
   /**
@@ -387,7 +388,7 @@ export class LayeredStorageCore<
    */
   public setInheritance(
     segment: Segment,
-    segments: Segment[],
+    segments: readonly Segment[],
     global = true
   ): void {
     this._inheritance.set(
@@ -414,7 +415,10 @@ export class LayeredStorageCore<
    * @returns Object representation of given segments' current data for given
    * keys.
    */
-  public exportToObject(segment: Segment, compoundKeys: (keyof OKV)[]): any {
+  public exportToObject(
+    segment: Segment,
+    compoundKeys: readonly (keyof OKV)[]
+  ): any {
     const result: any = {};
 
     for (const compoundKey of compoundKeys) {
@@ -510,8 +514,8 @@ export class LayeredStorageCore<
    * @param replace - If true existing validators will be replaced, if false an
    * error will be thrown if some validators already exist for given key.
    */
-  public setValidators<Key extends keyof IKV>(
-    key: Key,
+  public setValidators(
+    key: keyof IKV,
     validators: LayeredStorageValidator[],
     replace: boolean
   ): void {
@@ -564,11 +568,9 @@ export class LayeredStorageCore<
   private _expand<Key extends keyof IKV>(
     key: Key,
     value: IKV[Key]
-  ): readonly KeyValueEntry<OKV, keyof OKV>[] {
+  ): readonly KeyValueEntry<OKV, keyof OKV>[] | undefined {
     const expand = this._setExpanders.get(key);
-    if (typeof expand === "undefined") {
-      return [[key, value]];
-    } else {
+    if (typeof expand !== "undefined") {
       return expand(value);
     }
   }
@@ -588,10 +590,10 @@ export class LayeredStorageCore<
    * @param replace - If true existing expander will be replaced, if false an
    * error will be thrown if an expander already exists for given key.
    */
-  public setExpander<Key extends keyof IKV, Affects extends keyof OKV>(
+  public setExpander<Key extends keyof IKV>(
     key: Key,
-    affects: readonly Affects[],
-    expander: (value: IKV[Key]) => readonly KeyValueEntry<OKV, Affects>[],
+    affects: readonly (keyof IKV)[],
+    expander: (value: IKV[Key]) => readonly KeyValueEntry<IKV, keyof IKV>[],
     replace: boolean
   ): void {
     if (
@@ -601,8 +603,13 @@ export class LayeredStorageCore<
       throw new Error("An expander for this key already exists.");
     }
 
-    this._setExpanders.set(key, expander);
-    this._deleteExpanders.set(key, affects);
+    if (affects.length) {
+      this._setExpanders.set(key, expander);
+      this._deleteExpanders.set(key, affects.slice());
+    } else {
+      this._setExpanders.delete(key);
+      this._deleteExpanders.delete(key);
+    }
   }
 
   /**

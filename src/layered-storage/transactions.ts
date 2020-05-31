@@ -56,9 +56,9 @@ export class LayeredStorageTransaction<
    * @param key - The key that identifies the value to be deleted.
    */
   public delete(layer: Layer, key: keyof IKV): void {
-    this._actions.push(
-      this._storageCore.twoPartDelete(layer, this._segment, key)
-    );
+    this._actions.push((): void => {
+      this._storageCore.delete(layer, this._segment, key);
+    });
   }
 
   /**

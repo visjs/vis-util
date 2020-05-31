@@ -110,10 +110,10 @@ export class LayeredStorage<
    * @param replace - If true existing expander will be relaced, if false an
    * error will be thrown if an expander already exists for given key.
    */
-  public setExpander<Key extends keyof IKV, Affects extends keyof OKV>(
+  public setExpander<Key extends keyof IKV>(
     key: Key,
-    affects: readonly Affects[],
-    expander: (value: IKV[Key]) => readonly KeyValueEntry<OKV, Affects>[],
+    affects: readonly (keyof IKV)[],
+    expander: (value: IKV[Key]) => readonly KeyValueEntry<IKV, keyof IKV>[],
     replace = false
   ): void {
     this._core.setExpander(key, affects, expander, replace);

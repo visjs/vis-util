@@ -119,5 +119,52 @@ export function expanders(): void {
         "All expanded values should be deleted."
       ).deep.equal([false, false, false]);
     });
+
+    it("Recursive expands (set and delete)", function (): void {
+      interface IKV {
+        a: {
+          b: {
+            c: "value";
+          };
+        };
+        "a.b": {
+          c: "value";
+        };
+        "a.b.c": "value";
+      }
+      interface OKV {
+        "a.b.c": "value";
+      }
+
+      const ls = new LayeredStorage<0, IKV, OKV>();
+
+      ls.setExpander("a", ["a.b"], ({ b }): KeyValueEntry<IKV, "a.b">[] => [
+        ["a.b", b],
+      ]);
+      ls.setExpander("a.b", ["a.b.c"], ({ c }): KeyValueEntry<
+        IKV,
+        "a.b.c"
+      >[] => [["a.b.c", c]]);
+
+      ls.global.set(0, "a", { b: { c: "value" } });
+      expect(
+        [
+          ls.global.has("a" as any),
+          ls.global.has("a.b" as any),
+          ls.global.has("a.b.c"),
+        ],
+        "The expanders should recursively expand the value into the final a.b.c and set it's value."
+      ).deep.equal([false, false, true]);
+
+      ls.global.delete(0, "a");
+      expect(
+        [
+          ls.global.has("a" as any),
+          ls.global.has("a.b" as any),
+          ls.global.has("a.b.c"),
+        ],
+        "The expanders should recursively expand the value into the final a.b.c and delete it."
+      ).deep.equal([false, false, false]);
+    });
   });
 }

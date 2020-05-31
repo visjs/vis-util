@@ -156,7 +156,7 @@ export class LayeredStorageSegment<
    * @returns Object representation of given segments current data for
    * given keys.
    */
-  public exportToObject(keys: (keyof OKV)[]): void {
+  public exportToObject(keys: readonly (keyof OKV)[]): void {
     return this._core.exportToObject(this.segment, keys);
   }
 
