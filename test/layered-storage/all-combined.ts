@@ -53,7 +53,7 @@ const expectedResultMinusABC = deepFreeze({
  */
 export function allCombined(): void {
   it("All combined", function (): void {
-    const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
+    const ls = new LayeredStorage<1 | 4 | 9, KV, KV>();
 
     const a = ls.openSegment("a");
     const b = ls.openSegment("b");

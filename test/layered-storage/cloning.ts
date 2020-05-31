@@ -16,25 +16,25 @@ export function cloning(): void {
     const configs: {
       name: string;
       clone(
-        ls: LayeredStorage<0 | 1 | 2, KV, keyof KV>,
-        s1: LayeredStorageSegment<0 | 1 | 2, KV, keyof KV>
-      ): LayeredStorageSegment<0 | 1 | 2, KV, keyof KV>;
+        ls: LayeredStorage<0 | 1 | 2, KV, KV>,
+        s1: LayeredStorageSegment<0 | 1 | 2, KV, KV>
+      ): LayeredStorageSegment<0 | 1 | 2, KV, KV>;
     }[] = [
       {
         name: "From main instance",
-        clone: (ls): LayeredStorageSegment<0 | 1 | 2, KV, keyof KV> =>
+        clone: (ls): LayeredStorageSegment<0 | 1 | 2, KV, KV> =>
           ls.cloneSegment(1, 2),
       },
       {
         name: "From segment instance",
-        clone: (_ls, s1): LayeredStorageSegment<0 | 1 | 2, KV, keyof KV> =>
+        clone: (_ls, s1): LayeredStorageSegment<0 | 1 | 2, KV, KV> =>
           s1.cloneSegment(2),
       },
     ];
 
     configs.forEach(({ name, clone }): void => {
       it(name, function (): void {
-        const ls = new LayeredStorage<0 | 1 | 2, KV, keyof KV>();
+        const ls = new LayeredStorage<0 | 1 | 2, KV, KV>();
 
         const s1 = ls.openSegment(1);
 
@@ -71,7 +71,7 @@ export function cloning(): void {
     });
 
     it("Cloning into existing segment", function (): void {
-      const ls = new LayeredStorage<1, KV, keyof KV>();
+      const ls = new LayeredStorage<1, KV, KV>();
 
       const s1 = ls.openSegment(1);
       const s2 = ls.openSegment(2);

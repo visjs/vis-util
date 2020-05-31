@@ -30,7 +30,7 @@ export function segmentedLayer(): void {
     const c = Symbol("C");
 
     it("Get without set", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       ls.global.set(7, "test.value", testValueA);
 
@@ -41,7 +41,7 @@ export function segmentedLayer(): void {
     });
 
     it("Get without set after unrelated set", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       ls.global.set(7, "test.value", testValueA);
       ls.openSegment(b).set(7, "unrelated.value", testValueB);
@@ -53,7 +53,7 @@ export function segmentedLayer(): void {
     });
 
     it("Set and get", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       ls.openSegment(a).set(7, "test.value", testValueA);
       ls.openSegment(b).set(7, "test.value", testValueB);
@@ -79,7 +79,7 @@ export function segmentedLayer(): void {
     });
 
     it("Set and has", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       ls.openSegment(b).set(7, "test.value", testValueB);
 
@@ -103,7 +103,7 @@ export function segmentedLayer(): void {
     });
 
     it("Set, delete and get", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       expect(
         ls.openSegment(c).get("test.value"),
@@ -124,7 +124,7 @@ export function segmentedLayer(): void {
     });
 
     it("Set, delete and has", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       expect(
         ls.openSegment(c).get("test.value"),
@@ -153,7 +153,7 @@ export function segmentedLayer(): void {
         "test.value2": string;
       }
 
-      const ls = new LayeredStorage<0 | 2, LocalKV, keyof LocalKV>();
+      const ls = new LayeredStorage<0 | 2, LocalKV, LocalKV>();
 
       ls.global.runTransaction((transaction): void => {
         transaction.set(0, "test.value1", "a value from global segment");
@@ -201,7 +201,7 @@ export function segmentedLayer(): void {
       [undefined, null, "string", true, false, {}].forEach(
         (layer: any): void => {
           it("" + layer, function (): void {
-            const ls = new LayeredStorage<0, KV, keyof KV>();
+            const ls = new LayeredStorage<0, KV, KV>();
 
             expect(
               (): void =>

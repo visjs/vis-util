@@ -30,7 +30,7 @@ export function multipleLayers(): void {
     });
 
     it("Set and get", function (): void {
-      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
+      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, KV>();
 
       ls.global.set(1, "test.value", testValue1);
       expect(
@@ -52,7 +52,7 @@ export function multipleLayers(): void {
     });
 
     it("Set and has", function (): void {
-      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
+      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, KV>();
 
       expect(
         ls.global.has("test.value"),
@@ -73,7 +73,7 @@ export function multipleLayers(): void {
     });
 
     it("Set, delete and get", function (): void {
-      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
+      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, KV>();
 
       expect(
         ls.global.get("test.value"),
@@ -106,7 +106,7 @@ export function multipleLayers(): void {
     });
 
     it("Set, delete and has", function (): void {
-      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, keyof KV>();
+      const ls = new LayeredStorage<1 | 2 | 3 | 4, KV, KV>();
 
       expect(
         ls.global.has("test.value"),

@@ -18,7 +18,7 @@ export function multipleKeys(): void {
     const testValue3: KV["test.value3"] = "abc";
 
     it("Set and get", function (): void {
-      const ls = new LayeredStorage<3, KV, keyof KV>();
+      const ls = new LayeredStorage<3, KV, KV>();
 
       ls.global.set(3, "test.value1", testValue1);
       ls.global.set(3, "test.value2", testValue2);
@@ -39,7 +39,7 @@ export function multipleKeys(): void {
     });
 
     it("Set and has", function (): void {
-      const ls = new LayeredStorage<3, KV, keyof KV>();
+      const ls = new LayeredStorage<3, KV, KV>();
 
       ls.global.set(3, "test.value1", testValue1);
       ls.global.set(3, "test.value2", testValue2);
@@ -60,7 +60,7 @@ export function multipleKeys(): void {
     });
 
     it("Set, delete and get", function (): void {
-      const ls = new LayeredStorage<3, KV, keyof KV>();
+      const ls = new LayeredStorage<3, KV, KV>();
 
       expect(
         ls.global.get("test.value2"),
@@ -87,7 +87,7 @@ export function multipleKeys(): void {
     });
 
     it("Set, delete and has", function (): void {
-      const ls = new LayeredStorage<3, KV, keyof KV>();
+      const ls = new LayeredStorage<3, KV, KV>();
 
       expect(
         ls.global.has("test.value2"),

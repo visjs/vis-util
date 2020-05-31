@@ -26,7 +26,7 @@ export function inheritance(): void {
     const f = Symbol("F");
 
     it("Default inheritance", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       ls.global.set(7, "test.value", "global");
       ls.openSegment(a).set(7, "test.value", "A");
@@ -39,7 +39,7 @@ export function inheritance(): void {
     });
 
     it("Disable global inheritance", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       ls.global.set(7, "test.value", "global");
       ls.openSegment(a).set(7, "test.value", "A");
@@ -53,7 +53,7 @@ export function inheritance(): void {
     });
 
     it("Other segment without global", function (): void {
-      const ls = new LayeredStorage<3 | 7, KV, keyof KV>();
+      const ls = new LayeredStorage<3 | 7, KV, KV>();
 
       ls.global.set(7, "test.value", "global");
       ls.openSegment(a).set(7, "test.value", "A");
@@ -67,7 +67,7 @@ export function inheritance(): void {
     });
 
     it("Other segment with global", function (): void {
-      const ls = new LayeredStorage<3 | 7, KV, keyof KV>();
+      const ls = new LayeredStorage<3 | 7, KV, KV>();
 
       ls.global.set(7, "test.value", "global");
       ls.openSegment(a).set(3, "test.value", "A");
@@ -81,7 +81,7 @@ export function inheritance(): void {
     });
 
     it("Multiple inheritance", function (): void {
-      const ls = new LayeredStorage<3 | 7, KV, keyof KV>();
+      const ls = new LayeredStorage<3 | 7, KV, KV>();
 
       ls.openSegment(f).setInheritance([e, d, c, b, a]);
 
@@ -130,7 +130,7 @@ export function inheritance(): void {
     });
 
     it("Change inheritance", function (): void {
-      const ls = new LayeredStorage<3 | 7, KV, keyof KV>();
+      const ls = new LayeredStorage<3 | 7, KV, KV>();
 
       ls.global.set(7, "test.value", "global");
       ls.openSegment(a).set(7, "test.value", "A");

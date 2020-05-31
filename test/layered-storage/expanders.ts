@@ -41,7 +41,7 @@ export function expanders(): void {
     };
 
     it("Without validation", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       ls.setExpander("test", expanderAffects, expander);
 
@@ -63,7 +63,7 @@ export function expanders(): void {
     });
 
     it("Invalid short value", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       ls.setValidators("test", [match(/^(true|false) \d+ .*$/)]);
       ls.setInvalidHandler(invalidHandler);
@@ -78,7 +78,7 @@ export function expanders(): void {
     });
 
     it("Invalid expanded value", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       ls.setValidators("test.number", [numberLowerThan(7)]);
       ls.setInvalidHandler(invalidHandler);
@@ -93,7 +93,7 @@ export function expanders(): void {
     });
 
     it("Delete expanded values", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       ls.setExpander("test", expanderAffects, expander);
 

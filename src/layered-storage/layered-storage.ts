@@ -1,10 +1,4 @@
-import {
-  KeyRange,
-  KeyValueEntry,
-  KeyValueLookup,
-  LayerRange,
-  Segment,
-} from "./common";
+import { KeyValueEntry, KeyValueLookup, LayerRange, Segment } from "./common";
 import { LayeredStorageCore, LayeredStorageInvalidValueHandler } from "./core";
 import { LayeredStorageSegment } from "./segment";
 import { LayeredStorageTransaction } from "./transactions";
@@ -21,20 +15,18 @@ export { LayeredStorageTransaction };
  * - Segmented value overrides global (nonsegmented) value.
  *
  * @typeParam Layer - The allowed layers.
- * (TS only, ignored in JS).
- * @typeParam KV - The value types associeated with their keys.
- * (TS only, ignored in JS).
- * @typeParam Keys - The allowed keys.
- * (TS only, ignored in JS).
+ * @typeParam IKV - The value types associeated with their keys on input (set).
+ * @typeParam OKV - The value types associeated with their keys on output (get,
+ * export).
  */
 export class LayeredStorage<
   Layer extends LayerRange,
-  KV extends KeyValueLookup<Keys>,
-  Keys extends KeyRange = keyof KV
+  IKV extends OKV,
+  OKV extends KeyValueLookup
 > {
-  private readonly _core = new LayeredStorageCore<Layer, KV, Keys>();
+  private readonly _core = new LayeredStorageCore<Layer, IKV, OKV>();
 
-  public readonly global = new LayeredStorageSegment<Layer, KV, Keys>(
+  public readonly global = new LayeredStorageSegment<Layer, IKV, OKV>(
     this._core,
     this._core.globalSegment
   );
@@ -46,7 +38,7 @@ export class LayeredStorage<
    *
    * @returns A new segmented instance permanently bound to this instance.
    */
-  public openSegment(segment: Segment): LayeredStorageSegment<Layer, KV, Keys> {
+  public openSegment(segment: Segment): LayeredStorageSegment<Layer, IKV, OKV> {
     return new LayeredStorageSegment(this._core, segment);
   }
 
@@ -64,7 +56,7 @@ export class LayeredStorage<
   public cloneSegment(
     sourceSegment: Segment,
     targetSegment: Segment
-  ): LayeredStorageSegment<Layer, KV, Keys> {
+  ): LayeredStorageSegment<Layer, IKV, OKV> {
     this._core.cloneSegmentData(sourceSegment, targetSegment);
     return new LayeredStorageSegment(this._core, targetSegment);
   }
@@ -85,7 +77,7 @@ export class LayeredStorage<
    * value and a message from the failed validator.
    */
   public setInvalidHandler(
-    handler: LayeredStorageInvalidValueHandler<Keys>
+    handler: LayeredStorageInvalidValueHandler<keyof IKV>
   ): void {
     this._core.setInvalidHandler(handler);
   }
@@ -99,7 +91,7 @@ export class LayeredStorage<
    * @param replace - If true existing validators will be replaced, if false an
    * error will be thrown if some validators already exist for given key.
    */
-  public setValidators<Key extends Keys>(
+  public setValidators<Key extends keyof IKV>(
     key: Key,
     validators: LayeredStorageValidator[],
     replace = false
@@ -118,10 +110,10 @@ export class LayeredStorage<
    * @param replace - If true existing expander will be relaced, if false an
    * error will be thrown if an expander already exists for given key.
    */
-  public setExpander<Key extends Keys, Affects extends Keys>(
+  public setExpander<Key extends keyof IKV, Affects extends keyof OKV>(
     key: Key,
     affects: readonly Affects[],
-    expander: (value: KV[Key]) => readonly KeyValueEntry<KV, Affects>[],
+    expander: (value: IKV[Key]) => readonly KeyValueEntry<OKV, Affects>[],
     replace = false
   ): void {
     this._core.setExpander(key, affects, expander, replace);

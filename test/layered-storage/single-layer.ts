@@ -17,7 +17,7 @@ export function singleLayer(): void {
     });
 
     it("Set and get", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       ls.global.set(0, "test.value", testValue);
       expect(
@@ -27,7 +27,7 @@ export function singleLayer(): void {
     });
 
     it("Set and has", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       ls.global.set(0, "test.value", testValue);
       expect(
@@ -37,7 +37,7 @@ export function singleLayer(): void {
     });
 
     it("Set, delete and get", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       expect(
         ls.global.get("test.value"),
@@ -58,7 +58,7 @@ export function singleLayer(): void {
     });
 
     it("Set, delete and has", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       expect(
         ls.global.has("test.value"),
@@ -86,7 +86,7 @@ export function singleLayer(): void {
         "test.value": string;
       }
 
-      const ls = new LayeredStorage<0 | 2, LocalKV, keyof LocalKV>();
+      const ls = new LayeredStorage<0 | 2, LocalKV, LocalKV>();
 
       ls.global.set(0, "test.value", "0tv");
       ls.global.set(2, "test.deeply.nested.value", "2tdnv");
@@ -118,7 +118,7 @@ export function singleLayer(): void {
       [undefined, null, "string", true, false, {}].forEach(
         (layer: any): void => {
           it("" + layer, function (): void {
-            const ls = new LayeredStorage<0, KV, keyof KV>();
+            const ls = new LayeredStorage<0, KV, KV>();
 
             expect(
               (): void => void ls.global.set(layer, "test.value", testValue),

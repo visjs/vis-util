@@ -1,4 +1,4 @@
-import { KeyValueLookup, LayerRange, Segment, KeyRange } from "./common";
+import { KeyValueLookup, LayerRange, Segment } from "./common";
 import { LayeredStorageCore } from "./core";
 import { LayeredStorageTransaction } from "./transactions";
 
@@ -7,16 +7,14 @@ import { LayeredStorageTransaction } from "./transactions";
  * given `LayeredStorage` and can only access a single `Segment`.
  *
  * @typeParam Layer - The allowed layers.
- * (TS only, ignored in JS).
- * @typeParam KV - The value types associeated with their keys.
- * (TS only, ignored in JS).
- * @typeParam Keys - The allowed keys.
- * (TS only, ignored in JS).
+ * @typeParam IKV - The value types associeated with their keys on input (set).
+ * @typeParam OKV - The value types associeated with their keys on output (get,
+ * export).
  */
 export class LayeredStorageSegment<
   Layer extends LayerRange,
-  KV extends KeyValueLookup<Keys>,
-  Keys extends KeyRange = keyof KV
+  IKV extends OKV,
+  OKV extends KeyValueLookup
 > {
   /**
    * Create a new storage instance for given segment.
@@ -25,7 +23,7 @@ export class LayeredStorageSegment<
    * @param segment - The segment this instance will manage.
    */
   public constructor(
-    private readonly _core: LayeredStorageCore<Layer, KV, Keys>,
+    private readonly _core: LayeredStorageCore<Layer, IKV, OKV>,
     public readonly segment: Segment
   ) {}
 
@@ -36,7 +34,7 @@ export class LayeredStorageSegment<
    *
    * @returns The value or undefined if not found.
    */
-  public get<Key extends Keys>(key: Key): KV[Key] | undefined {
+  public get<Key extends keyof OKV>(key: Key): OKV[Key] | undefined {
     return this._core.get(this.segment, key);
   }
 
@@ -47,7 +45,7 @@ export class LayeredStorageSegment<
    *
    * @returns True if found, false otherwise.
    */
-  public has<Key extends Keys>(key: Key): boolean {
+  public has(key: keyof OKV): boolean {
     return this._core.has(this.segment, key);
   }
 
@@ -58,7 +56,11 @@ export class LayeredStorageSegment<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends Keys>(layer: Layer, key: Key, value: KV[Key]): void {
+  public set<Key extends keyof IKV>(
+    layer: Layer,
+    key: Key,
+    value: IKV[Key]
+  ): void {
     this.runTransaction((transaction): void => {
       transaction.set(layer, key, value);
     });
@@ -70,7 +72,7 @@ export class LayeredStorageSegment<
    * @param layer - Which layer to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends Keys>(layer: Layer, key: Key): void {
+  public delete(layer: Layer, key: keyof IKV): void {
     this.runTransaction((transaction): void => {
       transaction.delete(layer, key);
     });
@@ -98,7 +100,7 @@ export class LayeredStorageSegment<
    */
   public cloneSegment(
     targetSegment: Segment
-  ): LayeredStorageSegment<Layer, KV, Keys> {
+  ): LayeredStorageSegment<Layer, IKV, OKV> {
     this._core.cloneSegmentData(this.segment, targetSegment);
     return new LayeredStorageSegment(this._core, targetSegment);
   }
@@ -112,8 +114,8 @@ export class LayeredStorageSegment<
    *
    * @returns The new transaction that can be used to set or delete values.
    */
-  public openTransaction(): LayeredStorageTransaction<Layer, KV, Keys> {
-    return new LayeredStorageTransaction<Layer, KV, Keys>(
+  public openTransaction(): LayeredStorageTransaction<Layer, IKV, OKV> {
+    return new LayeredStorageTransaction<Layer, IKV, OKV>(
       this._core,
       this.segment
     );
@@ -131,7 +133,7 @@ export class LayeredStorageSegment<
    * it's sole argument.
    */
   public runTransaction(
-    callback: (transaction: LayeredStorageTransaction<Layer, KV, Keys>) => void
+    callback: (transaction: LayeredStorageTransaction<Layer, IKV, OKV>) => void
   ): void {
     const transaction = this.openTransaction();
 
@@ -154,7 +156,7 @@ export class LayeredStorageSegment<
    * @returns Object representation of given segments current data for
    * given keys.
    */
-  public exportToObject(keys: Keys[]): void {
+  public exportToObject(keys: (keyof OKV)[]): void {
     return this._core.exportToObject(this.segment, keys);
   }
 

@@ -14,7 +14,7 @@ interface KV {
 export function transactions(): void {
   describe("Transactions", function (): void {
     it("Transaction shouldn't save anything before commit", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       const transaction = ls.global.openTransaction();
 
@@ -32,7 +32,7 @@ export function transactions(): void {
     });
 
     it("Transaction shouldn't save anything before commit", function (): void {
-      const ls = new LayeredStorage<7, KV, keyof KV>();
+      const ls = new LayeredStorage<7, KV, KV>();
 
       ls.setInvalidHandler((key, value, message): void => {
         throw new TypeError(

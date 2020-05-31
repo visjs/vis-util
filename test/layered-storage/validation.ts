@@ -52,7 +52,7 @@ export function validation(): void {
           [true, "test.string", "test"] as const,
         ].forEach(([valid, key, value]): void => {
           it(`${key}: ${value}`, function (): void {
-            const ls = new LayeredStorage<0, KV, keyof KV>();
+            const ls = new LayeredStorage<0, KV, KV>();
 
             // Add handler.
             if (handler != null) {
@@ -98,7 +98,7 @@ export function validation(): void {
     });
 
     it("Setting validators twice", function (): void {
-      const ls = new LayeredStorage<0, KV, keyof KV>();
+      const ls = new LayeredStorage<0, KV, KV>();
 
       expect((): void => {
         ls.setValidators("test.fail", [fail]);

@@ -1,20 +1,18 @@
-import { KeyValueLookup, LayerRange, Segment, KeyRange } from "./common";
+import { KeyValueLookup, LayerRange, Segment } from "./common";
 import { LayeredStorageCore } from "./core";
 
 /**
  * A transaction working with a single segment.
  *
  * @typeParam Layer - The allowed layers.
- * (TS only, ignored in JS).
- * @typeParam KV - The value types associeated with their keys.
- * (TS only, ignored in JS).
- * @typeParam Keys - The allowed keys.
- * (TS only, ignored in JS).
+ * @typeParam IKV - The value types associeated with their keys on input (set).
+ * @typeParam OKV - The value types associeated with their keys on output (get,
+ * export).
  */
 export class LayeredStorageTransaction<
   Layer extends LayerRange,
-  KV extends KeyValueLookup<Keys>,
-  Keys extends KeyRange = keyof KV
+  IKV extends OKV,
+  OKV extends KeyValueLookup
 > {
   /**
    * Functions that perform requested mutations when executed without any
@@ -30,7 +28,7 @@ export class LayeredStorageTransaction<
    * @param _segment - The segment this instance will manage.
    */
   public constructor(
-    private readonly _storageCore: LayeredStorageCore<Layer, KV, Keys>,
+    private readonly _storageCore: LayeredStorageCore<Layer, IKV, OKV>,
     private readonly _segment: Segment
   ) {}
 
@@ -41,18 +39,14 @@ export class LayeredStorageTransaction<
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    */
-  public set<Key extends Keys>(layer: Layer, key: Key, value: KV[Key]): void {
-    const expandedPairs = this._storageCore.expandValue(key, value);
-    for (const expanded of expandedPairs) {
-      this._actions.push(
-        this._storageCore.twoPartSet(
-          layer,
-          this._segment,
-          expanded[0],
-          expanded[1]
-        )
-      );
-    }
+  public set<Key extends keyof IKV>(
+    layer: Layer,
+    key: Key,
+    value: IKV[Key]
+  ): void {
+    this._actions.push(
+      this._storageCore.twoPartSet(layer, this._segment, key, value)
+    );
   }
 
   /**
@@ -61,17 +55,10 @@ export class LayeredStorageTransaction<
    * @param layer - Which layer to delete from.
    * @param key - The key that identifies the value to be deleted.
    */
-  public delete<Key extends Keys>(layer: Layer, key: Key): void {
-    for (const expandedKey of this._storageCore.expandDelete(key)) {
-      this._actions.push(
-        this._storageCore.delete.bind(
-          this._storageCore,
-          layer,
-          this._segment,
-          expandedKey
-        )
-      );
-    }
+  public delete(layer: Layer, key: keyof IKV): void {
+    this._actions.push(
+      this._storageCore.twoPartDelete(layer, this._segment, key)
+    );
   }
 
   /**

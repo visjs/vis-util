@@ -12,26 +12,17 @@ const entriesByKeyPriority = (
   b: [number, unknown]
 ): number => b[0] - a[0];
 
-type SegmentData<
-  KV extends KeyValueLookup<Keys>,
-  Keys extends KeyRange = keyof KV
-> = TypedMap<KV, Keys>;
-type LayerData<KV extends KeyValueLookup<Keys>, Keys extends KeyRange> = Map<
-  Segment,
-  SegmentData<KV, Keys>
+type SegmentData<KV extends KeyValueLookup> = TypedMap<KV>;
+type LayerData<KV extends KeyValueLookup> = Map<Segment, SegmentData<KV>>;
+type Data<Layer extends LayerRange, KV extends KeyValueLookup> = Map<
+  Layer,
+  LayerData<KV>
 >;
-type Data<
-  Layer extends LayerRange,
-  KV extends KeyValueLookup<Keys>,
-  Keys extends KeyRange = keyof KV
-> = Map<Layer, LayerData<KV, Keys>>;
 
-interface TypedMap<
-  KV extends Record<Keys, any>,
-  Keys extends KeyRange = keyof KV
-> extends Map<Keys, KV[Keys]> {
-  get<Key extends Keys>(key: Key): undefined | KV[Key];
-  set<Key extends Keys>(key: Key, value: KV[Key]): this;
+interface TypedMap<KV extends Record<KeyRange, any>>
+  extends Map<keyof KV, KV[keyof KV]> {
+  get<Key extends keyof KV>(key: Key): undefined | KV[Key];
+  set<Key extends keyof KV>(key: Key, value: KV[Key]): this;
 }
 
 export type LayeredStorageInvalidValueHandler<Keys extends KeyRange> = (
@@ -45,16 +36,14 @@ export type LayeredStorageInvalidValueHandler<Keys extends KeyRange> = (
  * handles the special global segment.
  *
  * @typeParam Layer - The allowed layers.
- * (TS only, ignored in JS).
- * @typeParam KV - The value types associeated with their keys.
- * (TS only, ignored in JS).
- * @typeParam Keys - The allowed keys.
- * (TS only, ignored in JS).
+ * @typeParam IKV - The value types associeated with their keys on input (set).
+ * @typeParam OKV - The value types associeated with their keys on output (get,
+ * export).
  */
 export class LayeredStorageCore<
   Layer extends LayerRange,
-  KV extends KeyValueLookup<Keys>,
-  Keys extends KeyRange = keyof KV
+  IKV extends OKV,
+  OKV extends KeyValueLookup
 > {
   /**
    * This is a special segment that is used as fallback if the requested
@@ -65,13 +54,13 @@ export class LayeredStorageCore<
   /**
    * Data stored as layer → segment → key → value.
    */
-  private readonly _data: Data<Layer, KV, Keys> = new Map();
+  private readonly _data: Data<Layer, OKV> = new Map();
 
   /**
    * An ordered list of layer datas. The highest priority (equals highest
    * number) layer is first.
    */
-  private _layerDatas: LayerData<KV, Keys>[] = [];
+  private _layerDatas: LayerData<OKV>[] = [];
 
   /**
    * A set of segments that keeps track what segments have data in the storage.
@@ -92,9 +81,8 @@ export class LayeredStorageCore<
    */
   private readonly _validators: TypedMap<
     {
-      [Key in Keys]: LayeredStorageValidator[];
-    },
-    Keys
+      [Key in keyof IKV]: LayeredStorageValidator[];
+    }
   > = new Map();
 
   /**
@@ -102,15 +90,19 @@ export class LayeredStorageCore<
    */
   private readonly _setExpanders: TypedMap<
     {
-      [Key in Keys]: (value: KV[Key]) => readonly KeyValueEntry<KV, Keys>[];
-    },
-    Keys
+      [Key in keyof IKV]: (
+        value: IKV[Key]
+      ) => readonly KeyValueEntry<OKV, keyof OKV>[];
+    }
   > = new Map();
 
   /**
    * An expander for each key.
    */
-  private readonly _deleteExpanders: Map<Keys, readonly Keys[]> = new Map();
+  private readonly _deleteExpanders: Map<
+    keyof IKV,
+    readonly (keyof OKV)[]
+  > = new Map();
 
   /**
    * This is called whenever a validity test fails.
@@ -119,7 +111,7 @@ export class LayeredStorageCore<
    * @param value - The invalid value itself.
    * @param messages - All the message returned by the validators that failed.
    */
-  private _invalidHandler: LayeredStorageInvalidValueHandler<Keys> = (
+  private _invalidHandler: LayeredStorageInvalidValueHandler<keyof IKV> = (
     key,
     value,
     messages
@@ -136,7 +128,7 @@ export class LayeredStorageCore<
    */
   private readonly _topLevelCache = new Map<
     Segment,
-    TypedMap<{ [Key in Keys]: KV[Key] | null }, Keys>
+    TypedMap<{ [Key in keyof OKV]: OKV[Key] | null }>
   >();
 
   /**
@@ -145,7 +137,7 @@ export class LayeredStorageCore<
    * @param segment - Which segment to clean.
    * @param key - The key that was subject to the mutation.
    */
-  private _cleanCache(segment: Segment, key: Keys): void {
+  private _cleanCache(segment: Segment, key: keyof OKV): void {
     if (segment === this.globalSegment) {
       // Run the search for each cached segment to clean the cached top level
       // value for each of them. The reason for this is that the global segment
@@ -193,7 +185,7 @@ export class LayeredStorageCore<
   private _getLSData(
     layer: Layer,
     segment: Segment
-  ): { layerData: LayerData<KV, Keys>; segmentData: SegmentData<KV, Keys> } {
+  ): { layerData: LayerData<OKV>; segmentData: SegmentData<OKV> } {
     // Get or create the requested layer.
     let layerData = this._data.get(layer);
     if (typeof layerData === "undefined") {
@@ -202,7 +194,7 @@ export class LayeredStorageCore<
 
       this._layerDatas = [...this._data.entries()]
         .sort(entriesByKeyPriority)
-        .map((pair): LayerData<KV, Keys> => pair[1]);
+        .map((pair): LayerData<OKV> => pair[1]);
     }
 
     // Get or create the requested segment on the layer.
@@ -226,10 +218,10 @@ export class LayeredStorageCore<
    *
    * @returns The value or undefined if it wasn't found.
    */
-  public get<Key extends Keys>(
+  public get<Key extends keyof OKV>(
     thisSegment: Segment,
     key: Key
-  ): KV[Key] | undefined {
+  ): OKV[Key] | undefined {
     let thisSegmentCache = this._topLevelCache.get(thisSegment);
     if (typeof thisSegmentCache === "undefined") {
       thisSegmentCache = new Map();
@@ -244,7 +236,7 @@ export class LayeredStorageCore<
     }
 
     // Fetch the inheritance chain.
-    const segments = this._inheritance.get(thisSegment) ?? [
+    const segments = this._inheritance.get(thisSegment) || [
       thisSegment,
       this.globalSegment,
     ];
@@ -296,62 +288,52 @@ export class LayeredStorageCore<
    *
    * @returns True if found, false otherwise.
    */
-  public has<Key extends Keys>(segment: Segment, key: Key): boolean {
+  public has<Key extends keyof OKV>(segment: Segment, key: Key): boolean {
     return typeof this.get(segment, key) !== "undefined";
   }
 
   /**
-   * Validate the value now and set it later.
+   * Validate and expand the value now and set it later.
    *
    * @param layer - Which layer to save the value into.
    * @param segment - Which segment to save the value into.
    * @param key - Key that can be used to retrieve or overwrite this value later.
    * @param value - The value to be saved.
    *
-   * @returns Function that actually sets the validated value.
+   * @returns Function that actually sets the validated and expanded value.
    */
-  public twoPartSet<Key extends Keys>(
+  public twoPartSet<Key extends keyof IKV>(
     layer: Layer,
     segment: Segment,
     key: Key,
-    value: KV[Key]
+    value: IKV[Key]
   ): () => void {
     if (typeof layer !== "number") {
       throw new TypeError("Layers have to be numbers.");
     }
 
-    const valid = this._validate(key, value);
-    if (valid) {
-      // The value is valid. It can be safely saved into the storage.
-      return (): void => {
-        const { segmentData } = this._getLSData(layer, segment);
-        segmentData.set(key, value);
-
-        this._cleanCache(segment, key);
-      };
-    } else {
-      // The value is invalid. If the invalid value handler didn't throw,
-      // return empty function to prevent the value from being saved into
-      // the storage.
+    if (!this._validate(key, value)) {
+      // The value is invalid. If the invalid value handler didn't throw, return
+      // empty function to prevent the value from being saved into the storage.
       return (): void => {};
     }
-  }
 
-  /**
-   * Save a value.
-   *
-   * @param layer - Which layer to save the value into.
-   * @param segment - Which segment to save the value into.
-   * @param key - Key that can be used to retrieve or overwrite this value later.
-   * @param value - The value to be saved.
-   */
-  public set<Key extends Keys>(
-    layer: Layer,
-    segment: Segment,
-    key: Key,
-    value: KV[Key]
-  ): void {
-    this.twoPartSet(layer, segment, key, value)();
+    const expandedEntries = this._expand(key, value)
+      // The invalid value handler may throw here and abort everything otherwise
+      // skip just the invalid ones.
+      .filter((expandedEntry): boolean =>
+        this._validate(expandedEntry[0], expandedEntry[1])
+      );
+
+    // The value is valid. It can be safely saved into the storage.
+    return (): void => {
+      const { segmentData } = this._getLSData(layer, segment);
+
+      for (const expandedEntry of expandedEntries) {
+        segmentData.set(expandedEntry[0], expandedEntry[1]);
+        this._cleanCache(segment, expandedEntry[0]);
+      }
+    };
   }
 
   /**
@@ -360,30 +342,40 @@ export class LayeredStorageCore<
    * @param layer - Which layer to delete from.
    * @param segment - Which segment to delete from.
    * @param key - The key that identifies the value to be deleted.
+   *
+   * @returns Function that actually deletes the values.
    */
-  public delete<Key extends Keys>(
+  public twoPartDelete<Key extends keyof IKV>(
     layer: Layer,
     segment: Segment,
     key: Key
-  ): void {
+  ): () => void {
     if (typeof layer !== "number") {
       throw new TypeError("Layers have to be numbers.");
     }
 
-    const { layerData, segmentData } = this._getLSData(layer, segment);
-    segmentData.delete(key);
+    return (): void => {
+      const { layerData, segmentData } = this._getLSData(layer, segment);
 
-    // Purge the segment if empty.
-    if (segmentData.size === 0) {
-      layerData.delete(segment);
-    }
+      const expandedKeys = this._deleteExpanders.get(key) || [key];
+      for (const expandedKey of expandedKeys) {
+        segmentData.delete(expandedKey);
+      }
 
-    // Purge the layer if empty.
-    if (layerData.size === 0) {
-      this._data.delete(layer);
-    }
+      // Purge the segment if empty.
+      if (segmentData.size === 0) {
+        layerData.delete(segment);
+      }
 
-    this._cleanCache(segment, key);
+      // Purge the layer if empty.
+      if (layerData.size === 0) {
+        this._data.delete(layer);
+      }
+
+      for (const expandedKey of expandedKeys) {
+        this._cleanCache(segment, expandedKey);
+      }
+    };
   }
 
   /**
@@ -422,7 +414,7 @@ export class LayeredStorageCore<
    * @returns Object representation of given segments' current data for given
    * keys.
    */
-  public exportToObject(segment: Segment, compoundKeys: Keys[]): any {
+  public exportToObject(segment: Segment, compoundKeys: (keyof OKV)[]): any {
     const result: any = {};
 
     for (const compoundKey of compoundKeys) {
@@ -467,7 +459,7 @@ export class LayeredStorageCore<
     for (const layerData of this._data.values()) {
       const sourceSegmentData = layerData.get(sourceSegment);
       if (sourceSegmentData) {
-        const sourceSegmentCopy: SegmentData<KV, Keys> = new Map();
+        const sourceSegmentCopy: SegmentData<OKV> = new Map();
         for (const entry of sourceSegmentData.entries()) {
           sourceSegmentCopy.set(entry[0], entry[1]);
         }
@@ -504,7 +496,7 @@ export class LayeredStorageCore<
    * value and a message from the failed validator.
    */
   public setInvalidHandler(
-    handler: LayeredStorageInvalidValueHandler<Keys>
+    handler: LayeredStorageInvalidValueHandler<keyof IKV>
   ): void {
     this._invalidHandler = handler;
   }
@@ -518,7 +510,7 @@ export class LayeredStorageCore<
    * @param replace - If true existing validators will be replaced, if false an
    * error will be thrown if some validators already exist for given key.
    */
-  public setValidators<Key extends Keys>(
+  public setValidators<Key extends keyof IKV>(
     key: Key,
     validators: LayeredStorageValidator[],
     replace: boolean
@@ -538,7 +530,7 @@ export class LayeredStorageCore<
    *
    * @returns True if valid, false otherwise.
    */
-  public _validate<Key extends Keys>(key: Key, value: KV[Key]): boolean {
+  public _validate<Key extends keyof IKV>(key: Key, value: IKV[Key]): boolean {
     const messages = [];
 
     const validators = this._validators.get(key);
@@ -562,6 +554,26 @@ export class LayeredStorageCore<
   }
 
   /**
+   * Expand given value.
+   *
+   * @param key - Which key this value belongs to.
+   * @param value - The value to be expanded.
+   *
+   * @returns Expanded key value pairs or empty array for invalid input.
+   */
+  private _expand<Key extends keyof IKV>(
+    key: Key,
+    value: IKV[Key]
+  ): readonly KeyValueEntry<OKV, keyof OKV>[] {
+    const expand = this._setExpanders.get(key);
+    if (typeof expand === "undefined") {
+      return [[key, value]];
+    } else {
+      return expand(value);
+    }
+  }
+
+  /**
    * Set an expander for given key.
    *
    * @remarks
@@ -576,10 +588,10 @@ export class LayeredStorageCore<
    * @param replace - If true existing expander will be replaced, if false an
    * error will be thrown if an expander already exists for given key.
    */
-  public setExpander<Key extends Keys, Affects extends Keys>(
+  public setExpander<Key extends keyof IKV, Affects extends keyof OKV>(
     key: Key,
     affects: readonly Affects[],
-    expander: (value: KV[Key]) => readonly KeyValueEntry<KV, Affects>[],
+    expander: (value: IKV[Key]) => readonly KeyValueEntry<OKV, Affects>[],
     replace: boolean
   ): void {
     if (
@@ -591,46 +603,6 @@ export class LayeredStorageCore<
 
     this._setExpanders.set(key, expander);
     this._deleteExpanders.set(key, affects);
-  }
-
-  /**
-   * Expand given value.
-   *
-   * @param key - Which key this value belongs to.
-   * @param value - The value to be expanded.
-   *
-   * @throws If the value is invalid and the invalid handler throws.
-   *
-   * @returns Expanded key value pairs or empty array for invalid input.
-   */
-  public expandValue<Key extends Keys>(
-    key: Key,
-    value: KV[Key]
-  ): readonly KeyValueEntry<KV, Keys>[] {
-    const valid = this._validate(key, value);
-    if (valid) {
-      const expand = this._setExpanders.get(key);
-      if (expand) {
-        return expand(value);
-      } else {
-        return [[key, value]];
-      }
-    } else {
-      // The value is invalid. If the invalid value handler didn't throw, return
-      // empty entry to prevent the value from being saved into the storage.
-      return [];
-    }
-  }
-
-  /**
-   * Expand given value.
-   *
-   * @param key - Which key this value belongs to.
-   *
-   * @returns Expanded key value pairs or empty array for invalid input.
-   */
-  public expandDelete<Key extends Keys>(key: Key): readonly Keys[] {
-    return this._deleteExpanders.get(key) || [key];
   }
 
   /**

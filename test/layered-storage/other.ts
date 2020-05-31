@@ -7,9 +7,7 @@ type KV = Record<string, number>;
  * Other tests that don't fit elsewhere.
  */
 export function other(): void {
-  const getStructCount = (
-    ls: LayeredStorage<1 | 4 | 9, KV, keyof KV>
-  ): number =>
+  const getStructCount = (ls: LayeredStorage<1 | 4 | 9, KV, KV>): number =>
     [
       // Ignore private property access errors. It's no big deal since this
       // is a unit test.
@@ -25,14 +23,14 @@ export function other(): void {
       );
     }, 0);
 
-  const getCacheSize = (ls: LayeredStorage<1 | 4 | 9, KV, keyof KV>): number =>
+  const getCacheSize = (ls: LayeredStorage<1 | 4 | 9, KV, KV>): number =>
     // Ignore private property access errors. It's no big deal since this
     // is a unit test.
     // @ts-ignore
     ls._core._topLevelCache.size;
 
   it("Empty data structure purging", function (): void {
-    const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
+    const ls = new LayeredStorage<1 | 4 | 9, KV, KV>();
 
     ([1, 4, 9] as const).forEach((layer): void => {
       ls.global.set(layer, "test.value1", 1);
@@ -87,7 +85,7 @@ export function other(): void {
   });
 
   it("Cache purging", function (): void {
-    const ls = new LayeredStorage<1, KV, keyof KV>();
+    const ls = new LayeredStorage<1, KV, KV>();
 
     expect(getCacheSize(ls)).to.equal(0);
 
@@ -122,7 +120,7 @@ export function other(): void {
   });
 
   it("Empty data structure creation", function (): void {
-    const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
+    const ls = new LayeredStorage<1 | 4 | 9, KV, KV>();
 
     ls.openSegment("c").set(4, "test.value1", 1);
 
@@ -137,7 +135,7 @@ export function other(): void {
   });
 
   it("Segment storage reports it's segment", function (): void {
-    const ls = new LayeredStorage<1 | 4 | 9, KV, keyof KV>();
+    const ls = new LayeredStorage<1 | 4 | 9, KV, KV>();
 
     expect(
       ls.openSegment("$"),
