@@ -1,3 +1,5 @@
+export const LS_DELETE = null;
+
 export type KeyRange = number | string | symbol;
 export type LayerRange = number;
 export type Segment = boolean | number | object | string | symbol;

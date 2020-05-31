@@ -1,4 +1,4 @@
-import { KeyValueLookup, LayerRange, Segment } from "./common";
+import { LS_DELETE, KeyValueLookup, LayerRange, Segment } from "./common";
 import { LayeredStorageCore } from "./core";
 import { LayeredStorageTransaction } from "./transactions";
 
@@ -54,12 +54,12 @@ export class LayeredStorageSegment<
    *
    * @param layer - Which layer to save the value into.
    * @param key - Key that can be used to retrieve or overwrite this value later.
-   * @param value - The value to be saved.
+   * @param value - The value to be saved or the LS_DELETE constant to delete the key.
    */
   public set<Key extends keyof IKV>(
     layer: Layer,
     key: Key,
-    value: IKV[Key]
+    value: typeof LS_DELETE | IKV[Key]
   ): void {
     this.runTransaction((transaction): void => {
       transaction.set(layer, key, value);

@@ -1,4 +1,5 @@
 import {
+  LS_DELETE,
   KeyRange,
   KeyValueEntry,
   KeyValueLookup,
@@ -298,7 +299,7 @@ export class LayeredStorageCore<
    * @param layer - Which layer to save the value into.
    * @param segment - Which segment to save the value into.
    * @param key - Key that can be used to retrieve or overwrite this value later.
-   * @param value - The value to be saved.
+   * @param value - The value to be saved or the LS_DELETE constant to delete the key.
    *
    * @returns Function that actually sets the validated and expanded value.
    */
@@ -306,10 +307,17 @@ export class LayeredStorageCore<
     layer: Layer,
     segment: Segment,
     key: Key,
-    value: IKV[Key]
+    value: typeof LS_DELETE | IKV[Key]
   ): () => void {
     if (typeof layer !== "number") {
       throw new TypeError("Layers have to be numbers.");
+    }
+
+    // If it is the LS_DELETE constant, delete the key instead.
+    if (value === LS_DELETE) {
+      return (): void => {
+        this.delete(layer, segment, key);
+      };
     }
 
     if (!this._validate(key, value)) {

@@ -1,4 +1,4 @@
-import { LayeredStorage } from "../../src/layered-storage";
+import { LS_DELETE, LayeredStorage } from "../../src/layered-storage";
 import { deepFreeze } from "../helpers";
 import { expect } from "chai";
 
@@ -75,6 +75,27 @@ export function singleLayer(): void {
       expect(
         ls.global.has("test.value"),
         "The value should be reported as not present after being deleted."
+      ).to.be.false;
+    });
+
+    it("LS_DELETE constant", function (): void {
+      const ls = new LayeredStorage<0, KV, KV>();
+
+      expect(
+        ls.global.has("test.value"),
+        "There is no value yet so it should be reported as empty."
+      ).to.be.false;
+
+      ls.global.set(0, "test.value", testValue);
+      expect(
+        ls.global.has("test.value"),
+        "The value should be reported as present after being set."
+      ).to.be.true;
+
+      ls.global.set(0, "test.value", LS_DELETE);
+      expect(
+        ls.global.has("test.value"),
+        "The value should be reported as not present after being deleted via the LS_DELETE constant."
       ).to.be.false;
     });
 

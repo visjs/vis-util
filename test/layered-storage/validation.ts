@@ -40,7 +40,7 @@ export function validation(): void {
       describe(name, function (): void {
         [
           [false, "test.boolean", 77] as const,
-          [false, "test.fail", null] as const,
+          [false, "test.fail", "fail"] as const,
           [false, "test.integer", "3.5"] as const,
           [false, "test.integer", 3.5] as const,
           [false, "test.string", undefined] as const,
@@ -48,7 +48,7 @@ export function validation(): void {
           [true, "test.integer", 77] as const,
           [true, "test.number", 3.5] as const,
           [true, "test.number", 77] as const,
-          [true, "test.pass", null] as const,
+          [true, "test.pass", "pass"] as const,
           [true, "test.string", "test"] as const,
         ].forEach(([valid, key, value]): void => {
           it(`${key}: ${value}`, function (): void {
