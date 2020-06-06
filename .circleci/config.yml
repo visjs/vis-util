@@ -108,6 +108,7 @@ workflows:
       - test:
           requires:
             - prepare
+            - build
 
       - release:
           requires:
