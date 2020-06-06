@@ -4,6 +4,8 @@ exports['Package Exported files 1'] = {
     "        LICENSE-APACHE-2.0",
     "        LICENSE-MIT",
     "        README.md",
+    "        declarations/deep-object-assign.d.ts",
+    "        declarations/deep-object-assign.d.ts.map",
     "        declarations/entry-esnext.d.ts",
     "        declarations/entry-esnext.d.ts.map",
     "        declarations/entry-peer.d.ts",
