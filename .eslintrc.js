@@ -73,6 +73,16 @@ module.exports = {
     // Reports typeof bigint as an error, tsc validates this anyway so no problem turning this off.
     "valid-typeof": "off",
   },
+  overrides: [
+    // Config files
+    {
+      files: ["./*.js"],
+      rules: {
+        // Config files may not be transpiled, don't report the use of require.
+        "@typescript-eslint/no-var-requires": "off",
+      },
+    },
+  ],
   settings: {
     jsdoc: {
       mode: "typescript",
