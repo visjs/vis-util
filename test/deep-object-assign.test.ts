@@ -1,6 +1,6 @@
 import { given, test } from "sazerac";
 
-import { deepObjectAssign, DELETE } from "../src";
+import { DELETE, deepObjectAssign } from "../src";
 
 const SYMBOL_KEY = Symbol("key");
 const SYMBOL_ORIGINAL = Symbol("original");

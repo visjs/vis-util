@@ -3,9 +3,33 @@
  */
 export const DELETE = Symbol("DELETE");
 
-export function deepObjectAssign(
-  ...values: Record<string | number, unknown>[]
-): any;
+/**
+ * Turns `undefined` into `undefined | typeof DELETE` and makes everything
+ * partial. Intended to be used with `deepObjectAssign`.
+ */
+export type Assignable<T> = T extends undefined
+  ?
+      | (T extends Function
+          ? T
+          : T extends object
+          ? { [Key in keyof T]?: Assignable<T[Key]> | undefined }
+          : T)
+      | typeof DELETE
+  : T extends Function
+  ? T | undefined
+  : T extends object
+  ? { [Key in keyof T]?: Assignable<T[Key]> | undefined }
+  : T | undefined;
+
+/**
+ * Deep version of object assign with additional deleting by the DELETE symbol.
+ *
+ * @param target - The object that will be augmented using the sources.
+ * @param sources - Objects to be deeply merged into the target.
+ *
+ * @returns The target (same instance).
+ */
+export function deepObjectAssign<T>(target: T, ...sources: Assignable<T>[]): T;
 /**
  * Deep version of object assign with additional deleting by the DELETE symbol.
  *
@@ -13,7 +37,7 @@ export function deepObjectAssign(
  *
  * @returns The first object from values.
  */
-export function deepObjectAssign(...values: any[]): any {
+export function deepObjectAssign(...values: readonly any[]): any {
   const merged = deepObjectAssignNonentry(...values);
   stripDelete(merged);
   console.log(merged);
@@ -30,7 +54,7 @@ export function deepObjectAssign(...values: any[]): any {
  *
  * @returns The first object from values.
  */
-function deepObjectAssignNonentry(...values: any[]): any {
+function deepObjectAssignNonentry(...values: readonly any[]): any {
   if (values.length < 2) {
     return values[0];
   } else if (values.length > 2) {
