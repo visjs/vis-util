@@ -22,6 +22,21 @@ export type Assignable<T> = T extends undefined
   : T | undefined;
 
 /**
+ * Pure version of deepObjectAssign, it doesn't modify any of it's arguments.
+ *
+ * @param base - The base object that fullfils the whole interface T.
+ * @param updates - Updates that may change or delete props.
+ *
+ * @returns A brand new instance with all the supplied objects deeply merged.
+ */
+export function pureDeepObjectAssign<T>(
+  base: T,
+  ...updates: Assignable<T>[]
+): T {
+  return deepObjectAssign({} as any, base, ...updates);
+}
+
+/**
  * Deep version of object assign with additional deleting by the DELETE symbol.
  *
  * @param target - The object that will be augmented using the sources.
