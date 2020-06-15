@@ -498,7 +498,7 @@ export function copyAndExtendArray<A, V>(
  *
  * @returns Shallow copy of arr.
  */
-export function copyArray<T>(arr: readonly T[]): T[] {
+export function copyArray<T>(arr: ReadonlyArray<T>): T[] {
   return arr.slice();
 }
 
