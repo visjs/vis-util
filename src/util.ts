@@ -473,9 +473,9 @@ export function getType(object: unknown): string {
   return type;
 }
 
-export function copyAndExtendArray<T>(arr: readonly T[], newValue: T): T[];
+export function copyAndExtendArray<T>(arr: ReadonlyArray<T>, newValue: T): T[];
 export function copyAndExtendArray<A, V>(
-  arr: readonly A[],
+  arr: ReadonlyArray<A>,
   newValue: V
 ): (A | V)[];
 /**
@@ -487,7 +487,7 @@ export function copyAndExtendArray<A, V>(
  * @returns A new array with all items from arr and newValue (which is last).
  */
 export function copyAndExtendArray<A, V>(
-  arr: readonly A[],
+  arr: ReadonlyArray<A>,
   newValue: V
 ): (A | V)[] {
   return [...arr, newValue];
@@ -500,7 +500,7 @@ export function copyAndExtendArray<A, V>(
  *
  * @returns Shallow copy of arr.
  */
-export function copyArray<T>(arr: readonly T[]): T[] {
+export function copyArray<T>(arr: ReadonlyArray<T>): T[] {
   return arr.slice();
 }
 
