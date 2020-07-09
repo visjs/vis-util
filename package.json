@@ -121,7 +121,7 @@
     "prettier": "2.0.5",
     "rimraf": "3.0.2",
     "rollup": "2.21.0",
-    "rollup-plugin-analyzer": "3.2.3",
+    "rollup-plugin-analyzer": "3.3.0",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-copy": "3.3.0",
     "rollup-plugin-postcss": "3.1.2",
