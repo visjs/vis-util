@@ -132,7 +132,7 @@
     "sinon": "9.0.2",
     "snap-shot-it": "7.9.3",
     "typedoc": "0.17.8",
-    "typescript": "3.9.6",
+    "typescript": "3.9.7",
     "vis-dev-utils": "2.3.4"
   }
 }
