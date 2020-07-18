@@ -51,6 +51,9 @@ module.exports = {
       },
     ],
 
+    // Disable console log.
+    "no-console": ["error", { allow: ["info", "warn", "error"] }],
+
     // This would be a breaking change for little gain. Though there definitely
     // is some merit in this.
     "@typescript-eslint/ban-types": "off",
