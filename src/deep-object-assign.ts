@@ -55,7 +55,6 @@ export function deepObjectAssign<T>(target: T, ...sources: Assignable<T>[]): T;
 export function deepObjectAssign(...values: readonly any[]): any {
   const merged = deepObjectAssignNonentry(...values);
   stripDelete(merged);
-  console.log(merged);
   return merged;
 }
 
