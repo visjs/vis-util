@@ -120,7 +120,7 @@
     "nyc": "15.1.0",
     "prettier": "2.0.5",
     "rimraf": "3.0.2",
-    "rollup": "2.22.2",
+    "rollup": "2.23.0",
     "rollup-plugin-analyzer": "3.3.0",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-copy": "3.3.0",
