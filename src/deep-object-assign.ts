@@ -82,7 +82,7 @@ function deepObjectAssignNonentry(...values: readonly any[]): any {
   const b = values[1];
 
   for (const prop of Reflect.ownKeys(b)) {
-    if (Object.prototype.propertyIsEnumerable.call(b, b[prop])) {
+    if (!Object.prototype.propertyIsEnumerable.call(b, prop)) {
       // Ignore nonenumerable props, Object.assign() would do the same.
     } else if (b[prop] === DELETE) {
       delete a[prop];
