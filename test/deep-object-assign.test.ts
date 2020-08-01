@@ -245,4 +245,9 @@ test(deepObjectAssign, (): void => {
     id: 0.25,
     [SYMBOL_KEY]: 2,
   });
+
+  given({}, { foo: "bar", deleteFoo: "foo" }).expect({
+    foo: "bar",
+    deleteFoo: "foo",
+  });
 });
