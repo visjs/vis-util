@@ -58,9 +58,11 @@ jobs:
       - attach_workspace:
           at: .
 
-      - run: npm run type-check
+      - run: npm run test:types:tsc
 
-  test:
+      - run: npm run test:types:check-dts
+
+  test_unit:
     executor: node
 
     steps:
@@ -68,6 +70,25 @@ jobs:
           at: .
 
       - run: npm run test:coverage
+
+  test_interop:
+    executor: node
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run: npm pack
+
+      - run: npx ci-utils install-dependencies-for chromium cypress
+
+      - run:
+          command: npm run test:interop
+          # This runs multiple things in parallel and only reports start and end
+          # of individual commands, the full logs are printed at the end. Due to
+          # this it's quite likely to go a long time without any output and
+          # still finish successfully.
+          no_output_timeout: 60m
 
   release:
     executor: node
@@ -105,7 +126,12 @@ workflows:
           requires:
             - prepare
 
-      - test:
+      - test_unit:
+          requires:
+            - prepare
+            - build
+
+      - test_interop:
           requires:
             - prepare
             - build
@@ -116,7 +142,8 @@ workflows:
             - build
             - lint
             - type_check
-            - test
+            - test_unit
+            - test_interop
           filters:
             branches:
               only:

@@ -35,8 +35,10 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
-    "test": "run-s test:unit test:types:*",
+    "test": "run-s test:unit test:types:check-dts test:types:tsc test:interop",
     "test:coverage": "BABEL_ENV=test-cov nyc mocha",
+    "test:interop": "node interop.js",
+    "test:interop:debug": "npm run test:interop -- --fail-command \"$SHELL\"",
     "test:types:check-dts": "cd test && check-dts",
     "test:types:tsc": "tsc --noemit --project tsconfig.check.json",
     "test:unit": "BABEL_ENV=test mocha",
@@ -47,8 +49,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "run-s type-check test lint"
+      "pre-commit": "lint-staged"
     }
   },
   "config": {
