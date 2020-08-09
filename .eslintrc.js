@@ -92,13 +92,7 @@ module.exports = {
         "@typescript-eslint/no-var-requires": "off",
       },
     },
-  ],
-  settings: {
-    jsdoc: {
-      mode: "typescript",
-    },
-  },
-  overrides: [
+    // TypeScript files
     {
       files: ["test/**/*.ts"],
       rules: {
@@ -107,4 +101,9 @@ module.exports = {
       },
     },
   ],
+  settings: {
+    jsdoc: {
+      mode: "typescript",
+    },
+  },
 };
