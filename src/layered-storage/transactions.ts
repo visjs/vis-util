@@ -62,6 +62,17 @@ export class LayeredStorageTransaction<
   }
 
   /**
+   * Queue a layer to be deleted.
+   *
+   * @param layer - Which layer to delete.
+   */
+  public deleteLayer(layer: Layer): void {
+    this._actions.push((): void => {
+      this._storageCore.deleteLayer(layer, this._segment);
+    });
+  }
+
+  /**
    * Commit all queued operations.
    */
   public commit(): void {

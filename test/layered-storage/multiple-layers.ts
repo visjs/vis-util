@@ -137,5 +137,91 @@ export function multipleLayers(): void {
         "There isn't any value anymore so it should be reported as empty."
       ).to.be.false;
     });
+
+    describe("Delete layer", function (): void {
+      it("Segment layer", function (): void {
+        const ls = new LayeredStorage<
+          1 | 2 | 3,
+          { test: string },
+          { test: string }
+        >();
+
+        const a = ls.openSegment("A");
+        a.set(1, "test", "A1");
+        a.set(2, "test", "A2");
+        a.set(3, "test", "A3");
+
+        const b = ls.openSegment("B");
+        b.set(1, "test", "B1");
+        b.set(2, "test", "B2");
+        b.set(3, "test", "B3");
+
+        expect(a.get("test"), "The initial data should be set.").to.equal("A3");
+        expect(b.get("test"), "The initial data should be set.").to.equal("B3");
+
+        b.deleteLayer(2);
+
+        expect(a.get("test"), "Other segments shouldn't be affected.").to.equal(
+          "A3"
+        );
+        expect(
+          b.get("test"),
+          "The 2nd layer is gone but the 3rd is still in place and should be returned."
+        ).to.equal("B3");
+
+        b.deleteLayer(3);
+
+        expect(a.get("test"), "Other segments shouldn't be affected.").to.equal(
+          "A3"
+        );
+        expect(
+          b.get("test"),
+          "The 3rd and 2nd layers has been deleted, the 1st layer should be returned."
+        ).to.equal("B1");
+      });
+
+      it("Global layer", function (): void {
+        const ls = new LayeredStorage<
+          1 | 2 | 3,
+          { test: string },
+          { test: string }
+        >();
+
+        ls.global.set(1, "test", "g1");
+        ls.global.set(2, "test", "g2");
+        ls.global.set(3, "test", "g3");
+
+        const a = ls.openSegment("A");
+        a.set(1, "test", "A1");
+
+        expect(
+          ls.global.get("test"),
+          "The initial data should be set."
+        ).to.equal("g3");
+        expect(a.get("test"), "The initial data should be set.").to.equal("g3");
+
+        ls.global.deleteLayer(2);
+
+        expect(
+          ls.global.get("test"),
+          "The 2nd global layer is gone but the 3rd is still in place and should be returned."
+        ).to.equal("g3");
+        expect(
+          a.get("test"),
+          "The 2nd global layer is gone but the 3rd is still in place and should be returned."
+        ).to.equal("g3");
+
+        ls.global.deleteLayer(3);
+
+        expect(
+          ls.global.get("test"),
+          "The 3rd and 2nd global layers are gone, the global 1st layer value should be returned."
+        ).to.equal("g1");
+        expect(
+          a.get("test"),
+          "The 3rd and 2nd global layers are gone, this segment has it's own 1st layer value which should be returned."
+        ).to.equal("A1");
+      });
+    });
   });
 }

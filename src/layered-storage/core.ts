@@ -388,6 +388,33 @@ export class LayeredStorageCore<
   }
 
   /**
+   * Delete all the data on given layer associeated with given segment.
+   *
+   * @param layer - The layer whose data should be deleted.
+   * @param segment - The segment whose data should be deleted.
+   */
+  public deleteLayer(layer: Layer, segment: Segment): void {
+    const layerData = this._data.get(layer);
+    if (layerData == null) {
+      // No data on given layer, nothing to do.
+      return;
+    }
+
+    const deleted = layerData.delete(segment);
+    if (deleted === false) {
+      // There was no data associeated with given segment on given layer,
+      // nothing was changed.
+      return;
+    }
+
+    if (segment === this.globalSegment) {
+      this._topLevelCache.clear();
+    } else {
+      this._topLevelCache.delete(segment);
+    }
+  }
+
+  /**
    * Set the inherance chain of given segment.
    *
    * @param segment - The segment that will inherit.

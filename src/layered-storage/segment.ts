@@ -79,6 +79,17 @@ export class LayeredStorageSegment<
   }
 
   /**
+   * Delete all the data on given layer from the storage.
+   *
+   * @param layer - Which layer to delete.
+   */
+  public deleteLayer(layer: Layer): void {
+    this.runTransaction((transaction): void => {
+      transaction.deleteLayer(layer);
+    });
+  }
+
+  /**
    * Set the inherance chain of this segment.
    *
    * @param segments - The segments from which this segment will inherit.
