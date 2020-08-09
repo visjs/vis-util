@@ -52,7 +52,12 @@ module.exports = {
     ],
 
     // Disable console log.
-    "no-console": ["error", { allow: ["info", "warn", "error"] }],
+    "no-console": [
+      "error",
+      {
+        allow: ["error", "group", "groupCollapsed", "groupEnd", "info", "warn"],
+      },
+    ],
 
     // This would be a breaking change for little gain. Though there definitely
     // is some merit in this.

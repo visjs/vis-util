@@ -630,15 +630,15 @@ export class LayeredStorageCore<
       .sort(entriesByKeyPriority)
       .map((pair): Layer => pair[0]);
 
-    console.log("Time:", new Date());
-    console.log("Layers:", layers);
-    console.log("Segments:", [...this._segments.values()]);
+    console.info("Time:", new Date());
+    console.info("Layers:", layers);
+    console.info("Segments:", [...this._segments.values()]);
 
     console.groupCollapsed("Cache");
     for (const [segment, cacheData] of this._topLevelCache.entries()) {
       console.groupCollapsed(`Segment: ${String(segment)}`);
       for (const [key, value] of cacheData.entries()) {
-        console.log([key, value]);
+        console.info([key, value]);
       }
       console.groupEnd();
     }
@@ -651,7 +651,7 @@ export class LayeredStorageCore<
       for (const [segment, segmentData] of lData.entries()) {
         console.groupCollapsed(`Segment: ${String(segment)}`);
         for (const [key, value] of [...segmentData.entries()].sort()) {
-          console.log([key, value]);
+          console.info([key, value]);
         }
         console.groupEnd();
       }
