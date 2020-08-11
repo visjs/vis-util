@@ -130,7 +130,7 @@
     "rollup-plugin-typescript2": "0.27.2",
     "sazerac": "2.0.0",
     "semantic-release": "17.1.1",
-    "sinon": "9.0.2",
+    "sinon": "9.0.3",
     "snap-shot-it": "7.9.3",
     "typedoc": "0.18.0",
     "typescript": "3.9.7",
