@@ -94,7 +94,7 @@
     "check-dts": "0.3.2",
     "eslint": "7.7.0",
     "eslint-config-prettier": "6.11.0",
-    "eslint-plugin-jsdoc": "30.2.3",
+    "eslint-plugin-jsdoc": "30.2.4",
     "eslint-plugin-prettier": "3.1.4",
     "eslint-plugin-tsdoc": "0.2.6",
     "git-authors-cli": "1.0.28",
