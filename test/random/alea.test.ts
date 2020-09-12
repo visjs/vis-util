@@ -2,13 +2,6 @@ import snapshot from "snap-shot-it";
 
 import { Alea, RNG } from "../../src/random";
 
-/* global BigInt */
-// Note: BigInt is supported by all maintained Node versions and even a bunch
-// of dead so it's safe to use it in tests. However it is not a standard yet
-// and therefore ESLint complains about it hence the declaration above. We
-// should remove this comment block once it becomes a standard and ESLint adds
-// it into it's list of builtin globals.
-
 describe("Alea", function (): void {
   this.timeout(60000);
 
