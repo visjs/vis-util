@@ -52,7 +52,12 @@ module.exports = {
     ],
 
     // Disable console log.
-    "no-console": ["error", { allow: ["info", "warn", "error"] }],
+    "no-console": [
+      "error",
+      {
+        allow: ["error", "group", "groupCollapsed", "groupEnd", "info", "warn"],
+      },
+    ],
 
     // This would be a breaking change for little gain. Though there definitely
     // is some merit in this.
@@ -62,6 +67,8 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     // Empty functions are useful sometimes.
     "@typescript-eslint/no-empty-function": "off",
+    // This would be great if TypeScript was perfect but sometimes tsc can't infer the correct type.
+    "@typescript-eslint/no-non-null-assertion": "off",
     // This is really crazy given the functions in this package.
     "@typescript-eslint/no-explicit-any": "off",
     // These are hoisted, I have no idea why it reports them by default.
@@ -83,6 +90,14 @@ module.exports = {
       rules: {
         // Config files may not be transpiled, don't report the use of require.
         "@typescript-eslint/no-var-requires": "off",
+      },
+    },
+    // TypeScript files
+    {
+      files: ["test/**/*.ts"],
+      rules: {
+        // This is useful to ignore private property access in a test.
+        "@typescript-eslint/ban-ts-comment": "off",
       },
     },
   ],
