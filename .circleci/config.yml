@@ -23,7 +23,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - '*'
+            - "*"
 
   build:
     executor: node
@@ -37,10 +37,10 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - 'declarations'
-            - 'esnext'
-            - 'peer'
-            - 'standalone'
+            - "declarations"
+            - "esnext"
+            - "peer"
+            - "standalone"
 
   lint:
     executor: node
