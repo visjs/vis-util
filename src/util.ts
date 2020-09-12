@@ -329,7 +329,7 @@ export function selectiveNotDeepExtend(
     if (!Object.prototype.hasOwnProperty.call(b, prop)) {
       continue;
     } // Handle local properties only
-    if (propsToExclude.indexOf(prop) !== -1) {
+    if (propsToExclude.includes(prop)) {
       continue;
     } // In exclusion list, skip
 
@@ -546,7 +546,7 @@ export function addClassName(elem: Element, classNames: string): void {
   const newClasses = classNames.split(" ");
   classes = classes.concat(
     newClasses.filter(function (className): boolean {
-      return classes.indexOf(className) < 0;
+      return !classes.includes(className);
     })
   );
   elem.className = classes.join(" ");
@@ -562,7 +562,7 @@ export function removeClassName(elem: Element, classNames: string): void {
   let classes = elem.className.split(" ");
   const oldClasses = classNames.split(" ");
   classes = classes.filter(function (className): boolean {
-    return oldClasses.indexOf(className) < 0;
+    return !oldClasses.includes(className);
   });
   elem.className = classes.join(" ");
 }
@@ -671,10 +671,7 @@ export function addEventListener<E extends Element>(
       useCapture = false;
     }
 
-    if (
-      action === "mousewheel" &&
-      navigator.userAgent.indexOf("Firefox") >= 0
-    ) {
+    if (action === "mousewheel" && navigator.userAgent.includes("Firefox")) {
       action = "DOMMouseScroll"; // For Firefox
     }
 
@@ -705,10 +702,7 @@ export function removeEventListener<E extends Element>(
       useCapture = false;
     }
 
-    if (
-      action === "mousewheel" &&
-      navigator.userAgent.indexOf("Firefox") >= 0
-    ) {
+    if (action === "mousewheel" && navigator.userAgent.includes("Firefox")) {
       action = "DOMMouseScroll"; // For Firefox
     }
 
@@ -950,9 +944,9 @@ export function hexToRGB(hex: string): RGB | null {
  * @returns RGBA string, for example 'rgba(255, 0, 127, 0.3)'.
  */
 export function overrideOpacity(color: string, opacity: number): string {
-  if (color.indexOf("rgba") !== -1) {
+  if (color.includes("rgba")) {
     return color;
-  } else if (color.indexOf("rgb") !== -1) {
+  } else if (color.includes("rgb")) {
     const rgb = color
       .substr(color.indexOf("(") + 1)
       .replace(")", "")

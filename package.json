@@ -32,8 +32,10 @@
     "build:docs": "typedoc ./src",
     "build:types": "tsc -p tsconfig.types.json",
     "clean": "rimraf '{coverage,declarations,docs,esnext,peer,reports,standalone}' 'index.{d.ts,js}'",
-    "lint": "eslint .",
-    "lint:fix": "npm run lint -- --fix",
+    "style": "prettier --check .",
+    "style-fix": "prettier --write .",
+    "lint": "eslint --ext .js,.ts .",
+    "lint-fix": "eslint --fix --ext .js,.ts .",
     "prepublishOnly": "npm run build",
     "test": "run-s test:unit test:types:check-dts test:types:tsc test:interop",
     "test:coverage": "BABEL_ENV=test-cov nyc mocha",
@@ -51,6 +53,12 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.*": "prettier --write",
+    "*.{js,ts}": "eslint --fix",
+    ".*.*": "prettier --write",
+    ".*.{js,ts}": "eslint --fix"
   },
   "config": {
     "snap-shot-it": {
@@ -87,16 +95,10 @@
     "@types/mocha": "8.0.3",
     "@types/node": "13.13.19",
     "@types/sinon": "9.0.5",
-    "@typescript-eslint/eslint-plugin": "4.1.0",
-    "@typescript-eslint/parser": "4.1.0",
     "assert": "2.0.0",
     "chai": "4.2.0",
     "check-dts": "0.3.3",
     "eslint": "7.8.1",
-    "eslint-config-prettier": "6.11.0",
-    "eslint-plugin-jsdoc": "30.4.2",
-    "eslint-plugin-prettier": "3.1.4",
-    "eslint-plugin-tsdoc": "0.2.7",
     "git-authors-cli": "1.0.28",
     "husky": "4.3.0",
     "jsdom": "16.4.0",
