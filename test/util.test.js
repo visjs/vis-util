@@ -12,23 +12,19 @@ describe("util", function () {
    *
    * **NOTES**
    *
-   * - All these methods have the inherent flaw that it's possible to define properties
-   *   on an object with value 'undefined'. e.g. in `node`:
+   * - All these methods have the inherent flaw that it's possible to define
+   * properties on an object with value 'undefined'. e.g. in `node`:
    *
-   *    > a = { b:undefined }
-   *    > a.hasOwnProperty('b')
-   *    true
+   * > a = { b:undefined }
+   * > a.hasOwnProperty('b')
+   * true
    *
-   *   The logic for handling this in the code is minimal and accidental. For the time being,
-   *   this flaw is ignored.
+   * The logic for handling this in the code is minimal and accidental. For the time being,
+   * this flaw is ignored.
    */
   describe("extend routines", function () {
-    /**
+    /*
      * Check if values have been copied over from b to a as intended
-     *
-     * @param a
-     * @param b
-     * @param checkCopyTarget
      */
     function checkExtended(a, b, checkCopyTarget = false) {
       var result = {
@@ -77,10 +73,8 @@ describe("util", function () {
       }
     }
 
-    /**
+    /*
      * Spot check on values of a unchanged as intended
-     *
-     * @param a
      */
     function testAUnchanged(a) {
       var sub = a.sub;
@@ -668,7 +662,7 @@ describe("util", function () {
   describe("easingFunctions", function () {
     it("take a number and output a number", function () {
       for (var key in util.easingFunctions) {
-        if (util.easingFunctions.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(util.easingFunctions, key)) {
           assert.equal(typeof util.easingFunctions[key](1), "number");
           assert.equal(typeof util.easingFunctions[key](0.2), "number");
         }
