@@ -98,7 +98,7 @@
     "assert": "2.0.0",
     "chai": "4.2.0",
     "check-dts": "0.3.3",
-    "eslint": "7.9.0",
+    "eslint": "7.10.0",
     "git-authors-cli": "1.0.28",
     "husky": "4.3.0",
     "jsdom": "16.4.0",
