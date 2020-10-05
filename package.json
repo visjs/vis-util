@@ -91,7 +91,7 @@
     "url": "https://opencollective.com/visjs"
   },
   "devDependencies": {
-    "@types/chai": "4.2.12",
+    "@types/chai": "4.2.13",
     "@types/mocha": "8.0.3",
     "@types/node": "13.13.21",
     "@types/sinon": "9.0.8",
