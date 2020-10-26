@@ -93,7 +93,7 @@
   "devDependencies": {
     "@types/chai": "4.2.14",
     "@types/mocha": "8.0.3",
-    "@types/node": "13.13.28",
+    "@types/node": "13.13.29",
     "@types/sinon": "9.0.8",
     "assert": "2.0.0",
     "chai": "4.2.0",
