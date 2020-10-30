@@ -99,7 +99,7 @@
     "chai": "4.2.0",
     "check-dts": "0.3.3",
     "eslint": "7.12.1",
-    "git-authors-cli": "1.0.30",
+    "git-authors-cli": "1.0.31",
     "husky": "4.3.0",
     "jsdom": "16.4.0",
     "jsdom-global": "3.0.2",
