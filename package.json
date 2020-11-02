@@ -109,7 +109,7 @@
     "nyc": "15.1.0",
     "prettier": "2.1.2",
     "rimraf": "3.0.2",
-    "rollup": "2.33.0",
+    "rollup": "2.33.1",
     "sazerac": "2.0.0",
     "semantic-release": "17.2.2",
     "sinon": "9.2.1",
