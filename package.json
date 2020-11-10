@@ -97,7 +97,7 @@
     "@types/sinon": "9.0.8",
     "assert": "2.0.0",
     "chai": "4.2.0",
-    "check-dts": "0.3.3",
+    "check-dts": "0.4.0",
     "eslint": "7.13.0",
     "git-authors-cli": "1.0.31",
     "husky": "4.3.0",
