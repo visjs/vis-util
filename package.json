@@ -112,7 +112,7 @@
     "rollup": "2.34.2",
     "sazerac": "2.0.0",
     "semantic-release": "17.3.0",
-    "sinon": "9.2.1",
+    "sinon": "9.2.2",
     "snap-shot-it": "7.9.3",
     "typedoc": "0.19.2",
     "typescript": "4.0.5",
