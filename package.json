@@ -94,7 +94,7 @@
     "@types/chai": "4.2.14",
     "@types/mocha": "8.2.0",
     "@types/node": "13.13.36",
-    "@types/sinon": "9.0.9",
+    "@types/sinon": "9.0.10",
     "assert": "2.0.0",
     "chai": "4.2.0",
     "check-dts": "0.4.1",
