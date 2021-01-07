@@ -1,5 +1,3 @@
-import "./activator.css";
-
 import Emitter from "component-emitter";
 import { Hammer } from "./hammer";
 

@@ -1,6 +1,4 @@
-import "./configurator.css";
-
-import { copyAndExtendArray } from "vis-util/esnext";
+import { copyAndExtendArray } from "../util";
 
 import { ColorPicker } from "./color-picker";
 

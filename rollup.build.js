@@ -7,4 +7,11 @@ export default generateRollupConfiguration({
   entryPoint: "./src",
   packageJSON,
   tsconfig: "tsconfig.code.json",
+  globals: {
+    "@egjs/hammerjs": "Hammer",
+    "component-emitter": "Emitter",
+  },
+  copyTargets: {
+    bundle: [{ src: "src/**/*.css", dest: "styles" }],
+  },
 });

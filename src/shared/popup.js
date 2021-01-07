@@ -1,5 +1,3 @@
-import "./popup.css";
-
 /**
  * Popup is a class to create a popup window with some text
  */

@@ -1,5 +1,3 @@
-import "./color-picker.css";
-
 import { Hammer } from "./hammer";
 import {
   HSVToRGB,
@@ -9,7 +7,7 @@ import {
   isValidHex,
   isValidRGB,
   isValidRGBA,
-} from "vis-util/esnext";
+} from "../util";
 
 const htmlColors = {
   black: "#000000",

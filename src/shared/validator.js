@@ -1,4 +1,4 @@
-import { copyAndExtendArray, copyArray } from "vis-util/esnext";
+import { copyAndExtendArray, copyArray } from "../util";
 
 let errorFound = false;
 let allOptions;
@@ -9,11 +9,6 @@ export const VALIDATOR_PRINT_STYLE = "background: #FFeeee; color: #dd0000";
  *  Used to validate options.
  */
 export class Validator {
-  /**
-   * @ignore
-   */
-  constructor() {}
-
   /**
    * Main function to be called
    *
