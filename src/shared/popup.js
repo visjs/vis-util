@@ -42,7 +42,9 @@ export class Popup {
       }
       this.frame.appendChild(content);
     } else {
-      this.frame.innerHTML = content; // string containing text or HTML
+      // String containing literal text, element has to be used for HTML due to
+      // XSS risks associated with innerHTML (i.e. prevent XSS by accident).
+      this.frame.innerText = content;
     }
   }
 
