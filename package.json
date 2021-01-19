@@ -117,7 +117,7 @@
     "rimraf": "3.0.2",
     "rollup": "2.37.0",
     "sazerac": "2.0.0",
-    "semantic-release": "17.3.3",
+    "semantic-release": "17.3.4",
     "sinon": "9.2.3",
     "snap-shot-it": "7.9.3",
     "typedoc": "0.20.16",
