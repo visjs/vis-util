@@ -30,13 +30,18 @@ type TextInput = string;
 /**
  * The passed values will be used as the limits and the initial position of a
  * slider.
+ *
+ * @remarks
+ * ```typescript
+ * readonly [
+ *   initialValue: number,
+ *   min: number,
+ *   max: number,
+ *   step: number
+ * ]
+ * ```
  */
-type NumberInput = readonly [
-  initialValue: number,
-  min: number,
-  max: number,
-  step: number
-];
+type NumberInput = readonly [number, number, number, number];
 /** Translations for people with poor understanding of TypeScript: the first
  * value always has to be a string but never `"color"`, the rest can be any
  * combination of strings, numbers and booleans.
