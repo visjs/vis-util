@@ -96,7 +96,7 @@
   },
   "devDependencies": {
     "@egjs/hammerjs": "2.0.17",
-    "@types/chai": "4.2.14",
+    "@types/chai": "4.2.15",
     "@types/mocha": "8.2.0",
     "@types/node": "13.13.41",
     "@types/sinon": "9.0.10",
