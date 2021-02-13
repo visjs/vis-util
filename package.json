@@ -119,7 +119,7 @@
     "sazerac": "2.0.0",
     "semantic-release": "17.3.9",
     "sinon": "9.2.4",
-    "snap-shot-it": "7.9.4",
+    "snap-shot-it": "7.9.5",
     "typedoc": "0.20.24",
     "typescript": "4.1.5",
     "vis-dev-utils": "2.9.18"
