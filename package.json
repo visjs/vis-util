@@ -99,7 +99,7 @@
     "@types/chai": "4.2.15",
     "@types/mocha": "8.2.1",
     "@types/node": "13.13.45",
-    "@types/sinon": "9.0.10",
+    "@types/sinon": "9.0.11",
     "assert": "2.0.0",
     "chai": "4.3.3",
     "check-dts": "0.4.4",
