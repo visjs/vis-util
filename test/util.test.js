@@ -269,6 +269,17 @@ describe("util", function () {
       assert(a.sub.notInTarget === true); // copied!
     });
 
+    it("performs selectiveNotDeepExtend() with null source property", function () {
+      var a = this.a;
+      a.nullProperty = null;
+      var b = this.b;
+      b.nullProperty = { toAdd: "toAdd" };
+
+      // Exclude nothing, everything copied
+      util.selectiveNotDeepExtend([], a, b);
+      checkExtended(a, b, true);
+    });
+
     it("performs selectiveNotDeepExtend() as advertized with deletion", function () {
       var a = this.a;
       var b = this.b;

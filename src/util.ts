@@ -334,7 +334,7 @@ export function selectiveNotDeepExtend(
     } // In exclusion list, skip
 
     if (b[prop] && b[prop].constructor === Object) {
-      if (a[prop] === undefined) {
+      if (a[prop] == null) {
         a[prop] = {};
       }
       if (a[prop].constructor === Object) {
