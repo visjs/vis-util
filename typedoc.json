@@ -4,6 +4,6 @@
   "excludePrivate": true,
   "listInvalidSymbolLinks": true,
   "out": "./docs",
-  "theme": "minimal",
-  "tsconfig": "./tsconfig.types.json"
+  "theme": "default",
+  "tsconfig": "./tsconfig.docs.json"
 }

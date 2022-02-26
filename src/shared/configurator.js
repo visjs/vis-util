@@ -6,7 +6,6 @@ import { ColorPicker } from "./color-picker";
  * Wrap given text (last argument) in HTML elements (all preceding arguments).
  *
  * @param {...any} rest - List of tag names followed by inner text.
- *
  * @returns An element or a text node.
  */
 function wrapInTag(...rest) {

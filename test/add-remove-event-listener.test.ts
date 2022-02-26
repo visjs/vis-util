@@ -34,7 +34,7 @@ describe("*EventListener", function (): void {
             [methodIE]: spy(),
           };
 
-          fn((elem as unknown) as HTMLDivElement, "click", eventListener);
+          fn(elem as unknown as HTMLDivElement, "click", eventListener);
 
           assert.notCalled(elem[methodIE]);
 
@@ -49,7 +49,7 @@ describe("*EventListener", function (): void {
           };
 
           fn(
-            (elem as unknown) as HTMLDivElement,
+            elem as unknown as HTMLDivElement,
             "mousewheel",
             eventListener,
             true
@@ -84,7 +84,7 @@ describe("*EventListener", function (): void {
           };
 
           fn(
-            (elem as unknown) as HTMLDivElement,
+            elem as unknown as HTMLDivElement,
             "mousewheel",
             eventListener,
             true
@@ -107,7 +107,7 @@ describe("*EventListener", function (): void {
           [methodIE]: spy(),
         };
 
-        fn((elem as unknown) as HTMLDivElement, "click", eventListener, true);
+        fn(elem as unknown as HTMLDivElement, "click", eventListener, true);
 
         assert.calledOnce(elem[methodIE]);
         assert.calledWithExactly(elem[methodIE], "onclick", eventListener);
