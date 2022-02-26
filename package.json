@@ -47,12 +47,8 @@
     "type-check": "run-s test:types:*",
     "version": "npm run contributors:update && git add package.json",
     "contributors:update": "git-authors-cli",
-    "preparepublish": "npm run contributors:update"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "preparepublish": "npm run contributors:update",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "*.*": "prettier --write",
@@ -106,22 +102,22 @@
     "component-emitter": "1.3.0",
     "eslint": "7.32.0",
     "git-authors-cli": "1.0.36",
-    "husky": "4.3.8",
+    "husky": "7.0.0",
     "jsdom": "17.0.0",
     "jsdom-global": "3.0.2",
     "lint-staged": "11.2.6",
     "mocha": "9.1.3",
     "npm-run-all": "4.1.5",
     "nyc": "15.1.0",
-    "prettier": "2.2.1",
+    "prettier": "2.3.2",
     "rimraf": "3.0.2",
     "rollup": "2.61.0",
     "sazerac": "2.0.0",
     "semantic-release": "17.4.7",
     "sinon": "11.1.2",
     "snap-shot-it": "7.9.6",
-    "typedoc": "0.21.4",
+    "typedoc": "0.22.12",
     "typescript": "4.4.4",
-    "vis-dev-utils": "2.9.83"
+    "vis-dev-utils": "3.0.0"
   }
 }
