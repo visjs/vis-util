@@ -23,17 +23,17 @@ describe("binarySearchCustom", function (): void {
     { prop1: 71, nested: { prop2: 0.71 } },
     { prop1: 87, nested: { prop2: 0.87 } },
   ]);
-  const comparatorFactory = (
-    target: number
-  ): ((value: number) => -1 | 0 | 1) => (value: number): -1 | 0 | 1 => {
-    if (value < target) {
-      return -1;
-    } else if (value > target) {
-      return 1;
-    } else {
-      return 0;
-    }
-  };
+  const comparatorFactory =
+    (target: number): ((value: number) => -1 | 0 | 1) =>
+    (value: number): -1 | 0 | 1 => {
+      if (value < target) {
+        return -1;
+      } else if (value > target) {
+        return 1;
+      } else {
+        return 0;
+      }
+    };
 
   describe("array[index][prop1]", function (): void {
     it("comparator args", function (): void {

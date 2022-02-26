@@ -42,7 +42,8 @@ type TextInput = string;
  * ```
  */
 type NumberInput = readonly [number, number, number, number];
-/** Translations for people with poor understanding of TypeScript: the first
+/**
+ * Translations for people with poor understanding of TypeScript: the first
  * value always has to be a string but never `"color"`, the rest can be any
  * combination of strings, numbers and booleans.
  */

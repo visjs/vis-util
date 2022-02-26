@@ -9,9 +9,7 @@ describe("util", function () {
    *
    * Goal: to cover all possible paths within the tested method(s)
    *
-   *
-   * **NOTES**
-   *
+   * @remarks
    * - All these methods have the inherent flaw that it's possible to define
    * properties on an object with value 'undefined'. e.g. in `node`:
    *

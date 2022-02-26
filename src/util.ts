@@ -8,8 +8,10 @@ const ASPDateRegex = /^\/?Date\((-?\d+)/i;
 // Color REs
 const fullHexRE = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
 const shortHexRE = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-const rgbRE = /^rgb\( *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *\)$/i;
-const rgbaRE = /^rgba\( *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *([01]|0?\.\d+) *\)$/i;
+const rgbRE =
+  /^rgb\( *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *\)$/i;
+const rgbaRE =
+  /^rgba\( *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *(1?\d{1,2}|2[0-4]\d|25[0-5]) *, *([01]|0?\.\d+) *\)$/i;
 
 /**
  * Hue, Saturation, Value.
@@ -73,7 +75,6 @@ export interface RGBA {
  * Test whether given object is a number.
  *
  * @param value - Input value of unknown type.
- *
  * @returns True if number, false otherwise.
  */
 export function isNumber(value: unknown): value is number {
@@ -101,7 +102,6 @@ export function recursiveDOMDelete(DOMobject: Node | null | undefined): void {
  * Test whether given object is a string.
  *
  * @param value - Input value of unknown type.
- *
  * @returns True if string, false otherwise.
  */
 export function isString(value: unknown): value is string {
@@ -112,7 +112,6 @@ export function isString(value: unknown): value is string {
  * Test whether given object is a object (not primitive or null).
  *
  * @param value - Input value of unknown type.
- *
  * @returns True if not null object, false otherwise.
  */
 export function isObject(value: unknown): value is object {
@@ -123,7 +122,6 @@ export function isObject(value: unknown): value is object {
  * Test whether given object is a Date, or a String containing a Date.
  *
  * @param value - Input value of unknown type.
- *
  * @returns True if Date instance or string date representation, false otherwise.
  */
 export function isDate(value: unknown): value is Date | string {
@@ -210,7 +208,6 @@ export function fillIfDefined<T extends object>(
  *
  * @param target - The target object to copy to.
  * @param source - The source object from which to copy properties.
- *
  * @returns The target object.
  */
 export const extend = Object.assign;
@@ -220,11 +217,9 @@ export const extend = Object.assign;
  *
  * @remarks
  * Only properties with defined values are copied.
- *
  * @param props - Properties to be copied to a.
  * @param a - The target.
  * @param others - The sources.
- *
  * @returns Argument a.
  */
 export function selectiveExtend(
@@ -255,12 +250,10 @@ export function selectiveExtend(
  * Previous version of this routine implied that multiple source objects could
  * be used; however, the implementation was **wrong**. Since multiple (\>1)
  * sources weren't used anywhere in the `vis.js` code, this has been removed
- *
  * @param props - Names of first-level properties to copy over.
  * @param a - Target object.
  * @param b - Source object.
  * @param allowDeletion - If true, delete property in a if explicitly set to null in b.
- *
  * @returns Argument a.
  */
 export function selectiveDeepExtend(
@@ -304,13 +297,11 @@ export function selectiveDeepExtend(
  * The properties of `b` are considered for copying. Properties which are
  * themselves objects are are also extended. Only properties with defined
  * values are copied.
- *
  * @param propsToExclude - Names of properties which should *not* be copied.
  * @param a - Object to extend.
  * @param b - Object to take properties from for extension.
  * @param allowDeletion - If true, delete properties in a that are explicitly
  * set to null in b.
- *
  * @returns Argument a.
  */
 export function selectiveNotDeepExtend(
@@ -364,7 +355,6 @@ export function selectiveNotDeepExtend(
  * (That is the options objects that inherit from others will also get the
  * inherited options).
  * @param allowDeletion - If true, the values of fields that are null will be deleted.
- *
  * @returns Argument a.
  */
 export function deepExtend(
@@ -406,7 +396,6 @@ export function deepExtend(
  *
  * @param a - First array.
  * @param b - Second array.
- *
  * @returns True if both arrays have the same length and same elements (1 = '1').
  */
 export function equalArray(a: unknown[], b: unknown[]): boolean {
@@ -427,7 +416,6 @@ export function equalArray(a: unknown[], b: unknown[]): boolean {
  * Get the type of an object, for example exports.getType([]) returns 'Array'.
  *
  * @param object - Input value of unknown type.
- *
  * @returns Detected type.
  */
 export function getType(object: unknown): string {
@@ -481,7 +469,6 @@ export function copyAndExtendArray<A, V>(
  *
  * @param arr - First part.
  * @param newValue - The value to be aadded into the array.
- *
  * @returns A new array with all items from arr and newValue (which is last).
  */
 export function copyAndExtendArray<A, V>(
@@ -495,7 +482,6 @@ export function copyAndExtendArray<A, V>(
  * Used to extend an array and copy it. This is used to propagate paths recursively.
  *
  * @param arr - The array to be copied.
- *
  * @returns Shallow copy of arr.
  */
 export function copyArray<T>(arr: ReadonlyArray<T>): T[] {
@@ -506,7 +492,6 @@ export function copyArray<T>(arr: ReadonlyArray<T>): T[] {
  * Retrieve the absolute left value of a DOM element.
  *
  * @param elem - A dom element, for example a div.
- *
  * @returns The absolute left position of this element in the browser page.
  */
 export function getAbsoluteLeft(elem: Element): number {
@@ -517,7 +502,6 @@ export function getAbsoluteLeft(elem: Element): number {
  * Retrieve the absolute right value of a DOM element.
  *
  * @param elem - A dom element, for example a div.
- *
  * @returns The absolute right position of this element in the browser page.
  */
 export function getAbsoluteRight(elem: Element): number {
@@ -528,7 +512,6 @@ export function getAbsoluteRight(elem: Element): number {
  * Retrieve the absolute top value of a DOM element.
  *
  * @param elem - A dom element, for example a div.
- *
  * @returns The absolute top position of this element in the browser page.
  */
 export function getAbsoluteTop(elem: Element): number {
@@ -604,7 +587,6 @@ export function forEach(object: any, callback: any): void {
  * Convert an object into an array: all objects properties are put into the array. The resulting array is unordered.
  *
  * @param o - Object that contains the properties and methods.
- *
  * @returns An array of unordered values.
  */
 export const toArray = Object.values;
@@ -615,7 +597,6 @@ export const toArray = Object.values;
  * @param object - The object whose property will be updated.
  * @param key - Name of the property to be updated.
  * @param value - The new value to be assigned.
- *
  * @returns Whether the value was updated (true) or already strictly the same in the original object (false).
  */
 export function updateProperty<K extends string, V>(
@@ -635,7 +616,6 @@ export function updateProperty<K extends string, V>(
  * Throttle the given function to be only executed once per animation frame.
  *
  * @param fn - The original function.
- *
  * @returns The throttled function.
  */
 export function throttle(fn: () => void): () => void {
@@ -737,7 +717,6 @@ export function preventDefault(event: Event | undefined): void {
  * Get HTML element which is the target of the event.
  *
  * @param event - The event.
- *
  * @returns The element or null if not obtainable.
  */
 export function getTarget(
@@ -775,7 +754,6 @@ export function getTarget(
  *
  * @param element - The element to be tested.
  * @param parent - The ancestor (not necessarily parent) of the element.
- *
  * @returns True if parent is an ancestor of the element, false otherwise.
  */
 export function hasParent(element: Element, parent: Element): boolean {
@@ -800,7 +778,6 @@ export const option = {
    *
    * @param value - Value to be converted intoboolean, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
-   *
    * @returns Corresponding boolean value, if none then the default value, if none then null.
    */
   asBoolean(value: unknown, defaultValue?: boolean): boolean | null {
@@ -820,7 +797,6 @@ export const option = {
    *
    * @param value - Value to be converted intonumber, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
-   *
    * @returns Corresponding **boxed** number value, if none then the default value, if none then null.
    */
   asNumber(value: unknown, defaultValue?: number): number | null {
@@ -840,7 +816,6 @@ export const option = {
    *
    * @param value - Value to be converted intostring, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
-   *
    * @returns Corresponding **boxed** string value, if none then the default value, if none then null.
    */
   asString(value: unknown, defaultValue?: string): string | null {
@@ -860,7 +835,6 @@ export const option = {
    *
    * @param value - Value to be converted intosize, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
-   *
    * @returns Corresponding string value (number + 'px'), if none then the default value, if none then null.
    */
   asSize(value: unknown, defaultValue?: string): string | null {
@@ -882,7 +856,6 @@ export const option = {
    *
    * @param value - Value to be converted into DOM Element, a function will be executed as `(() => unknown)`.
    * @param defaultValue - If the value or the return value of the function == null then this will be returned.
-   *
    * @returns The DOM Element, if none then the default value, if none then null.
    */
   asElement<T extends Node>(
@@ -902,9 +875,7 @@ export const option = {
  *
  * @remarks
  * {@link http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb}
- *
  * @param hex - Hex color string (3 or 6 digits, with or without #).
- *
  * @returns RGB color object.
  */
 export function hexToRGB(hex: string): RGB | null {
@@ -940,7 +911,6 @@ export function hexToRGB(hex: string): RGB | null {
  *
  * @param color - The color string (hex, RGB, RGBA).
  * @param opacity - The new opacity.
- *
  * @returns RGBA string, for example 'rgba(255, 0, 127, 0.3)'.
  */
 export function overrideOpacity(color: string, opacity: number): string {
@@ -968,7 +938,6 @@ export function overrideOpacity(color: string, opacity: number): string {
  * @param red - Red channel.
  * @param green - Green channel.
  * @param blue - Blue channel.
- *
  * @returns Hex color string (for example: '#0acdc0').
  */
 export function RGBToHex(red: number, green: number, blue: number): string {
@@ -1018,7 +987,6 @@ export function parseColor(
  *
  * @param inputColor - Shorthand color string or input color object.
  * @param defaultColor - Full color object to fill in missing values in inputColor.
- *
  * @returns Color object.
  */
 export function parseColor(
@@ -1157,11 +1125,9 @@ export function parseColor(
  *
  * @remarks
  * {@link http://www.javascripter.net/faq/rgb2hsv.htm}
- *
  * @param red - Red channel.
  * @param green - Green channel.
  * @param blue - Blue channel.
- *
  * @returns HSV color object.
  */
 export function RGBToHSV(red: number, green: number, blue: number): HSV {
@@ -1257,11 +1223,9 @@ export function removeCssText(element: HTMLElement, cssText: string): void {
  *
  * @remarks
  * {@link https://gist.github.com/mjijackson/5311256}
- *
  * @param h - Hue.
  * @param s - Saturation.
  * @param v - Value.
- *
  * @returns RGB color object.
  */
 export function HSVToRGB(h: number, s: number, v: number): RGB {
@@ -1309,7 +1273,6 @@ export function HSVToRGB(h: number, s: number, v: number): RGB {
  * @param h - Hue.
  * @param s - Saturation.
  * @param v - Value.
- *
  * @returns Hex color string.
  */
 export function HSVToHex(h: number, s: number, v: number): string {
@@ -1321,7 +1284,6 @@ export function HSVToHex(h: number, s: number, v: number): string {
  * Convert hex color string into HSV \<0, 1\>.
  *
  * @param hex - Hex color string.
- *
  * @returns HSV color object.
  */
 export function hexToHSV(hex: string): HSV {
@@ -1336,7 +1298,6 @@ export function hexToHSV(hex: string): HSV {
  * Validate hex color string.
  *
  * @param hex - Unknown string that may contain a color.
- *
  * @returns True if the string is valid, false otherwise.
  */
 export function isValidHex(hex: string): boolean {
@@ -1348,7 +1309,6 @@ export function isValidHex(hex: string): boolean {
  * Validate RGB color string.
  *
  * @param rgb - Unknown string that may contain a color.
- *
  * @returns True if the string is valid, false otherwise.
  */
 export function isValidRGB(rgb: string): boolean {
@@ -1359,7 +1319,6 @@ export function isValidRGB(rgb: string): boolean {
  * Validate RGBA color string.
  *
  * @param rgba - Unknown string that may contain a color.
- *
  * @returns True if the string is valid, false otherwise.
  */
 export function isValidRGBA(rgba: string): boolean {
@@ -1372,7 +1331,6 @@ export function isValidRGBA(rgba: string): boolean {
  *
  * @param fields - Names of properties to be bridged.
  * @param referenceObject - The original object.
- *
  * @returns A new object inheriting from the referenceObject.
  */
 export function selectiveBridgeObject<F extends string, V>(
@@ -1402,7 +1360,6 @@ export function bridgeObject<T>(referenceObject: T): null;
  * This is used for default options.
  *
  * @param referenceObject - The original object.
- *
  * @returns The Element if the referenceObject is an Element, or a new object inheriting from the referenceObject.
  */
 export function bridgeObject<T extends object | null>(
@@ -1434,7 +1391,6 @@ export function bridgeObject<T extends object | null>(
  *
  * @param a - The array to be sorted (in-place).
  * @param compare - An order comparator.
- *
  * @returns The argument a.
  */
 export function insertSort<T>(a: T[], compare: (a: T, b: T) => number): T[] {
@@ -1599,7 +1555,6 @@ export function binarySearchCustom<O extends object, K1 extends keyof O>(
  * @param comparator - -1 is lower, 0 is equal, 1 is higher.
  * @param field - Property name on an item (That is item[field]).
  * @param field2 - Second property name on an item (That is item[field][field2]).
- *
  * @returns Index of the found item or -1 if nothing was found.
  */
 export function binarySearchCustom(
@@ -1648,7 +1603,6 @@ export function binarySearchCustom(
  * @param field - Name of the property in items to be searched.
  * @param sidePreference - If the target is between two values, should the index of the before or the after be returned?
  * @param comparator - An optional comparator, returning -1, 0, 1 for \<, ===, \>.
- *
  * @returns The index of found value or -1 if nothing was found.
  */
 export function binarySearchValue<T extends string>(
@@ -1728,7 +1682,6 @@ export const easingFunctions = {
    * Provides no easing and no acceleration.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   linear(t: number): number {
@@ -1739,7 +1692,6 @@ export const easingFunctions = {
    * Accelerate from zero velocity.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeInQuad(t: number): number {
@@ -1750,7 +1702,6 @@ export const easingFunctions = {
    * Decelerate to zero velocity.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeOutQuad(t: number): number {
@@ -1761,7 +1712,6 @@ export const easingFunctions = {
    * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeInOutQuad(t: number): number {
@@ -1772,7 +1722,6 @@ export const easingFunctions = {
    * Accelerate from zero velocity.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeInCubic(t: number): number {
@@ -1783,7 +1732,6 @@ export const easingFunctions = {
    * Decelerate to zero velocity.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeOutCubic(t: number): number {
@@ -1794,7 +1742,6 @@ export const easingFunctions = {
    * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeInOutCubic(t: number): number {
@@ -1805,7 +1752,6 @@ export const easingFunctions = {
    * Accelerate from zero velocity.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeInQuart(t: number): number {
@@ -1816,7 +1762,6 @@ export const easingFunctions = {
    * Decelerate to zero velocity.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeOutQuart(t: number): number {
@@ -1827,7 +1772,6 @@ export const easingFunctions = {
    * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeInOutQuart(t: number): number {
@@ -1838,7 +1782,6 @@ export const easingFunctions = {
    * Accelerate from zero velocity.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeInQuint(t: number): number {
@@ -1849,7 +1792,6 @@ export const easingFunctions = {
    * Decelerate to zero velocity.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeOutQuint(t: number): number {
@@ -1860,7 +1802,6 @@ export const easingFunctions = {
    * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
-   *
    * @returns Value at time t.
    */
   easeInOutQuint(t: number): number {
@@ -1922,7 +1863,6 @@ export function getScrollBarWidth(): number {
  * @param pile - Array of objects, no required format.
  * @param accessors - Array of property names.
  * For example `object['foo']['bar']` → `['foo', 'bar']`.
- *
  * @returns Value of the property with given accessors path from the first pile item where it's not undefined.
  */
 export function topMost(pile: any, accessors: any): any {

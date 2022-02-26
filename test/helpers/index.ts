@@ -4,12 +4,9 @@
  * @remarks
  * Has no problem with cycles.
  * Can receive frozen or parially frozen objects.
- *
  * @typeParam T - The type of the object.
- *
  * @param object - The object to be recursively frozen.
  * @param freeze - Function that does the freezing. Object.seal or anything with the same API can be used instead.
- *
  * @returns The frozen object (the same instance as object param).
  */
 export function deepFreeze<T extends object>(
@@ -22,7 +19,6 @@ export function deepFreeze<T extends object>(
    * Recursivelly freezes objects using alreadyFrozen to prevent infinite cycles.
    *
    * @param object - The object to be recursively frozen.
-   *
    * @returns The frozen object (the same instance as object param).
    */
   function recursivelyFreeze(object: any): any {

@@ -31,7 +31,6 @@ export interface RNG {
  *
  * @param seed - All supplied arguments will be used as a seed. In case nothing
  * is supplied the current time will be used to seed the generator.
- *
  * @returns A ready to use seeded generator.
  */
 export function Alea(...seed: Mashable[]): RNG {
@@ -42,7 +41,6 @@ export function Alea(...seed: Mashable[]): RNG {
  * An implementation of [[Alea]] without user input validation.
  *
  * @param seed - The data that will be used to seed the generator.
- *
  * @returns A ready to use seeded generator.
  */
 function AleaImplementation(seed: Mashable[]): RNG {
@@ -73,7 +71,6 @@ function AleaImplementation(seed: Mashable[]): RNG {
  * random numbers.
  *
  * @param seed - Arbitrary data that will be used as the seed.
- *
  * @returns Three numbers to use as initial values for [[AleaImplementation]].
  */
 function mashSeed(...seed: Mashable[]): [number, number, number] {
