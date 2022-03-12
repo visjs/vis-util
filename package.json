@@ -94,7 +94,7 @@
     "@egjs/hammerjs": "2.0.17",
     "@types/chai": "4.3.0",
     "@types/mocha": "9.1.0",
-    "@types/node": "14.18.12",
+    "@types/node": "16.11.26",
     "@types/sinon": "10.0.11",
     "assert": "2.0.0",
     "check-dts": "0.6.6",
