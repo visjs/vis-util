@@ -114,6 +114,6 @@
     "sinon": "13.0.1",
     "snap-shot-it": "7.9.6",
     "typedoc": "0.22.13",
-    "vis-dev-utils": "3.0.12"
+    "vis-dev-utils": "3.0.14"
   }
 }
