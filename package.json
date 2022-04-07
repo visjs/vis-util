@@ -113,7 +113,7 @@
     "semantic-release": "19.0.2",
     "sinon": "13.0.1",
     "snap-shot-it": "7.9.6",
-    "typedoc": "0.22.13",
+    "typedoc": "0.22.14",
     "vis-dev-utils": "3.0.30"
   }
 }
