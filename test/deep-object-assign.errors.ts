@@ -59,7 +59,7 @@ deepObjectAssign<TestObject>(testObject, {
   },
 });
 deepObjectAssign<TestObject>(testObject, {
-  // THROWS Type 'symbol' is not assignable to type
+  // THROWS Type 'symbol' has no properties in common with type '{ demanded?: string | undefined; }'.
   required: DELETE,
 });
 
