@@ -2,8 +2,12 @@
   "entryPoints": ["./src/index.ts"],
   "excludeExternals": true,
   "excludePrivate": true,
-  "listInvalidSymbolLinks": true,
   "out": "./docs",
   "theme": "default",
-  "tsconfig": "./tsconfig.docs.json"
+  "tsconfig": "./tsconfig.docs.json",
+  "validation": {
+    "invalidLink": true,
+    "notDocumented": false,
+    "notExported": true
+  }
 }
