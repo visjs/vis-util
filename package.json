@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "build": "run-s build:types build:code build:docs",
-    "build:code": "rollup -c rollup.build.js",
+    "build:code": "rollup --bundleConfigAsCjs --config rollup.build.js",
     "build:docs": "typedoc",
     "build:types": "tsc -p tsconfig.types.json",
     "clean": "rimraf '{coverage,declarations,docs,esnext,peer,reports,standalone}' 'index.{d.ts,js}'",
