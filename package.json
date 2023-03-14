@@ -111,7 +111,7 @@
     "rimraf": "3.0.2",
     "sazerac": "2.0.0",
     "semantic-release": "20.1.1",
-    "sinon": "15.0.1",
+    "sinon": "15.0.2",
     "snap-shot-it": "7.9.10",
     "typedoc": "0.23.26",
     "vis-dev-utils": "4.0.6"
