@@ -31,7 +31,7 @@
     "build:code": "rollup --bundleConfigAsCjs --config rollup.build.js",
     "build:docs": "typedoc",
     "build:types": "tsc -p tsconfig.types.json",
-    "clean": "rimraf '{coverage,declarations,docs,esnext,peer,reports,standalone}' 'index.{d.ts,js}'",
+    "clean": "rimraf --glob \"{coverage,declarations,docs,esnext,peer,reports,standalone}\" \"index.{d.ts,js}\"",
     "style": "prettier --check .",
     "style-fix": "prettier --write .",
     "lint": "eslint --ext .js,.ts .",
