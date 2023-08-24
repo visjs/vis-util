@@ -110,7 +110,7 @@
     "nyc": "15.1.0",
     "rimraf": "5.0.1",
     "sazerac": "2.0.0",
-    "semantic-release": "21.1.0",
+    "semantic-release": "21.1.1",
     "sinon": "15.2.0",
     "snap-shot-it": "7.9.10",
     "typedoc": "0.24.8",
