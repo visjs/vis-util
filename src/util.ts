@@ -1155,32 +1155,28 @@ export function RGBToHSV(red: number, green: number, blue: number): HSV {
 interface CSSStyles {
   [key: string]: string;
 }
-const cssUtil = {
-  // split a string with css styles into an object with key/values
-  split(cssText: string): CSSStyles {
-    const styles: CSSStyles = {};
 
-    cssText.split(";").forEach((style): void => {
-      if (style.trim() != "") {
-        const parts = style.split(":");
-        const key = parts[0].trim();
-        const value = parts[1].trim();
-        styles[key] = value;
-      }
-    });
+/**
+ * Split a string with css styles into an object with key/values.
+ *
+ * @param cssText - CSS source code to split into key/value object.
+ * @returns Key/value object corresponding to {@link cssText}.
+ */
+function splitCSSText(cssText: string): CSSStyles {
+  const tmpEllement = document.createElement("div");
 
-    return styles;
-  },
+  const styles: CSSStyles = {};
 
-  // build a css text string from an object with key/values
-  join(styles: CSSStyles): string {
-    return Object.keys(styles)
-      .map(function (key): string {
-        return key + ": " + styles[key];
-      })
-      .join("; ");
-  },
-};
+  tmpEllement.style.cssText = cssText;
+
+  for (let i = 0; i < tmpEllement.style.length; ++i) {
+    styles[tmpEllement.style[i]] = tmpEllement.style.getPropertyValue(
+      tmpEllement.style[i]
+    );
+  }
+
+  return styles;
+}
 
 /**
  * Append a string with css styles to an element.
@@ -1189,14 +1185,10 @@ const cssUtil = {
  * @param cssText - The styles to be appended.
  */
 export function addCssText(element: HTMLElement, cssText: string): void {
-  const currentStyles = cssUtil.split(element.style.cssText);
-  const newStyles = cssUtil.split(cssText);
-  const styles = {
-    ...currentStyles,
-    ...newStyles,
-  };
-
-  element.style.cssText = cssUtil.join(styles);
+  const cssStyle = splitCSSText(cssText);
+  for (const [key, value] of Object.entries(cssStyle)) {
+    element.style.setProperty(key, value);
+  }
 }
 
 /**
@@ -1206,16 +1198,10 @@ export function addCssText(element: HTMLElement, cssText: string): void {
  * @param cssText - The styles to be removed.
  */
 export function removeCssText(element: HTMLElement, cssText: string): void {
-  const styles = cssUtil.split(element.style.cssText);
-  const removeStyles = cssUtil.split(cssText);
-
-  for (const key in removeStyles) {
-    if (Object.prototype.hasOwnProperty.call(removeStyles, key)) {
-      delete styles[key];
-    }
+  const cssStyle = splitCSSText(cssText);
+  for (const key of Object.keys(cssStyle)) {
+    element.style.removeProperty(key);
   }
-
-  element.style.cssText = cssUtil.join(styles);
 }
 
 /**

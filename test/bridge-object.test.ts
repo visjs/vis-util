@@ -1,8 +1,17 @@
+import jsdom_global from "jsdom-global";
 import { expect } from "chai";
 
 import { bridgeObject } from "../src";
 
 describe("bridgeObject", function (): void {
+  beforeEach(function () {
+    this.jsdom_global = jsdom_global();
+  });
+
+  afterEach(function () {
+    this.jsdom_global();
+  });
+
   describe("Invalid input", function (): void {
     [
       null,
