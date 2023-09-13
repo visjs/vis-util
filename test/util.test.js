@@ -817,6 +817,10 @@ describe("util", function () {
       this.defaultValue = document.createElement("div");
     });
 
+    after(function () {
+      this.jsdom_global();
+    });
+
     it("resolves value from a function", function () {
       var me = this;
       assert.equal(
