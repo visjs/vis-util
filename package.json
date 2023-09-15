@@ -95,7 +95,7 @@
     "@types/chai": "4.3.6",
     "@types/jsdom-global": "^3.0.4",
     "@types/mocha": "10.0.1",
-    "@types/node": "18.15.12",
+    "@types/node": "18.17.16",
     "@types/sinon": "10.0.16",
     "assert": "2.1.0",
     "check-dts": "0.7.2",
