@@ -76,6 +76,11 @@ function deepObjectAssignNonentry(...values: readonly any[]): any {
   const a = values[0];
   const b = values[1];
 
+  if (a instanceof Date && b instanceof Date) {
+    a.setTime(b.getTime());
+    return a;
+  }
+
   for (const prop of Reflect.ownKeys(b)) {
     if (!Object.prototype.propertyIsEnumerable.call(b, prop)) {
       // Ignore nonenumerable props, Object.assign() would do the same.
@@ -108,6 +113,9 @@ function clone(a: any): any {
   if (Array.isArray(a)) {
     return a.map((value: any): any => clone(value));
   } else if (typeof a === "object" && a !== null) {
+    if (a instanceof Date) {
+      return new Date(a.getTime());
+    }
     return deepObjectAssignNonentry({}, a);
   } else {
     return a;
