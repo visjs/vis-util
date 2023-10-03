@@ -253,4 +253,40 @@ test(deepObjectAssign, (): void => {
     foo: "bar",
     deleteFoo: "foo",
   });
+
+  const date = new Date(0);
+  const date2 = new Date(50000);
+  const date3 = new Date(150000);
+
+  // Merge single date into empty object
+  given(
+    {},
+    {
+      start: date,
+    }
+  ).expect({
+    start: date,
+  });
+
+  // Merge single date into non-empty object (no overlap)
+  given(
+    { start: date },
+    {
+      end: date2,
+    }
+  ).expect({
+    start: date,
+    end: date2,
+  });
+
+  // Merge single date into non-empty object (overlap)
+  given(
+    { start: date, end: date2 },
+    {
+      end: date3,
+    }
+  ).expect({
+    start: date,
+    end: date3,
+  });
 });
