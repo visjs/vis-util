@@ -116,6 +116,6 @@
     "sinon": "16.1.0",
     "snap-shot-it": "7.9.10",
     "typedoc": "0.25.2",
-    "vis-dev-utils": "4.0.39"
+    "vis-dev-utils": "4.0.41"
   }
 }
