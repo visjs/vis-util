@@ -92,7 +92,7 @@
   },
   "devDependencies": {
     "@egjs/hammerjs": "2.0.17",
-    "@types/chai": "4.3.8",
+    "@types/chai": "4.3.9",
     "@types/jsdom-global": "^3.0.4",
     "@types/mocha": "10.0.2",
     "@types/node": "18.18.5",
