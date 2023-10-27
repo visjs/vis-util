@@ -633,67 +633,6 @@ export function throttle(fn: () => void): () => void {
 }
 
 /**
- * Add and event listener. Works for all browsers.
- *
- * @param element - The element to bind the event listener to.
- * @param action - Same as Element.addEventListener(action, —, —).
- * @param listener - Same as Element.addEventListener(—, listener, —).
- * @param useCapture - Same as Element.addEventListener(—, —, useCapture).
- */
-export function addEventListener<E extends Element>(
-  element: E,
-  action: Parameters<E["addEventListener"]>[0],
-  listener: Parameters<E["addEventListener"]>[1],
-  useCapture?: Parameters<E["addEventListener"]>[2]
-): void {
-  if (element.addEventListener) {
-    if (useCapture === undefined) {
-      useCapture = false;
-    }
-
-    if (action === "mousewheel" && navigator.userAgent.includes("Firefox")) {
-      action = "DOMMouseScroll"; // For Firefox
-    }
-
-    element.addEventListener(action, listener, useCapture);
-  } else {
-    // @TODO: IE types? Does anyone care?
-    (element as any).attachEvent("on" + action, listener); // IE browsers
-  }
-}
-
-/**
- * Remove an event listener from an element.
- *
- * @param element - The element to bind the event listener to.
- * @param action - Same as Element.removeEventListener(action, —, —).
- * @param listener - Same as Element.removeEventListener(—, listener, —).
- * @param useCapture - Same as Element.removeEventListener(—, —, useCapture).
- */
-export function removeEventListener<E extends Element>(
-  element: E,
-  action: Parameters<E["removeEventListener"]>[0],
-  listener: Parameters<E["removeEventListener"]>[1],
-  useCapture?: Parameters<E["removeEventListener"]>[2]
-): void {
-  if (element.removeEventListener) {
-    // non-IE browsers
-    if (useCapture === undefined) {
-      useCapture = false;
-    }
-
-    if (action === "mousewheel" && navigator.userAgent.includes("Firefox")) {
-      action = "DOMMouseScroll"; // For Firefox
-    }
-
-    element.removeEventListener(action, listener, useCapture);
-  } else {
-    // @TODO: IE types? Does anyone care?
-    (element as any).detachEvent("on" + action, listener); // IE browsers
-  }
-}
-
-/**
  * Cancels the event's default action if it is cancelable, without stopping further propagation of the event.
  *
  * @param event - The event whose default action should be prevented.
