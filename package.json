@@ -101,7 +101,7 @@
     "check-dts": "0.7.2",
     "component-emitter": "2.0.0",
     "cross-env": "^7.0.3",
-    "eslint": "8.55.0",
+    "eslint": "8.57.0",
     "git-authors-cli": "1.0.47",
     "husky": "8.0.3",
     "jsdom": "22.1.0",
