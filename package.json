@@ -96,7 +96,7 @@
     "@types/jsdom-global": "^3.0.4",
     "@types/mocha": "10.0.6",
     "@types/node": "20.10.3",
-    "@types/sinon": "17.0.2",
+    "@types/sinon": "17.0.3",
     "assert": "2.1.0",
     "check-dts": "0.7.2",
     "component-emitter": "2.0.0",
@@ -113,7 +113,7 @@
     "rimraf": "5.0.5",
     "sazerac": "2.0.0",
     "semantic-release": "22.0.8",
-    "sinon": "17.0.1",
+    "sinon": "17.0.2",
     "snap-shot-it": "7.9.10",
     "typedoc": "0.25.4",
     "vis-dev-utils": "4.0.45"
