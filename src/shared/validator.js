@@ -11,7 +11,6 @@ export const VALIDATOR_PRINT_STYLE = "background: #FFeeee; color: #dd0000";
 export class Validator {
   /**
    * Main function to be called
-   *
    * @param {object} options
    * @param {object} referenceOptions
    * @param {object} subObject
@@ -31,7 +30,6 @@ export class Validator {
 
   /**
    * Will traverse an object recursively and check every value
-   *
    * @param {object} options
    * @param {object} referenceOptions
    * @param {Array} path    | where to look for the actual option
@@ -47,7 +45,6 @@ export class Validator {
 
   /**
    * Check every value. If the value is an object, call the parse function on that object.
-   *
    * @param {string} option
    * @param {object} options
    * @param {object} referenceOptions
@@ -274,11 +271,10 @@ export class Validator {
 
   /**
    * traverse the options in search for a match.
-   *
    * @param {string} option
    * @param {object} options
    * @param {Array} path    | where to look for the actual option
-   * @param {boolean} [recursive=false]
+   * @param {boolean} [recursive]
    * @returns {{closestMatch: string, path: Array, distance: number}}
    * @static
    */
@@ -363,16 +359,15 @@ export class Validator {
 
   /**
    *  Compute the edit distance between the two given strings
-   * http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#JavaScript
+   *  http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#JavaScript
    *
-   * Copyright (c) 2011 Andrei Mackenzie
+   *  Copyright (c) 2011 Andrei Mackenzie
    *
-   * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+   *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
    *
-   * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+   *  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
    *
-   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-   *
+   *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    * @param {string} a
    * @param {string} b
    * @returns {Array.<Array.<number>>}}

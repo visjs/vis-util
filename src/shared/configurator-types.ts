@@ -30,7 +30,6 @@ type TextInput = string;
 /**
  * The passed values will be used as the limits and the initial position of a
  * slider.
- *
  * @remarks
  * ```typescript
  * readonly [

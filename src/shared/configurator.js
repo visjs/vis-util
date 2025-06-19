@@ -4,7 +4,6 @@ import { ColorPicker } from "./color-picker";
 
 /**
  * Wrap given text (last argument) in HTML elements (all preceding arguments).
- *
  * @param {...any} rest - List of tag names followed by inner text.
  * @returns An element or a text node.
  */
@@ -74,7 +73,6 @@ export class Configurator {
   /**
    * refresh all options.
    * Because all modules parse their options by themselves, we just use their options. We copy them here.
-   *
    * @param {object} options
    */
   setOptions(options) {
@@ -137,7 +135,6 @@ export class Configurator {
 
   /**
    * Create all DOM elements
-   *
    * @private
    */
   _create() {
@@ -183,7 +180,6 @@ export class Configurator {
 
   /**
    * draw all DOM elements on the screen
-   *
    * @private
    */
   _push() {
@@ -199,7 +195,6 @@ export class Configurator {
 
   /**
    * delete all DOM elements
-   *
    * @private
    */
   _clean() {
@@ -218,7 +213,6 @@ export class Configurator {
 
   /**
    * get the value from the actualOptions if it exists
-   *
    * @param {Array} path    | where to look for the actual option
    * @returns {*}
    * @private
@@ -238,7 +232,6 @@ export class Configurator {
 
   /**
    * all option elements are wrapped in an item
-   *
    * @param {Array} path    | where to look for the actual option
    * @param {Array.<Element>} domElements
    * @returns {number}
@@ -260,7 +253,6 @@ export class Configurator {
 
   /**
    * header for major subjects
-   *
    * @param {string} name
    * @private
    */
@@ -273,7 +265,6 @@ export class Configurator {
 
   /**
    * make a label, if it is an object label, it gets different styling.
-   *
    * @param {string} name
    * @param {Array} path    | where to look for the actual option
    * @param {string} objectLabel
@@ -297,7 +288,6 @@ export class Configurator {
 
   /**
    * make a dropdown list for multiple possible string optoins
-   *
    * @param {Array.<number>} arr
    * @param {number} value
    * @param {Array} path    | where to look for the actual option
@@ -334,7 +324,6 @@ export class Configurator {
 
   /**
    * make a range object for numeric options
-   *
    * @param {Array.<number>} arr
    * @param {number} value
    * @param {Array} path    | where to look for the actual option
@@ -406,7 +395,6 @@ export class Configurator {
 
   /**
    * make a button object
-   *
    * @private
    */
   _makeButton() {
@@ -435,7 +423,6 @@ export class Configurator {
 
   /**
    * prepare the popup
-   *
    * @param {string} string
    * @param {number} index
    * @private
@@ -460,7 +447,6 @@ export class Configurator {
 
   /**
    * remove the popup from the dom
-   *
    * @private
    */
   _removePopup() {
@@ -474,7 +460,6 @@ export class Configurator {
 
   /**
    * Show the popup if it is needed.
-   *
    * @private
    */
   _showPopupIfNeeded() {
@@ -495,7 +480,6 @@ export class Configurator {
 
   /**
    * make a checkbox for boolean options.
-   *
    * @param {number} defaultValue
    * @param {number} value
    * @param {Array} path    | where to look for the actual option
@@ -530,7 +514,6 @@ export class Configurator {
 
   /**
    * make a text input field for string options.
-   *
    * @param {number} defaultValue
    * @param {number} value
    * @param {Array} path    | where to look for the actual option
@@ -556,7 +539,6 @@ export class Configurator {
 
   /**
    * make a color field with a color picker for color fields
-   *
    * @param {Array.<number>} arr
    * @param {number} value
    * @param {Array} path    | where to look for the actual option
@@ -585,7 +567,6 @@ export class Configurator {
 
   /**
    * used by the color buttons to call the color picker.
-   *
    * @param {number} value
    * @param {HTMLElement} div
    * @param {Array} path    | where to look for the actual option
@@ -616,10 +597,9 @@ export class Configurator {
 
   /**
    * parse an object and draw the correct items
-   *
    * @param {object} obj
-   * @param {Array} [path=[]]    | where to look for the actual option
-   * @param {boolean} [checkOnly=false]
+   * @param {Array} [path]    | where to look for the actual option
+   * @param {boolean} [checkOnly]
    * @returns {boolean}
    * @private
    */
@@ -693,7 +673,6 @@ export class Configurator {
 
   /**
    * handle the array type of option
-   *
    * @param {Array.<number>} arr
    * @param {number} value
    * @param {Array} path    | where to look for the actual option
@@ -720,7 +699,6 @@ export class Configurator {
 
   /**
    * called to update the network with the new settings.
-   *
    * @param {number} value
    * @param {Array} path    | where to look for the actual option
    * @private

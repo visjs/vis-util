@@ -1,7 +1,6 @@
 /**
  * Seedable, fast and reasonably good (not crypto but more than okay for our
  * needs) random number generator.
- *
  * @remarks
  * Adapted from {@link https://web.archive.org/web/20110429100736/http://baagoe.com:80/en/RandomMusings/javascript}.
  * Original algorithm created by Johannes Baagøe \<baagoe\@baagoe.com\> in 2010.
@@ -28,7 +27,6 @@ export interface RNG {
 
 /**
  * Create a seeded pseudo random generator based on Alea by Johannes Baagøe.
- *
  * @param seed - All supplied arguments will be used as a seed. In case nothing
  * is supplied the current time will be used to seed the generator.
  * @returns A ready to use seeded generator.
@@ -39,7 +37,6 @@ export function Alea(...seed: Mashable[]): RNG {
 
 /**
  * An implementation of [[Alea]] without user input validation.
- *
  * @param seed - The data that will be used to seed the generator.
  * @returns A ready to use seeded generator.
  */
@@ -69,7 +66,6 @@ function AleaImplementation(seed: Mashable[]): RNG {
 /**
  * Turn arbitrary data into values [[AleaImplementation]] can use to generate
  * random numbers.
- *
  * @param seed - Arbitrary data that will be used as the seed.
  * @returns Three numbers to use as initial values for [[AleaImplementation]].
  */
@@ -105,7 +101,6 @@ export type Mashable = number | string | boolean | object | bigint;
 
 /**
  * Create a new mash function.
- *
  * @returns A nonpure function that takes arbitrary [[Mashable]] data and turns
  * them into numbers.
  */

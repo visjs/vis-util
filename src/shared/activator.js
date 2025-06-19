@@ -8,7 +8,6 @@ import { Hammer } from "./hammer";
  * When active, the element is displayed with a blue border around it, and
  * the interactive contents of the element can be used. When clicked outside
  * the element, the elements mode is changed to inactive.
- *
  * @param {Element} container
  * @class Activator
  */
@@ -135,7 +134,6 @@ Activator.prototype.deactivate = function () {
 
 /**
  * Handle a tap event: activate the container
- *
  * @param {Event}  event   The event
  * @private
  */
@@ -148,7 +146,6 @@ Activator.prototype._onTapOverlay = function (event) {
 /**
  * Test whether the element has the requested parent element somewhere in
  * its chain of parent nodes.
- *
  * @param {HTMLElement} element
  * @param {HTMLElement} parent
  * @returns {boolean} Returns true when the parent is found somewhere in the

@@ -4,7 +4,6 @@ import RealHammer from "@egjs/hammerjs";
  * Setup a mock hammer.js object, for unit testing.
  *
  * Inspiration: https://github.com/uber/deck.gl/pull/658
- *
  * @returns {{on: noop, off: noop, destroy: noop, emit: noop, get: get}}
  */
 function hammerMock() {

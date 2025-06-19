@@ -157,7 +157,7 @@ const htmlColors = {
  */
 export class ColorPicker {
   /**
-   * @param {number} [pixelRatio=1]
+   * @param {number} [pixelRatio]
    */
   constructor(pixelRatio = 1) {
     this.pixelRatio = pixelRatio;
@@ -180,7 +180,6 @@ export class ColorPicker {
 
   /**
    * this inserts the colorPicker into a div from the DOM
-   *
    * @param {Element} container
    */
   insertTo(container) {
@@ -197,7 +196,6 @@ export class ColorPicker {
 
   /**
    * the callback is executed on apply and save. Bind it to the application
-   *
    * @param {Function} callback
    */
   setUpdateCallback(callback) {
@@ -212,7 +210,6 @@ export class ColorPicker {
 
   /**
    * the callback is executed on apply and save. Bind it to the application
-   *
    * @param {Function} callback
    */
   setCloseCallback(callback) {
@@ -246,9 +243,8 @@ export class ColorPicker {
    * 'rgba(255,255,255,1.0)' --> rgba string
    * {r:255,g:255,b:255}     --> rgb object
    * {r:255,g:255,b:255,a:1.0} --> rgba object
-   *
    * @param {string | object} color
-   * @param {boolean} [setInitial=true]
+   * @param {boolean} [setInitial]
    */
   setColor(color, setInitial = true) {
     if (color === "none") {
@@ -330,8 +326,7 @@ export class ColorPicker {
   /**
    * Hide the picker. Is called by the cancel button.
    * Optional boolean to store the previous color for easy access later on.
-   *
-   * @param {boolean} [storePrevious=true]
+   * @param {boolean} [storePrevious]
    * @private
    */
   _hide(storePrevious = true) {
@@ -358,7 +353,6 @@ export class ColorPicker {
 
   /**
    * bound to the save button. Saves and hides.
-   *
    * @private
    */
   _save() {
@@ -369,7 +363,6 @@ export class ColorPicker {
 
   /**
    * Bound to apply button. Saves but does not close. Is undone by the cancel button.
-   *
    * @private
    */
   _apply() {
@@ -380,7 +373,6 @@ export class ColorPicker {
 
   /**
    * load the color from the previous session.
-   *
    * @private
    */
   _loadLast() {
@@ -393,9 +385,8 @@ export class ColorPicker {
 
   /**
    * set the color, place the picker
-   *
    * @param {object} rgba
-   * @param {boolean} [setInitial=true]
+   * @param {boolean} [setInitial]
    * @private
    */
   _setColor(rgba, setInitial = true) {
@@ -424,7 +415,6 @@ export class ColorPicker {
 
   /**
    * bound to opacity control
-   *
    * @param {number} value
    * @private
    */
@@ -435,7 +425,6 @@ export class ColorPicker {
 
   /**
    * bound to brightness control
-   *
    * @param {number} value
    * @private
    */
@@ -450,7 +439,6 @@ export class ColorPicker {
 
   /**
    * update the color picker. A black circle overlays the hue circle to mimic the brightness decreasing.
-   *
    * @param {object} rgba
    * @private
    */
@@ -506,7 +494,6 @@ export class ColorPicker {
 
   /**
    * used by create to set the size of the canvas.
-   *
    * @private
    */
   _setSize() {
@@ -520,7 +507,6 @@ export class ColorPicker {
   /**
    * create all dom elements
    * TODO: cleanup, lots of similar dom elements
-   *
    * @private
    */
   _create() {
@@ -660,7 +646,6 @@ export class ColorPicker {
 
   /**
    * bind hammer to the color picker
-   *
    * @private
    */
   _bindHammer() {
@@ -690,7 +675,6 @@ export class ColorPicker {
 
   /**
    * generate the hue circle. This is relatively heavy (200ms) and is done only once on the first time it is shown.
-   *
    * @private
    */
   _generateHueCircle() {
@@ -741,7 +725,6 @@ export class ColorPicker {
 
   /**
    * move the selector. This is called by hammer functions.
-   *
    * @param {Event}  event   The event
    * @private
    */

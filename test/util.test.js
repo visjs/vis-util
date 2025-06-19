@@ -8,7 +8,6 @@ describe("util", function () {
    * Tests for copy and extend methods.
    *
    * Goal: to cover all possible paths within the tested method(s)
-   *
    * @remarks
    * - All these methods have the inherent flaw that it's possible to define
    * properties on an object with value 'undefined'. e.g. in `node`:

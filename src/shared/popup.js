@@ -32,7 +32,6 @@ export class Popup {
 
   /**
    * Set the content for the popup window. This can be HTML code or text.
-   *
    * @param {string | Element} content
    */
   setText(content) {
@@ -50,7 +49,6 @@ export class Popup {
 
   /**
    * Show the popup window
-   *
    * @param {boolean} [doShow]    Show or hide the window
    */
   show(doShow) {
