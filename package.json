@@ -47,8 +47,7 @@
     "type-check": "run-s test:types:*",
     "version": "npm run contributors:update && git add package.json",
     "contributors:update": "git-authors-cli",
-    "preparepublish": "npm run contributors:update",
-    "prepare": "husky install"
+    "preparepublish": "npm run contributors:update"
   },
   "lint-staged": {
     "*.*": "prettier --write",
