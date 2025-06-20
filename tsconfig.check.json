@@ -1,4 +1,4 @@
 {
   "extends": "./tsconfig",
-  "exclude": ["**/*.errors.ts"]
+  "exclude": ["test/index.errors.ts"]
 }
