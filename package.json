@@ -85,6 +85,10 @@
     "type": "opencollective",
     "url": "https://opencollective.com/visjs"
   },
+  "volta": {
+    "node": "21.7.3",
+    "npm": "11.4.2"
+  },
   "peerDependencies": {
     "@egjs/hammerjs": "^2.0.0",
     "component-emitter": "^1.3.0 || ^2.0.0"
