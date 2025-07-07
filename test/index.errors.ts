@@ -1,4 +1,4 @@
-import { Assignable, DELETE, deepObjectAssign } from "../src";
+import { Assignable, DELETE, deepObjectAssign } from "../src/index.ts";
 
 interface TestObject {
   string?: string;

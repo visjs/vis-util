@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { topMost } from "../src";
+import { topMost } from "../src/index.ts";
 
 describe("topMost", function (): void {
   it("Single level, first object", function (): void {

@@ -1,5 +1,5 @@
 import Emitter from "component-emitter";
-import { Hammer } from "./hammer";
+import { Hammer } from "./hammer.js";
 
 /**
  * Turn an element into an clickToUse element.

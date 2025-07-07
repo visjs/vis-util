@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { HSVToRGB, RGB } from "../src";
+import { HSVToRGB, type RGB } from "../src/index.ts";
 
 describe("HSVToRGB", function (): void {
   const valid: { args: [number, number, number]; expected: RGB }[] = [

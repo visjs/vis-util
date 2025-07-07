@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { copyArray } from "../src";
+import { copyArray } from "../src/index.ts";
 
 describe("copyArray", function (): void {
   it("number[]", function (): void {

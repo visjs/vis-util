@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { isValidRGBA } from "../src";
+import { isValidRGBA } from "../src/index.ts";
 
 describe("isValidRGBA", function (): void {
   const valid = [

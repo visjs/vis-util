@@ -2,11 +2,11 @@
   "name": "vis-util",
   "version": "0.0.0-no-version",
   "description": "utilitie collection for visjs",
-  "browser": "peer/umd/vis-util.min.js",
-  "jsnext": "esnext/esm/vis-util.js",
-  "main": "peer/umd/vis-util.js",
-  "module": "peer/esm/vis-util.js",
-  "types": "declarations/index.d.ts",
+  "browser": "./peer/umd/vis-util.min.cjs",
+  "jsnext": "./esnext/esm/vis-util.mjs",
+  "main": "./peer/umd/vis-util.cjs",
+  "module": "./peer/esm/vis-util.mjs",
+  "types": "./declarations/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/visjs/vis-util.git"
@@ -26,9 +26,10 @@
     "Kelvin Del Monte <kdelmonten@gmail.com>",
     "Zuko Mgwili <zuko.mgwili@chillisoft.co.za>"
   ],
+  "type": "module",
   "scripts": {
     "build": "run-s build:types build:code build:docs",
-    "build:code": "rollup --bundleConfigAsCjs --config rollup.build.js",
+    "build:code": "rollup --config rollup.build.js",
     "build:docs": "typedoc",
     "build:types": "tsc -p tsconfig.types.json",
     "clean": "shx rm -rf \"{coverage,declarations,docs,esnext,peer,reports,standalone}\" \"index.{d.ts,js}\"",
@@ -47,7 +48,8 @@
     "type-check": "run-s test:types:*",
     "version": "npm run contributors:update && git add package.json",
     "contributors:update": "git-authors-cli",
-    "preparepublish": "npm run contributors:update"
+    "preparepublish": "npm run contributors:update",
+    "prepare": "husky"
   },
   "lint-staged": {
     "*.*": "prettier --write",
@@ -74,6 +76,131 @@
     "url": "https://github.com/visjs/vis-util/issues"
   },
   "homepage": "https://github.com/visjs/vis-util",
+  "exports": {
+    ".": {
+      "import": "./peer/esm/vis-util.mjs",
+      "require": "./peer/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./package.json": "./package.json",
+    "./declarations/index.d.ts": {
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone": {
+      "import": "./standalone/esm/vis-util.mjs",
+      "require": "./standalone/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/esm/vis-util.js": {
+      "import": "./standalone/esm/vis-util.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/esm/vis-util.mjs": {
+      "import": "./standalone/esm/vis-util.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/esm/vis-util.min.js": {
+      "import": "./standalone/esm/vis-util.min.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/esm/vis-util.min.mjs": {
+      "import": "./standalone/esm/vis-util.min.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/umd/vis-util.js": {
+      "require": "./standalone/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/umd/vis-util.cjs": {
+      "require": "./standalone/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/umd/vis-util.min.js": {
+      "require": "./standalone/umd/vis-util.min.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/umd/vis-util.min.cjs": {
+      "require": "./standalone/umd/vis-util.min.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer": {
+      "import": "./peer/esm/vis-util.mjs",
+      "require": "./peer/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer/esm/vis-util.js": {
+      "import": "./peer/esm/vis-util.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer/esm/vis-util.mjs": {
+      "import": "./peer/esm/vis-util.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer/esm/vis-util.min.js": {
+      "import": "./peer/esm/vis-util.min.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer/esm/vis-util.min.mjs": {
+      "import": "./peer/esm/vis-util.min.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer/umd/vis-util.js": {
+      "require": "./peer/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer/umd/vis-util.cjs": {
+      "require": "./peer/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer/umd/vis-util.min.js": {
+      "require": "./peer/umd/vis-util.min.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./peer/umd/vis-util.min.cjs": {
+      "require": "./peer/umd/vis-util.min.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext": {
+      "import": "./esnext/esm/vis-util.mjs",
+      "require": "./esnext/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext/esm/vis-util.js": {
+      "import": "./esnext/esm/vis-util.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext/esm/vis-util.mjs": {
+      "import": "./esnext/esm/vis-util.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext/esm/vis-util.min.js": {
+      "import": "./esnext/esm/vis-util.min.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext/esm/vis-util.min.mjs": {
+      "import": "./esnext/esm/vis-util.min.mjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext/umd/vis-util.js": {
+      "require": "./esnext/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext/umd/vis-util.cjs": {
+      "require": "./esnext/umd/vis-util.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext/umd/vis-util.min.js": {
+      "require": "./esnext/umd/vis-util.min.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./esnext/umd/vis-util.min.cjs": {
+      "require": "./esnext/umd/vis-util.min.cjs",
+      "types": "./declarations/index.d.ts"
+    },
+    "./standalone/styles/*": "./standalone/styles/*",
+    "./peer/styles/*": "./peer/styles/*",
+    "./esnext/styles/*": "./esnext/styles/*"
+  },
   "files": [
     "LICENSE*",
     "standalone",
@@ -86,8 +213,9 @@
     "url": "https://opencollective.com/visjs"
   },
   "volta": {
-    "node": "21.7.3",
-    "npm": "11.4.2"
+    "node": "24.3.0",
+    "npm": "11.4.2",
+    "pnpm": "10.12.4"
   },
   "peerDependencies": {
     "@egjs/hammerjs": "^2.0.0",
@@ -119,9 +247,6 @@
     "sinon": "21.0.0",
     "snap-shot-it": "7.9.10",
     "typedoc": "0.28.5",
-    "vis-dev-utils": "4.0.45"
-  },
-  "overrides": {
-    "typescript": "5.8.3"
+    "vis-dev-utils": "^4.0.45"
   }
 }

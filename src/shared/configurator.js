@@ -1,6 +1,6 @@
-import { copyAndExtendArray } from "../util";
+import { copyAndExtendArray } from "../util.ts";
 
-import { ColorPicker } from "./color-picker";
+import { ColorPicker } from "./color-picker.js";
 
 /**
  * Wrap given text (last argument) in HTML elements (all preceding arguments).

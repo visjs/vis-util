@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { deepFreeze } from "./helpers";
+import { deepFreeze } from "./helpers/index.ts";
 
-import { deepExtend } from "../src";
+import { deepExtend } from "../src/index.ts";
 
 describe("deepExtend", function (): void {
   it("nested strings", function (): void {

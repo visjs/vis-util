@@ -1,6 +1,6 @@
 import snapshot from "snap-shot-it";
 
-import { Alea, RNG } from "../../src/random";
+import { Alea, type RNG } from "../../src/random/index.ts";
 
 describe("Alea", function (): void {
   this.timeout(60000);

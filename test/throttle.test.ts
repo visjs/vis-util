@@ -1,6 +1,6 @@
 import { assert, spy } from "sinon";
 
-import { throttle } from "../src";
+import { throttle } from "../src/index.ts";
 
 describe("throttle", function (): void {
   const queue: ((str: string) => void)[] = [];

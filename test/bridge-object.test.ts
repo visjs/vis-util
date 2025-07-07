@@ -1,7 +1,7 @@
 import jsdom_global from "jsdom-global";
 import { expect } from "chai";
 
-import { bridgeObject } from "../src";
+import { bridgeObject } from "../src/index.ts";
 
 describe("bridgeObject", function (): void {
   beforeEach(function () {

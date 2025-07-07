@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { RGBToHex } from "../src";
+import { RGBToHex } from "../src/index.ts";
 
 describe("RGBToHex", function (): void {
   const valid: { args: [number, number, number]; expected: string }[] = [

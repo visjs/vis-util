@@ -1,7 +1,21 @@
-var jsdom_global = require("jsdom-global");
-var assert = require("assert");
+import jsdom_global from "jsdom-global";
+import assert, { throws, equal } from "assert";
 
-var util = require("../src/index");
+import {
+  fillIfDefined,
+  selectiveDeepExtend,
+  selectiveNotDeepExtend,
+  deepExtend,
+  mergeOptions,
+  recursiveDOMDelete,
+  isDate,
+  getType,
+  easingFunctions,
+  getScrollBarWidth,
+  equalArray,
+  option,
+  binarySearchValue,
+} from "../src/index.ts";
 
 describe("util", function () {
   /**
@@ -143,7 +157,7 @@ describe("util", function () {
       var a = this.a;
       var b = this.b;
 
-      util.fillIfDefined(a, b);
+      fillIfDefined(a, b);
       checkExtended(a, b);
 
       // NOTE: if allowDeletion === false, null values are copied over!
@@ -157,7 +171,7 @@ describe("util", function () {
       var a = this.a;
       var b = this.b;
 
-      util.fillIfDefined(a, b, true); //  thrid param: allowDeletion
+      fillIfDefined(a, b, true); //  thrid param: allowDeletion
       checkExtended(a, b);
 
       // Following should be removed now
@@ -171,27 +185,27 @@ describe("util", function () {
       var b = this.b;
 
       // pedantic: copy nothing
-      util.selectiveDeepExtend([], a, b);
+      selectiveDeepExtend([], a, b);
       assert(a.color !== undefined && a.color === "red");
       assert(a.notInSource === true);
       assert(a.notInTarget === undefined);
 
       // pedantic: copy nonexistent property (nothing happens)
       assert(b.iDontExist === undefined);
-      util.selectiveDeepExtend(["iDontExist"], a, b, true);
+      selectiveDeepExtend(["iDontExist"], a, b, true);
       assert(a.iDontExist === undefined);
 
       // At this point nothing should have changed yet.
       testAUnchanged(a);
 
       // Copy one property
-      util.selectiveDeepExtend(["color"], a, b);
+      selectiveDeepExtend(["color"], a, b);
       assert(a.color !== undefined && a.color === "green");
 
       // Copy property Object
       var sub = a.sub;
       assert(sub.deleteThis === true); // pre
-      util.selectiveDeepExtend(["sub"], a, b);
+      selectiveDeepExtend(["sub"], a, b);
       assert(sub !== undefined);
       assert(sub.enabled !== undefined && sub.enabled === false);
       assert(sub.notInSource === true);
@@ -201,14 +215,14 @@ describe("util", function () {
       // Copy new Objects
       assert(a.notInTarget === undefined); // pre
       assert(a.subNotInTarget === undefined); // pre
-      util.selectiveDeepExtend(["notInTarget", "subNotInTarget"], a, b);
+      selectiveDeepExtend(["notInTarget", "subNotInTarget"], a, b);
       assert(a.notInTarget === true);
       assert(a.subNotInTarget.enabled === true);
 
       // Copy null objects
       assert(a.deleteThis !== null); // pre
       assert(a.subDeleteThis !== null); // pre
-      util.selectiveDeepExtend(["deleteThis", "subDeleteThis"], a, b);
+      selectiveDeepExtend(["deleteThis", "subDeleteThis"], a, b);
 
       // NOTE: if allowDeletion === false, null values are copied over!
       //       This is due to existing logic; it might not be the intention and hence a bug
@@ -225,7 +239,7 @@ describe("util", function () {
       // Copy object property with properties to be deleted
       var sub = a.sub;
       assert(sub.deleteThis === true); // pre
-      util.selectiveDeepExtend(["sub"], a, b, true);
+      selectiveDeepExtend(["sub"], a, b, true);
       assert(sub.deleteThis === undefined); // should be deleted
 
       // Spot check on rest of properties in `a.sub` - there should have been copied
@@ -239,7 +253,7 @@ describe("util", function () {
       assert(a.deleteThis === true); // pre
       assert(a.subDeleteThis !== undefined); // pre
       assert(a.subDeleteThis.enabled === true); // pre
-      util.selectiveDeepExtend(["deleteThis", "subDeleteThis"], a, b, true);
+      selectiveDeepExtend(["deleteThis", "subDeleteThis"], a, b, true);
       assert(a.deleteThis === undefined); // should be deleted
       assert(a.subDeleteThis === undefined); // should be deleted
     });
@@ -249,18 +263,18 @@ describe("util", function () {
       var b = this.b;
 
       // Exclude all properties, nothing copied
-      util.selectiveNotDeepExtend(Object.keys(b), a, b);
+      selectiveNotDeepExtend(Object.keys(b), a, b);
       testAUnchanged(a);
 
       // Exclude nothing, everything copied
-      util.selectiveNotDeepExtend([], a, b);
+      selectiveNotDeepExtend([], a, b);
       checkExtended(a, b, true);
 
       // Exclude some
       a = initA();
       assert(a.notInTarget === undefined); // pre
       assert(a.subNotInTarget === undefined); // pre
-      util.selectiveNotDeepExtend(["notInTarget", "subNotInTarget"], a, b);
+      selectiveNotDeepExtend(["notInTarget", "subNotInTarget"], a, b);
       assert(a.notInTarget === undefined); // not copied
       assert(a.subNotInTarget === undefined); // not copied
       assert(a.sub.notInTarget === true); // copied!
@@ -271,11 +285,11 @@ describe("util", function () {
       var b = this.b;
 
       // Exclude all properties, nothing copied
-      util.selectiveNotDeepExtend(Object.keys(b), a, b, true);
+      selectiveNotDeepExtend(Object.keys(b), a, b, true);
       testAUnchanged(a);
 
       // Exclude nothing, everything copied and some deleted
-      util.selectiveNotDeepExtend([], a, b, true);
+      selectiveNotDeepExtend([], a, b, true);
       checkExtended(a, b, true);
 
       // Exclude some
@@ -286,12 +300,7 @@ describe("util", function () {
       assert(a.subDeleteThis !== undefined); // pre
       assert(a.sub.deleteThis === true); // pre
       assert(a.subDeleteThis.enabled === true); // pre
-      util.selectiveNotDeepExtend(
-        ["notInTarget", "subNotInTarget"],
-        a,
-        b,
-        true,
-      );
+      selectiveNotDeepExtend(["notInTarget", "subNotInTarget"], a, b, true);
       assert(a.deleteThis === undefined); // should be deleted
       assert(a.sub.deleteThis !== undefined); // not deleted! Original logic, could be a bug
       assert(a.subDeleteThis === undefined); // should be deleted
@@ -308,7 +317,7 @@ describe("util", function () {
       var a = this.a;
       var b = this.b;
 
-      util.deepExtend(a, b);
+      deepExtend(a, b);
       checkExtended(a, b, true);
     });
 
@@ -323,7 +332,7 @@ describe("util", function () {
       assert(a.deleteThis === true); // pre
       assert(a.subDeleteThis !== undefined); // pre
       assert(a.subDeleteThis.enabled === true); // pre
-      util.deepExtend(a, b, false, true);
+      deepExtend(a, b, false, true);
       checkExtended(a, b, true); // Normal copy should be good
       assert(a.deleteThis === undefined); // should be deleted
       assert(a.subDeleteThis === undefined); // should be deleted
@@ -351,14 +360,14 @@ describe("util", function () {
       // Case with empty target
       var mergeTarget = {};
 
-      util.mergeOptions(mergeTarget, options, "someValue");
+      mergeOptions(mergeTarget, options, "someValue");
       assert(
         mergeTarget.someValue === undefined,
         "Non-object option should not be copied",
       );
       assert(mergeTarget.anObject === undefined);
 
-      util.mergeOptions(mergeTarget, options, "aBoolOption");
+      mergeOptions(mergeTarget, options, "aBoolOption");
       assert(
         mergeTarget.aBoolOption !== undefined,
         "option aBoolOption should now be an object",
@@ -368,18 +377,18 @@ describe("util", function () {
         "enabled value option aBoolOption should have been copied into object",
       );
 
-      util.mergeOptions(mergeTarget, options, "anObject");
+      mergeOptions(mergeTarget, options, "anObject");
       assert(mergeTarget.anObject !== undefined, "Option object is not copied");
       assert(mergeTarget.anObject.answer === 42);
       assert(mergeTarget.anObject.enabled === true);
 
-      util.mergeOptions(mergeTarget, options, "anotherObject");
+      mergeOptions(mergeTarget, options, "anotherObject");
       assert(
         mergeTarget.anotherObject.enabled === false,
         "enabled value from options must have priority",
       );
 
-      util.mergeOptions(mergeTarget, options, "merge");
+      mergeOptions(mergeTarget, options, "merge");
       assert(
         mergeTarget.merge === undefined,
         "Explicit null option should not be copied, there is no global option for it",
@@ -398,7 +407,7 @@ describe("util", function () {
         merge: "hello",
       };
 
-      util.mergeOptions(mergeTarget, options, "someValue");
+      mergeOptions(mergeTarget, options, "someValue");
       assert(
         mergeTarget.someValue === false,
         "Non-object option should not be copied",
@@ -408,7 +417,7 @@ describe("util", function () {
         "Sibling option should not be changed",
       );
 
-      util.mergeOptions(mergeTarget, options, "aBoolOption");
+      mergeOptions(mergeTarget, options, "aBoolOption");
       assert(
         mergeTarget.aBoolOption !== true,
         "option enabled should have been overwritten",
@@ -418,11 +427,11 @@ describe("util", function () {
         "enabled value option aBoolOption should have been copied into object",
       );
 
-      util.mergeOptions(mergeTarget, options, "anObject");
+      mergeOptions(mergeTarget, options, "anObject");
       assert(mergeTarget.anObject.answer === 42);
       assert(mergeTarget.anObject.enabled === true);
 
-      util.mergeOptions(mergeTarget, options, "anotherObject");
+      mergeOptions(mergeTarget, options, "anotherObject");
       assert(
         mergeTarget.anotherObject !== undefined,
         "Option object is not copied",
@@ -432,7 +441,7 @@ describe("util", function () {
         "enabled value from options must have priority",
       );
 
-      util.mergeOptions(mergeTarget, options, "merge");
+      mergeOptions(mergeTarget, options, "merge");
       assert(
         mergeTarget.merge === "hello",
         "Explicit null-option should not be copied, already present in target",
@@ -446,59 +455,34 @@ describe("util", function () {
       };
 
       var errMsg = "Non-object parameters should not be accepted";
-      assert.throws(
-        () => util.mergeOptions(null, options, "anything"),
+      throws(() => mergeOptions(null, options, "anything"), Error, errMsg);
+      throws(() => mergeOptions(undefined, options, "anything"), Error, errMsg);
+      throws(() => mergeOptions(42, options, "anything"), Error, errMsg);
+      throws(() => mergeOptions(mergeTarget, null, "anything"), Error, errMsg);
+      throws(
+        () => mergeOptions(mergeTarget, undefined, "anything"),
         Error,
         errMsg,
       );
-      assert.throws(
-        () => util.mergeOptions(undefined, options, "anything"),
+      throws(() => mergeOptions(mergeTarget, 42, "anything"), Error, errMsg);
+      throws(() => mergeOptions(mergeTarget, options, null), Error, errMsg);
+      throws(
+        () => mergeOptions(mergeTarget, options, undefined),
         Error,
         errMsg,
       );
-      assert.throws(
-        () => util.mergeOptions(42, options, "anything"),
+      throws(
+        () => mergeOptions(mergeTarget, options, "anything", null),
         Error,
         errMsg,
       );
-      assert.throws(
-        () => util.mergeOptions(mergeTarget, null, "anything"),
-        Error,
-        errMsg,
-      );
-      assert.throws(
-        () => util.mergeOptions(mergeTarget, undefined, "anything"),
-        Error,
-        errMsg,
-      );
-      assert.throws(
-        () => util.mergeOptions(mergeTarget, 42, "anything"),
-        Error,
-        errMsg,
-      );
-      assert.throws(
-        () => util.mergeOptions(mergeTarget, options, null),
-        Error,
-        errMsg,
-      );
-      assert.throws(
-        () => util.mergeOptions(mergeTarget, options, undefined),
-        Error,
-        errMsg,
-      );
-      assert.throws(
-        () => util.mergeOptions(mergeTarget, options, "anything", null),
-        Error,
-        errMsg,
-      );
-      assert.throws(
-        () =>
-          util.mergeOptions(mergeTarget, options, "anything", "not an object"),
+      throws(
+        () => mergeOptions(mergeTarget, options, "anything", "not an object"),
         Error,
         errMsg,
       );
 
-      util.mergeOptions(mergeTarget, options, "iDontExist");
+      mergeOptions(mergeTarget, options, "iDontExist");
       assert(mergeTarget.iDontExist === undefined);
     });
 
@@ -524,21 +508,16 @@ describe("util", function () {
         },
       };
 
-      util.mergeOptions(mergeTarget, options, "merge", globalOptions);
+      mergeOptions(mergeTarget, options, "merge", globalOptions);
       assert(
         mergeTarget.merge.enabled === false,
         "null-option should create an empty target object",
       );
 
-      util.mergeOptions(mergeTarget, options, "missingEnabled", globalOptions);
+      mergeOptions(mergeTarget, options, "missingEnabled", globalOptions);
       assert(mergeTarget.missingEnabled.enabled === false);
 
-      util.mergeOptions(
-        mergeTarget,
-        options,
-        "alsoMissingEnabled",
-        globalOptions,
-      );
+      mergeOptions(mergeTarget, options, "alsoMissingEnabled", globalOptions);
       assert(mergeTarget.alsoMissingEnabled.enabled === true);
     });
   }); // mergeOptions
@@ -568,100 +547,100 @@ describe("util", function () {
       parent.appendChild(child);
       parentSibiling.appendChild(childSibling);
 
-      util.recursiveDOMDelete(root);
-      assert.equal(root.children.length, 0);
-      assert.equal(parent.children.length, 0);
-      assert.equal(parentSibiling.children.length, 0);
-      assert.equal(child.children.length, 0);
-      assert.equal(childSibling.children.length, 0);
+      recursiveDOMDelete(root);
+      equal(root.children.length, 0);
+      equal(parent.children.length, 0);
+      equal(parentSibiling.children.length, 0);
+      equal(child.children.length, 0);
+      equal(childSibling.children.length, 0);
     });
   });
 
   describe("isDate", function () {
     it("identifies a Date", function () {
-      assert(util.isDate(new Date()));
+      assert(isDate(new Date()));
     });
 
     it("identifies an ASPDate as String", function () {
-      assert(util.isDate("Date(1198908717056)"));
+      assert(isDate("Date(1198908717056)"));
     });
 
     it("identifies a date string", function () {
-      assert(util.isDate("1995-01-01"));
+      assert(isDate("1995-01-01"));
     });
 
     it("identifies a date string", function () {
-      assert.equal(util.isDate(""), false);
+      equal(isDate(""), false);
     });
 
     it("identifies non-dates", function () {
-      assert.equal(util.isDate(null), false);
-      assert.equal(util.isDate(undefined), false);
-      assert.equal(util.isDate([1, 2, 3]), false);
-      assert.equal(util.isDate({ a: 42 }), false);
-      assert.equal(util.isDate(42), false);
-      assert.equal(util.isDate("meow"), false);
+      equal(isDate(null), false);
+      equal(isDate(undefined), false);
+      equal(isDate([1, 2, 3]), false);
+      equal(isDate({ a: 42 }), false);
+      equal(isDate(42), false);
+      equal(isDate("meow"), false);
     });
   });
 
   describe("getType", function () {
     it("of object null is null", function () {
-      assert.equal(util.getType(null), "null");
+      equal(getType(null), "null");
     });
 
     it("of object Boolean is Boolean", function () {
       function Tester() {}
       Tester.prototype = Object.create(Boolean.prototype);
-      assert.equal(util.getType(new Tester("true")), "Boolean");
+      equal(getType(new Tester("true")), "Boolean");
     });
 
     it("of object Number is Number", function () {
       function Tester() {}
       Tester.prototype = Object.create(Number.prototype);
-      assert.equal(util.getType(new Tester(1)), "Number");
+      equal(getType(new Tester(1)), "Number");
     });
 
     it("of object String is String", function () {
       function Tester() {}
       Tester.prototype = Object.create(String.prototype);
-      assert.equal(util.getType(new Tester("stringy!")), "String");
+      equal(getType(new Tester("stringy!")), "String");
     });
 
     it("of object Array is Array", function () {
-      assert.equal(util.getType(new Array([])), "Array");
+      equal(getType(new Array([])), "Array");
     });
 
     it("of object Date is Date", function () {
-      assert.equal(util.getType(new Date()), "Date");
+      equal(getType(new Date()), "Date");
     });
 
     it("of object any other type is Object", function () {
-      assert.equal(util.getType({}), "Object");
+      equal(getType({}), "Object");
     });
 
     it("of number is Number", function () {
-      assert.equal(util.getType(1), "Number");
+      equal(getType(1), "Number");
     });
 
     it("of boolean is Boolean", function () {
-      assert.equal(util.getType(true), "Boolean");
+      equal(getType(true), "Boolean");
     });
 
     it("of string is String", function () {
-      assert.equal(util.getType("string"), "String");
+      equal(getType("string"), "String");
     });
 
     it("of undefined is undefined", function () {
-      assert.equal(util.getType(), "undefined");
+      equal(getType(), "undefined");
     });
   });
 
   describe("easingFunctions", function () {
     it("take a number and output a number", function () {
-      for (var key in util.easingFunctions) {
-        if (Object.prototype.hasOwnProperty.call(util.easingFunctions, key)) {
-          assert.equal(typeof util.easingFunctions[key](1), "number");
-          assert.equal(typeof util.easingFunctions[key](0.2), "number");
+      for (var key in easingFunctions) {
+        if (Object.prototype.hasOwnProperty.call(easingFunctions, key)) {
+          equal(typeof easingFunctions[key](1), "number");
+          equal(typeof easingFunctions[key](0.2), "number");
         }
       }
     });
@@ -678,59 +657,59 @@ describe("util", function () {
     });
 
     it("returns 0 when there is no content", function () {
-      assert.equal(util.getScrollBarWidth(), 0);
+      equal(getScrollBarWidth(), 0);
     });
   });
 
   describe("equalArray", function () {
     it("arrays of different lengths are not equal", function () {
-      assert.equal(util.equalArray([1, 2, 3], [1, 2]), false);
+      equal(equalArray([1, 2, 3], [1, 2]), false);
     });
 
     it("arrays with different content are not equal", function () {
-      assert.equal(util.equalArray([1, 2, 3], [3, 2, 1]), false);
+      equal(equalArray([1, 2, 3], [3, 2, 1]), false);
     });
 
     it("same content arrays are equal", function () {
-      assert(util.equalArray([1, 2, 3], [1, 2, 3]));
+      assert(equalArray([1, 2, 3], [1, 2, 3]));
     });
 
     it("empty arrays are equal", function () {
-      assert(util.equalArray([], []));
+      assert(equalArray([], []));
     });
 
     it("the same array is equal", function () {
       var arr = [1, 2, 3];
-      assert(util.equalArray(arr, arr));
+      assert(equalArray(arr, arr));
     });
   });
 
   describe("asBoolean", function () {
     it("resolves value from a function", function () {
       assert(
-        util.option.asBoolean(function () {
+        option.asBoolean(function () {
           return true;
         }, false),
       );
     });
 
     it("returns default value for null", function () {
-      assert(util.option.asBoolean(null, true));
+      assert(option.asBoolean(null, true));
     });
 
     it("returns true for other types", function () {
-      assert(util.option.asBoolean("should be true", false));
+      assert(option.asBoolean("should be true", false));
     });
 
     it("returns null for undefined", function () {
-      assert.equal(util.option.asBoolean(), null);
+      equal(option.asBoolean(), null);
     });
   });
 
   describe("asNumber", function () {
     it("resolves value from a function", function () {
-      assert.equal(
-        util.option.asNumber(function () {
+      equal(
+        option.asNumber(function () {
           return 777;
         }, 13),
         777,
@@ -738,26 +717,26 @@ describe("util", function () {
     });
 
     it("returns default value for null", function () {
-      assert.equal(util.option.asNumber(null, 13), 13);
+      equal(option.asNumber(null, 13), 13);
     });
 
     it("returns number for other types", function () {
-      assert.equal(util.option.asNumber("777", 13), 777);
+      equal(option.asNumber("777", 13), 777);
     });
 
     it("returns default for NaN", function () {
-      assert.equal(util.option.asNumber(NaN, 13), 13);
+      equal(option.asNumber(NaN, 13), 13);
     });
 
     it("returns null for undefined", function () {
-      assert.equal(util.option.asNumber(), null);
+      equal(option.asNumber(), null);
     });
   });
 
   describe("asString", function () {
     it("resolves value from a function", function () {
-      assert.equal(
-        util.option.asString(function () {
+      equal(
+        option.asString(function () {
           return "entered";
         }, "default"),
         "entered",
@@ -765,26 +744,26 @@ describe("util", function () {
     });
 
     it("returns default value for null", function () {
-      assert.equal(util.option.asString(null, "default"), "default");
+      equal(option.asString(null, "default"), "default");
     });
 
     it("returns string for other types", function () {
-      assert.equal(util.option.asString(777, "default"), "777");
+      equal(option.asString(777, "default"), "777");
     });
 
     it("returns default for undefined", function () {
-      assert.equal(util.option.asString(undefined, "default"), "default");
+      equal(option.asString(undefined, "default"), "default");
     });
 
     it("returns null for undefined", function () {
-      assert.equal(util.option.asString(), null);
+      equal(option.asString(), null);
     });
   });
 
   describe("asSize", function () {
     it("resolves value from a function", function () {
-      assert.equal(
-        util.option.asSize(function () {
+      equal(
+        option.asSize(function () {
           return "100px";
         }, "50px"),
         "100px",
@@ -792,19 +771,19 @@ describe("util", function () {
     });
 
     it("returns default value for null", function () {
-      assert.equal(util.option.asSize(null, "50px"), "50px");
+      equal(option.asSize(null, "50px"), "50px");
     });
 
     it("returns string with px for other number", function () {
-      assert.equal(util.option.asSize(100, "50px"), "100px");
+      equal(option.asSize(100, "50px"), "100px");
     });
 
     it("returns default for undefined", function () {
-      assert.equal(util.option.asSize(undefined, "50px"), "50px");
+      equal(option.asSize(undefined, "50px"), "50px");
     });
 
     it("returns null for undefined", function () {
-      assert.equal(util.option.asSize(), null);
+      equal(option.asSize(), null);
     });
   });
 
@@ -822,8 +801,8 @@ describe("util", function () {
 
     it("resolves value from a function", function () {
       var me = this;
-      assert.equal(
-        util.option.asElement(function () {
+      equal(
+        option.asElement(function () {
           return me.value;
         }, this.defaultValue),
         this.value,
@@ -831,28 +810,22 @@ describe("util", function () {
     });
 
     it("returns Element", function () {
-      assert.equal(
-        util.option.asElement(this.value, this.defaultValue),
-        this.value,
-      );
+      equal(option.asElement(this.value, this.defaultValue), this.value);
     });
 
     it("returns default value for null", function () {
-      assert.equal(
-        util.option.asElement(null, this.defaultValue),
-        this.defaultValue,
-      );
+      equal(option.asElement(null, this.defaultValue), this.defaultValue);
     });
 
     it("returns null for undefined", function () {
-      assert.equal(util.option.asElement(), null);
+      equal(option.asElement(), null);
     });
   });
 
   describe("binarySearchValue", function () {
     it("Finds center target on odd sized array", function () {
-      assert.equal(
-        util.binarySearchValue(
+      equal(
+        binarySearchValue(
           [
             { id: "a", val: 0 },
             { id: "b", val: 1 },
@@ -866,8 +839,8 @@ describe("util", function () {
     });
 
     it("Finds target on odd sized array", function () {
-      assert.equal(
-        util.binarySearchValue(
+      equal(
+        binarySearchValue(
           [
             { id: "a", val: 0 },
             { id: "b", val: 1 },
@@ -881,8 +854,8 @@ describe("util", function () {
     });
 
     it("Cannot find target", function () {
-      assert.equal(
-        util.binarySearchValue(
+      equal(
+        binarySearchValue(
           [
             { id: "a", val: 0 },
             { id: "b", val: 1 },

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { isValidHex } from "../src";
+import { isValidHex } from "../src/index.ts";
 
 describe("isValidHex", function (): void {
   const valid = [

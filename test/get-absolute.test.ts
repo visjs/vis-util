@@ -1,7 +1,11 @@
 import { expect } from "chai";
 import { stub } from "sinon";
 
-import { getAbsoluteLeft, getAbsoluteRight, getAbsoluteTop } from "../src";
+import {
+  getAbsoluteLeft,
+  getAbsoluteRight,
+  getAbsoluteTop,
+} from "../src/index.ts";
 
 describe("getAbsolute*", function (): void {
   const elem = { getBoundingClientRect: stub() };

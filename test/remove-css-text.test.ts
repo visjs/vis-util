@@ -1,7 +1,7 @@
 import jsdom_global from "jsdom-global";
 import { expect } from "chai";
 
-import { removeCssText } from "../src";
+import { removeCssText } from "../src/index.ts";
 
 describe("removeCssText", function (): void {
   beforeEach(function () {
@@ -32,7 +32,7 @@ describe("removeCssText", function (): void {
     removeCssText(element, "");
 
     expect(element.style.cssText).to.equal(
-      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg);",
+      'color: red; margin: 1em; background: url("http://www.example.com:8080/a.jpg");',
     );
   });
 
@@ -44,7 +44,7 @@ describe("removeCssText", function (): void {
     removeCssText(element, "padding: 4ex;");
 
     expect(element.style.cssText).to.equal(
-      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg);",
+      'color: red; margin: 1em; background: url("http://www.example.com:8080/a.jpg");',
     );
   });
 

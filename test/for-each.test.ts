@@ -1,6 +1,6 @@
 import { assert, spy } from "sinon";
 
-import { forEach } from "../src";
+import { forEach } from "../src/index.ts";
 
 describe("forEach", function (): void {
   it("Array", function (): void {

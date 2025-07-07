@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { selectiveExtend } from "../src";
+import { selectiveExtend } from "../src/index.ts";
 
 describe("selectiveExtend", function (): void {
   it("non-array property names", function (): void {

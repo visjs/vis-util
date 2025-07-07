@@ -94,6 +94,18 @@ exports['Package Exported files 1'] = {
     "esnext/esm/vis-util.min.js.map": {
       "empty": false
     },
+    "esnext/esm/vis-util.min.mjs": {
+      "empty":false
+    },
+    "esnext/esm/vis-util.min.mjs.map": {
+      "empty":false
+    },
+    "esnext/esm/vis-util.mjs": {
+      "empty":false
+    },
+    "esnext/esm/vis-util.mjs.map": {
+      "empty":false
+    },
     "esnext/index.d.ts": {
       "empty": false
     },
@@ -121,6 +133,12 @@ exports['Package Exported files 1'] = {
     "esnext/umd/index.js": {
       "empty": false
     },
+    "esnext/umd/vis-util.cjs": {
+      "empty":false
+    },
+    "esnext/umd/vis-util.cjs.map": {
+      "empty":false
+    },
     "esnext/umd/vis-util.d.ts": {
       "empty": false
     },
@@ -129,6 +147,12 @@ exports['Package Exported files 1'] = {
     },
     "esnext/umd/vis-util.js.map": {
       "empty": false
+    },
+    "esnext/umd/vis-util.min.cjs": {
+      "empty":false
+    },
+    "esnext/umd/vis-util.min.cjs.map": {
+      "empty":false
     },
     "esnext/umd/vis-util.min.d.ts": {
       "empty": false
@@ -166,6 +190,18 @@ exports['Package Exported files 1'] = {
     "peer/esm/vis-util.min.js.map": {
       "empty": false
     },
+    "peer/esm/vis-util.min.mjs": {
+      "empty":false
+    },
+    "peer/esm/vis-util.min.mjs.map": {
+      "empty":false
+    },
+    "peer/esm/vis-util.mjs": {
+      "empty":false
+    },
+    "peer/esm/vis-util.mjs.map": {
+      "empty":false
+    },
     "peer/index.d.ts": {
       "empty": false
     },
@@ -193,6 +229,12 @@ exports['Package Exported files 1'] = {
     "peer/umd/index.js": {
       "empty": false
     },
+    "peer/umd/vis-util.cjs": {
+      "empty":false
+    },
+    "peer/umd/vis-util.cjs.map": {
+      "empty":false
+    },
     "peer/umd/vis-util.d.ts": {
       "empty": false
     },
@@ -201,6 +243,12 @@ exports['Package Exported files 1'] = {
     },
     "peer/umd/vis-util.js.map": {
       "empty": false
+    },
+    "peer/umd/vis-util.min.cjs": {
+      "empty":false
+    },
+    "peer/umd/vis-util.min.cjs.map": {
+      "empty":false
     },
     "peer/umd/vis-util.min.d.ts": {
       "empty": false
@@ -235,6 +283,18 @@ exports['Package Exported files 1'] = {
     "standalone/esm/vis-util.min.js.map": {
       "empty": false
     },
+    "standalone/esm/vis-util.min.mjs": {
+      "empty":false
+    },
+    "standalone/esm/vis-util.min.mjs.map": {
+      "empty":false
+    },
+    "standalone/esm/vis-util.mjs": {
+      "empty":false
+    },
+    "standalone/esm/vis-util.mjs.map": {
+      "empty":false
+    },
     "standalone/index.d.ts": {
       "empty": false
     },
@@ -262,6 +322,12 @@ exports['Package Exported files 1'] = {
     "standalone/umd/index.js": {
       "empty": false
     },
+    "standalone/umd/vis-util.cjs": {
+      "empty":false
+    },
+    "standalone/umd/vis-util.cjs.map": {
+      "empty":false
+    },
     "standalone/umd/vis-util.d.ts": {
       "empty": false
     },
@@ -270,6 +336,12 @@ exports['Package Exported files 1'] = {
     },
     "standalone/umd/vis-util.js.map": {
       "empty": false
+    },
+    "standalone/umd/vis-util.min.cjs": {
+      "empty":false
+    },
+    "standalone/umd/vis-util.min.cjs.map": {
+      "empty":false
     },
     "standalone/umd/vis-util.min.d.ts": {
       "empty": false

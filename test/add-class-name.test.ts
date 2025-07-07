@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { addClassName } from "../src";
+import { addClassName } from "../src/index.ts";
 
 describe("addClassName", function (): void {
   const inputs: { input: string; classes: string; expected: string }[] = [

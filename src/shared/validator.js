@@ -1,4 +1,4 @@
-import { copyAndExtendArray, copyArray } from "../util";
+import { copyAndExtendArray, copyArray } from "../util.ts";
 
 let errorFound = false;
 let allOptions;

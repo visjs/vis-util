@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { isValidRGB } from "../src";
+import { isValidRGB } from "../src/index.ts";
 
 describe("isValidRGB", function (): void {
   const valid = [

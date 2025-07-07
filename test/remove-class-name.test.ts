@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { removeClassName } from "../src";
+import { removeClassName } from "../src/index.ts";
 
 describe("removeClassName", function (): void {
   const inputs: { input: string; classes: string; expected: string }[] = [

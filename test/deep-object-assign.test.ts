@@ -1,6 +1,6 @@
 import { given, test } from "sazerac";
 
-import { DELETE, deepObjectAssign } from "../src";
+import { DELETE, deepObjectAssign } from "../src/index.ts";
 
 // Symbols don't currently work in the library, they're either completely
 // ignored or outright throw errors when tested.

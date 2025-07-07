@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { selectiveDeepExtend } from "../src";
+import { selectiveDeepExtend } from "../src/index.ts";
 
 describe("selectiveDeepExtend", function (): void {
   describe("copy 1, overwrite 1, ignore 1", function (): void {

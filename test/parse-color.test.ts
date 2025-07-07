@@ -1,6 +1,10 @@
 import { expect } from "chai";
 
-import { parseColor, ColorObject, FullColorObject } from "../src";
+import {
+  parseColor,
+  type ColorObject,
+  type FullColorObject,
+} from "../src/index.ts";
 
 describe("parseColor", function (): void {
   describe("strings", function (): void {

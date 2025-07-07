@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { insertSort } from "../src";
+import { insertSort } from "../src/index.ts";
 
 describe("insertSort", function (): void {
   it("Sorted data should stay in the same order", function (): void {
