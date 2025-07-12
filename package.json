@@ -232,7 +232,7 @@
     "check-dts": "0.9.0",
     "component-emitter": "2.0.0",
     "cross-env": "7.0.3",
-    "eslint": "8.55.0",
+    "eslint": "8.57.1",
     "git-authors-cli": "1.0.52",
     "husky": "9.1.7",
     "jsdom": "26.1.0",
