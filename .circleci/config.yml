@@ -42,33 +42,34 @@ jobs:
       - run: npm ci
 
       - persist_to_workspace:
-          root: .
+          root: ..
           paths:
-            - "*"
+            - ".cache"
+            - "repo"
 
   build:
     executor: node
 
     steps:
       - attach_workspace:
-          at: .
+          at: ..
 
       - run: npm run build
 
       - persist_to_workspace:
-          root: .
+          root: ..
           paths:
-            - "declarations"
-            - "esnext"
-            - "peer"
-            - "standalone"
+            - "repo/declarations"
+            - "repo/esnext"
+            - "repo/peer"
+            - "repo/standalone"
 
   lint:
     executor: node
 
     steps:
       - attach_workspace:
-          at: .
+          at: ..
 
       - run: npm run style
       - run: npm run lint
@@ -78,7 +79,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: .
+          at: ..
 
       - run: npm run test:types:tsc
 
@@ -89,7 +90,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: .
+          at: ..
 
       - run: npm run test:unit
 
@@ -101,7 +102,7 @@ jobs:
           condition: << pipeline.parameters.is-testing-interoperability >>
           steps:
             - attach_workspace:
-                at: .
+                at: ..
 
             - run: npm pack
 
@@ -127,7 +128,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: .
+          at: ..
 
       - run:
           name: Prepare NPM
