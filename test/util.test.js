@@ -57,7 +57,7 @@ describe("util", function () {
       assert(
         sub !== undefined &&
           sub.font !== undefined &&
-          sub.font === result.sub.sub2.font
+          sub.font === result.sub.sub2.font,
       );
       assert(sub.notInSource === true);
       assert(a.subNotInSource !== undefined);
@@ -84,7 +84,7 @@ describe("util", function () {
       sub = a.sub.sub2;
       assert(sub !== undefined);
       assert(
-        sub !== undefined && sub.font !== undefined && sub.font === "arial"
+        sub !== undefined && sub.font !== undefined && sub.font === "arial",
       );
       assert(sub.notInSource === true);
       assert(sub.notInTarget === undefined);
@@ -290,7 +290,7 @@ describe("util", function () {
         ["notInTarget", "subNotInTarget"],
         a,
         b,
-        true
+        true,
       );
       assert(a.deleteThis === undefined); // should be deleted
       assert(a.sub.deleteThis !== undefined); // not deleted! Original logic, could be a bug
@@ -354,18 +354,18 @@ describe("util", function () {
       util.mergeOptions(mergeTarget, options, "someValue");
       assert(
         mergeTarget.someValue === undefined,
-        "Non-object option should not be copied"
+        "Non-object option should not be copied",
       );
       assert(mergeTarget.anObject === undefined);
 
       util.mergeOptions(mergeTarget, options, "aBoolOption");
       assert(
         mergeTarget.aBoolOption !== undefined,
-        "option aBoolOption should now be an object"
+        "option aBoolOption should now be an object",
       );
       assert(
         mergeTarget.aBoolOption.enabled === false,
-        "enabled value option aBoolOption should have been copied into object"
+        "enabled value option aBoolOption should have been copied into object",
       );
 
       util.mergeOptions(mergeTarget, options, "anObject");
@@ -376,13 +376,13 @@ describe("util", function () {
       util.mergeOptions(mergeTarget, options, "anotherObject");
       assert(
         mergeTarget.anotherObject.enabled === false,
-        "enabled value from options must have priority"
+        "enabled value from options must have priority",
       );
 
       util.mergeOptions(mergeTarget, options, "merge");
       assert(
         mergeTarget.merge === undefined,
-        "Explicit null option should not be copied, there is no global option for it"
+        "Explicit null option should not be copied, there is no global option for it",
       );
 
       // Case with non-empty target
@@ -401,21 +401,21 @@ describe("util", function () {
       util.mergeOptions(mergeTarget, options, "someValue");
       assert(
         mergeTarget.someValue === false,
-        "Non-object option should not be copied"
+        "Non-object option should not be copied",
       );
       assert(
         mergeTarget.anObject.answer === 49,
-        "Sibling option should not be changed"
+        "Sibling option should not be changed",
       );
 
       util.mergeOptions(mergeTarget, options, "aBoolOption");
       assert(
         mergeTarget.aBoolOption !== true,
-        "option enabled should have been overwritten"
+        "option enabled should have been overwritten",
       );
       assert(
         mergeTarget.aBoolOption.enabled === false,
-        "enabled value option aBoolOption should have been copied into object"
+        "enabled value option aBoolOption should have been copied into object",
       );
 
       util.mergeOptions(mergeTarget, options, "anObject");
@@ -425,17 +425,17 @@ describe("util", function () {
       util.mergeOptions(mergeTarget, options, "anotherObject");
       assert(
         mergeTarget.anotherObject !== undefined,
-        "Option object is not copied"
+        "Option object is not copied",
       );
       assert(
         mergeTarget.anotherObject.enabled === false,
-        "enabled value from options must have priority"
+        "enabled value from options must have priority",
       );
 
       util.mergeOptions(mergeTarget, options, "merge");
       assert(
         mergeTarget.merge === "hello",
-        "Explicit null-option should not be copied, already present in target"
+        "Explicit null-option should not be copied, already present in target",
       );
     });
 
@@ -449,53 +449,53 @@ describe("util", function () {
       assert.throws(
         () => util.mergeOptions(null, options, "anything"),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () => util.mergeOptions(undefined, options, "anything"),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () => util.mergeOptions(42, options, "anything"),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () => util.mergeOptions(mergeTarget, null, "anything"),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () => util.mergeOptions(mergeTarget, undefined, "anything"),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () => util.mergeOptions(mergeTarget, 42, "anything"),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () => util.mergeOptions(mergeTarget, options, null),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () => util.mergeOptions(mergeTarget, options, undefined),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () => util.mergeOptions(mergeTarget, options, "anything", null),
         Error,
-        errMsg
+        errMsg,
       );
       assert.throws(
         () =>
           util.mergeOptions(mergeTarget, options, "anything", "not an object"),
         Error,
-        errMsg
+        errMsg,
       );
 
       util.mergeOptions(mergeTarget, options, "iDontExist");
@@ -527,7 +527,7 @@ describe("util", function () {
       util.mergeOptions(mergeTarget, options, "merge", globalOptions);
       assert(
         mergeTarget.merge.enabled === false,
-        "null-option should create an empty target object"
+        "null-option should create an empty target object",
       );
 
       util.mergeOptions(mergeTarget, options, "missingEnabled", globalOptions);
@@ -537,7 +537,7 @@ describe("util", function () {
         mergeTarget,
         options,
         "alsoMissingEnabled",
-        globalOptions
+        globalOptions,
       );
       assert(mergeTarget.alsoMissingEnabled.enabled === true);
     });
@@ -710,7 +710,7 @@ describe("util", function () {
       assert(
         util.option.asBoolean(function () {
           return true;
-        }, false)
+        }, false),
       );
     });
 
@@ -733,7 +733,7 @@ describe("util", function () {
         util.option.asNumber(function () {
           return 777;
         }, 13),
-        777
+        777,
       );
     });
 
@@ -760,7 +760,7 @@ describe("util", function () {
         util.option.asString(function () {
           return "entered";
         }, "default"),
-        "entered"
+        "entered",
       );
     });
 
@@ -787,7 +787,7 @@ describe("util", function () {
         util.option.asSize(function () {
           return "100px";
         }, "50px"),
-        "100px"
+        "100px",
       );
     });
 
@@ -826,21 +826,21 @@ describe("util", function () {
         util.option.asElement(function () {
           return me.value;
         }, this.defaultValue),
-        this.value
+        this.value,
       );
     });
 
     it("returns Element", function () {
       assert.equal(
         util.option.asElement(this.value, this.defaultValue),
-        this.value
+        this.value,
       );
     });
 
     it("returns default value for null", function () {
       assert.equal(
         util.option.asElement(null, this.defaultValue),
-        this.defaultValue
+        this.defaultValue,
       );
     });
 
@@ -859,9 +859,9 @@ describe("util", function () {
             { id: "c", val: 2 },
           ],
           1,
-          "val"
+          "val",
         ),
-        1
+        1,
       );
     });
 
@@ -874,9 +874,9 @@ describe("util", function () {
             { id: "c", val: 2 },
           ],
           2,
-          "val"
+          "val",
         ),
-        2
+        2,
       );
     });
 
@@ -889,9 +889,9 @@ describe("util", function () {
             { id: "c", val: 2 },
           ],
           7,
-          "val"
+          "val",
         ),
-        -1
+        -1,
       );
     });
   });

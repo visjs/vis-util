@@ -16,7 +16,7 @@ describe("selectiveDeepExtend", function (): void {
       expect(copied, "They should be the same instance.").to.equal(target);
       expect(
         copied,
-        "The selected properties of the objects should be deeply merged"
+        "The selected properties of the objects should be deeply merged",
       ).to.deep.equal({
         ignored: "target",
         merged: "source",
@@ -39,7 +39,7 @@ describe("selectiveDeepExtend", function (): void {
       expect(copied, "They should be the same instance.").to.equal(target);
       expect(
         copied,
-        "The selected properties of the objects should be deeply merged"
+        "The selected properties of the objects should be deeply merged",
       ).to.deep.equal({
         ignored: { nested: { prop: "target" }, additional: "target" },
         merged: {
@@ -65,7 +65,7 @@ describe("selectiveDeepExtend", function (): void {
       expect(copied, "They should be the same instance.").to.equal(target);
       expect(
         copied,
-        "The selected properties of the objects should be deeply merged"
+        "The selected properties of the objects should be deeply merged",
       ).to.deep.equal({
         ignored: { nested: { prop: "target" }, additional: "target" },
         merged: "source",
@@ -88,7 +88,7 @@ describe("selectiveDeepExtend", function (): void {
       expect(copied, "They should be the same instance.").to.equal(target);
       expect(
         copied,
-        "The selected properties of the objects should be deeply merged"
+        "The selected properties of the objects should be deeply merged",
       ).to.deep.equal({
         ignored: "target",
         merged: { nested: { prop: "source" }, another: "source" },

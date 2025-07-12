@@ -9,7 +9,7 @@ describe("copyArray", function (): void {
 
     expect(copied, "Their content should be the same.").to.deep.equal(original);
     expect(copied, "They should be different instances.").to.not.equal(
-      original
+      original,
     );
   });
 
@@ -21,13 +21,13 @@ describe("copyArray", function (): void {
     const copied = copyArray(original);
 
     expect(copied, "They should be different instances.").to.not.equal(
-      original
+      original,
     );
     expect(copied[0], "The objects should be copied by reference").to.equal(
-      original[0]
+      original[0],
     );
     expect(copied[1], "The objects should be copied by reference").to.equal(
-      original[1]
+      original[1],
     );
   });
 });

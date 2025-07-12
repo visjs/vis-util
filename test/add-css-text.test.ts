@@ -18,11 +18,11 @@ describe("addCssText", function (): void {
 
     addCssText(
       element,
-      "color: blue; background: url(http://www.example.com:8080/b.jpg);"
+      "color: blue; background: url(http://www.example.com:8080/b.jpg);",
     );
 
     expect(element.style.cssText).to.equal(
-      "color: blue; background: url(http://www.example.com:8080/b.jpg);"
+      "color: blue; background: url(http://www.example.com:8080/b.jpg);",
     );
   });
 
@@ -34,7 +34,7 @@ describe("addCssText", function (): void {
     addCssText(element, "");
 
     expect(element.style.cssText).to.equal(
-      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg);"
+      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg);",
     );
   });
 
@@ -46,7 +46,7 @@ describe("addCssText", function (): void {
     addCssText(element, "padding: 4ex;");
 
     expect(element.style.cssText).to.equal(
-      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg); padding: 4ex;"
+      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg); padding: 4ex;",
     );
   });
 
@@ -57,11 +57,11 @@ describe("addCssText", function (): void {
 
     addCssText(
       element,
-      "color: blue; background: url(http://www.example.com:8080/b.jpg);"
+      "color: blue; background: url(http://www.example.com:8080/b.jpg);",
     );
 
     expect(element.style.cssText).to.equal(
-      "color: blue; margin: 1em; background: url(http://www.example.com:8080/b.jpg);"
+      "color: blue; margin: 1em; background: url(http://www.example.com:8080/b.jpg);",
     );
   });
 });

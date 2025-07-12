@@ -12,14 +12,14 @@ export type Assignable<T> = T extends undefined
       | (T extends Function
           ? T
           : T extends object
-          ? { [Key in keyof T]?: Assignable<T[Key]> | undefined }
-          : T)
+            ? { [Key in keyof T]?: Assignable<T[Key]> | undefined }
+            : T)
       | typeof DELETE
   : T extends Function
-  ? T | undefined
-  : T extends object
-  ? { [Key in keyof T]?: Assignable<T[Key]> | undefined }
-  : T | undefined;
+    ? T | undefined
+    : T extends object
+      ? { [Key in keyof T]?: Assignable<T[Key]> | undefined }
+      : T | undefined;
 
 /**
  * Pure version of deepObjectAssign, it doesn't modify any of it's arguments.
@@ -65,7 +65,7 @@ function deepObjectAssignNonentry(...values: readonly any[]): any {
   } else if (values.length > 2) {
     return deepObjectAssignNonentry(
       deepObjectAssign(values[0], values[1]),
-      ...values.slice(2)
+      ...values.slice(2),
     );
   }
 

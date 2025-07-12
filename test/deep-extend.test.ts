@@ -48,7 +48,7 @@ describe("deepExtend", function (): void {
             p4p4p3: "p4p4p3 S",
           },
         },
-      }
+      },
     );
   });
 
@@ -71,7 +71,7 @@ describe("deepExtend", function (): void {
     expect(merged, "They should be the same instance.").to.equal(target);
     expect(
       merged,
-      "Objects inheriting directly from Object should be deeply merged, arrays replaced."
+      "Objects inheriting directly from Object should be deeply merged, arrays replaced.",
     ).to.deep.equal({
       arrays: {
         p1: ["T", 1, true, "T"],
@@ -82,11 +82,11 @@ describe("deepExtend", function (): void {
 
     expect(
       merged.arrays.p2,
-      "Array should not be copied by reference."
+      "Array should not be copied by reference.",
     ).to.not.equal(source.arrays.p2);
     expect(
       merged.arrays.p2,
-      "Array should not be copied by reference."
+      "Array should not be copied by reference.",
     ).to.not.equal(source.arrays.p2);
   });
 
@@ -115,7 +115,7 @@ describe("deepExtend", function (): void {
     expect(merged, "They should be the same instance.").to.equal(target);
     expect(
       merged,
-      "Objects inheriting directly from Object should be deeply merged, other replaced."
+      "Objects inheriting directly from Object should be deeply merged, other replaced.",
     ).to.deep.equal({
       objects: {
         objectLiteral: {
@@ -130,19 +130,19 @@ describe("deepExtend", function (): void {
 
     expect(
       merged.objects.objectLiteral,
-      "Object literal should not be copied by reference."
+      "Object literal should not be copied by reference.",
     ).to.not.equal(source.objects.objectLiteral);
     expect(
       merged.objects.objectFromNull,
-      "Object created from null should be copied by reference."
+      "Object created from null should be copied by reference.",
     ).to.equal(source.objects.objectFromNull);
     expect(
       merged.objects.objectFromObject,
-      "Object created from null should be copied by reference."
+      "Object created from null should be copied by reference.",
     ).to.equal(source.objects.objectFromObject);
     expect(
       merged.objects.objectFromMap,
-      "Object created from null should be copied by reference."
+      "Object created from null should be copied by reference.",
     ).to.equal(source.objects.objectFromMap);
   });
 
@@ -153,8 +153,8 @@ describe("deepExtend", function (): void {
         Object.create(
           deepFreeze({
             inherited: "S",
-          })
-        )
+          }),
+        ),
       );
 
       const merged = deepExtend(target, source);
@@ -162,7 +162,7 @@ describe("deepExtend", function (): void {
       expect(merged, "They should be the same instance.").to.equal(target);
       expect(
         merged,
-        "Inherited properties shouldn’t be inherited by default."
+        "Inherited properties shouldn’t be inherited by default.",
       ).to.deep.equal({});
     });
 
@@ -172,8 +172,8 @@ describe("deepExtend", function (): void {
         Object.create(
           deepFreeze({
             inherited: "S",
-          })
-        )
+          }),
+        ),
       );
 
       const merged = deepExtend(target, source, true);
@@ -181,7 +181,7 @@ describe("deepExtend", function (): void {
       expect(merged, "They should be the same instance.").to.equal(target);
       expect(
         merged,
-        "Inherited properties should be inherited when enabled."
+        "Inherited properties should be inherited when enabled.",
       ).to.deep.equal({
         inherited: "S",
       });
@@ -204,7 +204,7 @@ describe("deepExtend", function (): void {
       expect(merged, "They should be the same instance.").to.equal(target);
       expect(
         merged,
-        "No properties should be deleted unless enabled."
+        "No properties should be deleted unless enabled.",
       ).to.deep.equal({
         p1: "p1 T",
         p2: null,
@@ -227,7 +227,7 @@ describe("deepExtend", function (): void {
       expect(merged, "They should be the same instance.").to.equal(target);
       expect(
         merged,
-        "Null properties from the source should delete matching properties in the target."
+        "Null properties from the source should delete matching properties in the target.",
       ).to.deep.equal({
         p1: "p1 T",
         p3: null, // TODO: This seems wrong.
@@ -257,7 +257,7 @@ describe("deepExtend", function (): void {
       expect(merged, "They should be the same instance.").to.equal(target);
       expect(
         merged,
-        "All the properties should be deeply merged."
+        "All the properties should be deeply merged.",
       ).to.deep.equal({
         object: {
           constructor: {

@@ -203,7 +203,7 @@ export class ColorPicker {
       this.updateCallback = callback;
     } else {
       throw new Error(
-        "Function attempted to set as colorPicker update callback is not a function."
+        "Function attempted to set as colorPicker update callback is not a function.",
       );
     }
   }
@@ -217,7 +217,7 @@ export class ColorPicker {
       this.closeCallback = callback;
     } else {
       throw new Error(
-        "Function attempted to set as colorPicker closing callback is not a function."
+        "Function attempted to set as colorPicker closing callback is not a function.",
       );
     }
   }
@@ -299,7 +299,7 @@ export class ColorPicker {
     if (rgba === undefined) {
       throw new Error(
         "Unknown color passed to the colorPicker. Supported are strings: rgb, hex, rgba. Object: rgb ({r:r,g:g,b:b,[a:a]}). Supplied: " +
-          JSON.stringify(color)
+          JSON.stringify(color),
       );
     } else {
       this._setColor(rgba, setInitial);

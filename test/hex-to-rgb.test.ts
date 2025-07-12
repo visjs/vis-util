@@ -19,7 +19,7 @@ describe("hexToRGB", function (): void {
     ...valid.map(({ color, expected }): { color: string; expected: RGB } => ({
       color: color.slice(1),
       expected,
-    }))
+    })),
   );
 
   const invalid = [

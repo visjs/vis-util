@@ -149,7 +149,7 @@ function copyOrDelete(
   a: any,
   b: any,
   prop: string,
-  allowDeletion: boolean
+  allowDeletion: boolean,
 ): void {
   let doDeletion = false;
   if (allowDeletion === true) {
@@ -175,7 +175,7 @@ function copyOrDelete(
 export function fillIfDefined<T extends object>(
   a: T,
   b: Partial<T>,
-  allowDeletion = false
+  allowDeletion = false,
 ): void {
   // NOTE: iteration of properties of a
   // NOTE: prototype properties iterated over as well
@@ -250,7 +250,7 @@ export function selectiveDeepExtend(
   props: string[],
   a: any,
   b: any,
-  allowDeletion = false
+  allowDeletion = false,
 ): any {
   // TODO: add support for Arrays to deepExtend
   if (Array.isArray(b)) {
@@ -297,7 +297,7 @@ export function selectiveNotDeepExtend(
   propsToExclude: string[],
   a: any,
   b: any,
-  allowDeletion = false
+  allowDeletion = false,
 ): any {
   // TODO: add support for Arrays to deepExtend
   // NOTE: array properties have an else-below; apparently, there is a problem here.
@@ -349,7 +349,7 @@ export function deepExtend(
   a: any,
   b: any,
   protoExtend = false,
-  allowDeletion = false
+  allowDeletion = false,
 ): any {
   for (const prop in b) {
     if (Object.prototype.hasOwnProperty.call(b, prop) || protoExtend === true) {
@@ -448,7 +448,7 @@ export function getType(object: unknown): string {
 export function copyAndExtendArray<T>(arr: ReadonlyArray<T>, newValue: T): T[];
 export function copyAndExtendArray<A, V>(
   arr: ReadonlyArray<A>,
-  newValue: V
+  newValue: V,
 ): (A | V)[];
 /**
  * Used to extend an array and copy it. This is used to propagate paths recursively.
@@ -458,7 +458,7 @@ export function copyAndExtendArray<A, V>(
  */
 export function copyAndExtendArray<A, V>(
   arr: ReadonlyArray<A>,
-  newValue: V
+  newValue: V,
 ): (A | V)[] {
   return [...arr, newValue];
 }
@@ -510,7 +510,7 @@ export function addClassName(elem: Element, classNames: string): void {
   classes = classes.concat(
     newClasses.filter(function (className): boolean {
       return !classes.includes(className);
-    })
+    }),
   );
   elem.className = classes.join(" ");
 }
@@ -531,11 +531,11 @@ export function removeClassName(elem: Element, classNames: string): void {
 
 export function forEach<V>(
   array: undefined | null | V[],
-  callback: (value: V, index: number, object: V[]) => void
+  callback: (value: V, index: number, object: V[]) => void,
 ): void;
 export function forEach<O extends object>(
   object: undefined | null | O,
-  callback: <Key extends keyof O>(value: O[Key], key: Key, object: O) => void
+  callback: <Key extends keyof O>(value: O[Key], key: Key, object: O) => void,
 ): void;
 /**
  * For each method for both arrays and objects.
@@ -578,7 +578,7 @@ export const toArray = Object.values;
 export function updateProperty<K extends string, V>(
   object: Record<K, V>,
   key: K,
-  value: V
+  value: V,
 ): boolean {
   if (object[key] !== value) {
     object[key] = value;
@@ -632,7 +632,7 @@ export function preventDefault(event: Event | undefined): void {
  * @returns The element or null if not obtainable.
  */
 export function getTarget(
-  event: Event | undefined = window.event
+  event: Event | undefined = window.event,
 ): Element | null {
   // code from http://www.quirksmode.org/js/events_properties.html
   // @TODO: EventTarget can be almost anything, is it okay to return only Elements?
@@ -766,7 +766,7 @@ export const option = {
    */
   asElement<T extends Node>(
     value: T | (() => T | undefined) | undefined,
-    defaultValue: T
+    defaultValue: T,
   ): T | null {
     if (typeof value == "function") {
       value = value();
@@ -883,7 +883,7 @@ export function parseColor(inputColor: FullColorObject): FullColorObject;
 export function parseColor(inputColor: ColorObject): ColorObject;
 export function parseColor(
   inputColor: ColorObject,
-  defaultColor: FullColorObject
+  defaultColor: FullColorObject,
 ): FullColorObject;
 /**
  * Parse a color property into an object with border, background, and highlight colors.
@@ -893,7 +893,7 @@ export function parseColor(
  */
 export function parseColor(
   inputColor: ColorObject | string,
-  defaultColor?: FullColorObject
+  defaultColor?: FullColorObject,
 ): ColorObject | FullColorObject {
   if (isString(inputColor)) {
     let colorStr: string = inputColor;
@@ -922,12 +922,12 @@ export function parseColor(
       const darkerColorHex = HSVToHex(
         darkerColorHSV.h,
         darkerColorHSV.s,
-        darkerColorHSV.v
+        darkerColorHSV.v,
       );
       const lighterColorHex = HSVToHex(
         lighterColorHSV.h,
         lighterColorHSV.s,
-        lighterColorHSV.v
+        lighterColorHSV.v,
       );
       return {
         background: colorStr,
@@ -1071,7 +1071,7 @@ function splitCSSText(cssText: string): CSSStyles {
 
   for (let i = 0; i < tmpEllement.style.length; ++i) {
     styles[tmpEllement.style[i]] = tmpEllement.style.getPropertyValue(
-      tmpEllement.style[i]
+      tmpEllement.style[i],
     );
   }
 
@@ -1124,22 +1124,22 @@ export function HSVToRGB(h: number, s: number, v: number): RGB {
 
   switch (i % 6) {
     case 0:
-      (r = v), (g = t), (b = p);
+      ((r = v), (g = t), (b = p));
       break;
     case 1:
-      (r = q), (g = v), (b = p);
+      ((r = q), (g = v), (b = p));
       break;
     case 2:
-      (r = p), (g = v), (b = t);
+      ((r = p), (g = v), (b = t));
       break;
     case 3:
-      (r = p), (g = q), (b = v);
+      ((r = p), (g = q), (b = v));
       break;
     case 4:
-      (r = t), (g = p), (b = v);
+      ((r = t), (g = p), (b = v));
       break;
     case 5:
-      (r = v), (g = p), (b = q);
+      ((r = v), (g = p), (b = q));
       break;
   }
 
@@ -1212,7 +1212,7 @@ export function isValidRGBA(rgba: string): boolean {
  */
 export function selectiveBridgeObject<F extends string, V>(
   fields: F[],
-  referenceObject: Record<F, V>
+  referenceObject: Record<F, V>,
 ): Record<F, V> | null {
   if (referenceObject !== null && typeof referenceObject === "object") {
     // !!! typeof null === 'object'
@@ -1239,7 +1239,7 @@ export function bridgeObject<T>(referenceObject: T): null;
  * @returns The Element if the referenceObject is an Element, or a new object inheriting from the referenceObject.
  */
 export function bridgeObject<T extends object | null>(
-  referenceObject: T
+  referenceObject: T,
 ): T | null {
   if (referenceObject === null || typeof referenceObject !== "object") {
     return null;
@@ -1296,7 +1296,7 @@ export function mergeOptions(
   mergeTarget: any,
   options: any,
   option: string,
-  globalOptions: any = {}
+  globalOptions: any = {},
 ): void {
   // Local helpers
   const isPresent = function (obj: any): boolean {
@@ -1409,17 +1409,17 @@ export function mergeOptions(
 export function binarySearchCustom<
   O extends object,
   K1 extends keyof O,
-  K2 extends keyof O[K1]
+  K2 extends keyof O[K1],
 >(
   orderedItems: O[],
   comparator: (v: O[K1][K2]) => -1 | 0 | 1,
   field: K1,
-  field2: K2
+  field2: K2,
 ): number;
 export function binarySearchCustom<O extends object, K1 extends keyof O>(
   orderedItems: O[],
   comparator: (v: O[K1]) => -1 | 0 | 1,
-  field: K1
+  field: K1,
 ): number;
 /**
  * This function does a binary search for a visible item in a sorted list. If we find a visible item, the code that uses
@@ -1434,7 +1434,7 @@ export function binarySearchCustom(
   orderedItems: any[],
   comparator: (v: unknown) => -1 | 0 | 1,
   field: string,
-  field2?: string
+  field2?: string,
 ): number {
   const maxIterations = 10000;
   let iteration = 0;
@@ -1482,7 +1482,7 @@ export function binarySearchValue<T extends string>(
   target: number,
   field: T,
   sidePreference: "before" | "after",
-  comparator?: (a: number, b: number) => -1 | 0 | 1
+  comparator?: (a: number, b: number) => -1 | 0 | 1,
 ): number {
   const maxIterations = 10000;
   let iteration = 0;

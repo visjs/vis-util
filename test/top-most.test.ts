@@ -12,7 +12,7 @@ describe("topMost", function (): void {
     expect(topMost(pile, ["theValue"])).to.equal("It‘s me :-).");
     expect(
       topMost(pile, "theValue"),
-      "String accessor should be accepted too."
+      "String accessor should be accepted too.",
     ).to.equal("It‘s me :-).");
   });
 
@@ -26,7 +26,7 @@ describe("topMost", function (): void {
     expect(topMost(pile, ["theValue"])).to.equal("It‘s me :-).");
     expect(
       topMost(pile, "theValue"),
-      "String accessor should be accepted too."
+      "String accessor should be accepted too.",
     ).to.equal("It‘s me :-).");
   });
 
@@ -40,7 +40,7 @@ describe("topMost", function (): void {
     ];
 
     expect(topMost(pile, ["foo", "bar", "theValue"])).to.equal(
-      "It‘s finally me :-)."
+      "It‘s finally me :-).",
     );
   });
 
@@ -61,7 +61,7 @@ describe("topMost", function (): void {
     ];
 
     expect(topMost(pile, ["foo", "bar", "theValue"])).to.equal(
-      "It‘s finally me :-)."
+      "It‘s finally me :-).",
     );
   });
 });

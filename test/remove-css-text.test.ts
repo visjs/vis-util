@@ -18,7 +18,7 @@ describe("removeCssText", function (): void {
 
     removeCssText(
       element,
-      "color: blue; background: url(http://www.example.com:8080/b.jpg);"
+      "color: blue; background: url(http://www.example.com:8080/b.jpg);",
     );
 
     expect(element.style.cssText).to.equal("");
@@ -32,7 +32,7 @@ describe("removeCssText", function (): void {
     removeCssText(element, "");
 
     expect(element.style.cssText).to.equal(
-      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg);"
+      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg);",
     );
   });
 
@@ -44,7 +44,7 @@ describe("removeCssText", function (): void {
     removeCssText(element, "padding: 4ex;");
 
     expect(element.style.cssText).to.equal(
-      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg);"
+      "color: red; margin: 1em; background: url(http://www.example.com:8080/a.jpg);",
     );
   });
 
@@ -55,7 +55,7 @@ describe("removeCssText", function (): void {
 
     removeCssText(
       element,
-      "color: blue; background: url(http://www.example.com:8080/b.jpg);"
+      "color: blue; background: url(http://www.example.com:8080/b.jpg);",
     );
 
     expect(element.style.cssText).to.equal("margin: 1em;");

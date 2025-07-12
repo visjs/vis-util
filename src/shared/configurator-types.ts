@@ -48,7 +48,7 @@ type NumberInput = readonly [number, number, number, number];
  */
 type DropdownInput = readonly [
   Exclude<string, "color">,
-  ...(string | number | boolean)[]
+  ...(string | number | boolean)[],
 ];
 /**
  * The first value says this will be a color picker not a dropdown menu. The
@@ -70,5 +70,5 @@ export type ConfiguratorConfig = {
 export type ConfiguratorHideOption = (
   parentPath: readonly string[],
   optionName: string,
-  options: any
+  options: any,
 ) => boolean;

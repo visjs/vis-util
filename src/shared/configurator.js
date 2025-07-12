@@ -41,7 +41,7 @@ export class Configurator {
     defaultContainer,
     configureOptions,
     pixelRatio = 1,
-    hideOption = () => false
+    hideOption = () => false,
   ) {
     this.parent = parentModule;
     this.changedOptions = [];
@@ -757,7 +757,7 @@ export class Configurator {
       this.optionsContainer.removeChild(this.optionsContainer.firstChild);
     }
     this.optionsContainer.appendChild(
-      wrapInTag("pre", "const options = " + JSON.stringify(options, null, 2))
+      wrapInTag("pre", "const options = " + JSON.stringify(options, null, 2)),
     );
   }
 
@@ -771,7 +771,7 @@ export class Configurator {
       this._constructOptions(
         this.changedOptions[i].value,
         this.changedOptions[i].path,
-        options
+        options,
       );
     }
     return options;

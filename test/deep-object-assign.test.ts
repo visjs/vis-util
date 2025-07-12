@@ -28,7 +28,7 @@ test(deepObjectAssign, (): void => {
 
   given(
     { zero: [0], two: [[0], 0] },
-    { one: [[1], { ONE: 1 }], two: [{ TWO: [2] }] }
+    { one: [[1], { ONE: 1 }], two: [{ TWO: [2] }] },
   ).expect({
     zero: [0],
     one: [[1], { ONE: 1 }],
@@ -39,7 +39,7 @@ test(deepObjectAssign, (): void => {
     { zero: 0, two: 0 },
     { one: 1, two: 1 },
     { two: 2 },
-    { nested: { threeThenOne: 1 } }
+    { nested: { threeThenOne: 1 } },
   ).expect({
     zero: 0,
     one: 1,
@@ -51,7 +51,7 @@ test(deepObjectAssign, (): void => {
     { zero: 0, two: 0 },
     { one: 1, two: 1 },
     { two: 2 },
-    { nested: { threeThenOne: 1 } }
+    { nested: { threeThenOne: 1 } },
   ).expect({
     zero: 0,
     one: 1,
@@ -72,7 +72,7 @@ test(deepObjectAssign, (): void => {
       number: 42,
       string: "yay",
       // symbol: SYMBOL_NEW,
-    }
+    },
   ).expect({
     bolean: true,
     id: 0.25,
@@ -94,7 +94,7 @@ test(deepObjectAssign, (): void => {
       number: 42,
       string: "yay",
       // symbol: SYMBOL_NEW,
-    }
+    },
   ).expect({
     bolean: true,
     id: 0.25,
@@ -116,7 +116,7 @@ test(deepObjectAssign, (): void => {
       number: Number.NaN,
       string: "",
       // symbol: SYMBOL_NEW,
-    }
+    },
   ).expect({
     bolean: false,
     id: 0.25,
@@ -138,7 +138,7 @@ test(deepObjectAssign, (): void => {
       number: DELETE,
       string: DELETE,
       symbol: DELETE,
-    }
+    },
   ).expect({
     id: 0.25,
   });
@@ -156,7 +156,7 @@ test(deepObjectAssign, (): void => {
     },
     {
       one: DELETE,
-    }
+    },
   ).expect({
     id: 0.25,
   });
@@ -174,7 +174,7 @@ test(deepObjectAssign, (): void => {
     },
     {
       one: { miss: DELETE },
-    }
+    },
   ).expect({
     id: 0.25,
     one: {
@@ -199,7 +199,7 @@ test(deepObjectAssign, (): void => {
     },
     {
       double: { miss: DELETE },
-    }
+    },
   ).expect({
     id: 0.25,
     one: {
@@ -226,7 +226,7 @@ test(deepObjectAssign, (): void => {
     },
     {
       one: { two: { three: DELETE } },
-    }
+    },
   ).expect({
     id: 0.25,
     one: {
@@ -243,7 +243,7 @@ test(deepObjectAssign, (): void => {
     },
     {
       // [SYMBOL_KEY]: 2,
-    }
+    },
   ).expect({
     id: 0.25,
     // [SYMBOL_KEY]: 2,
@@ -263,7 +263,7 @@ test(deepObjectAssign, (): void => {
     {},
     {
       start: date,
-    }
+    },
   ).expect({
     start: date,
   });
@@ -273,7 +273,7 @@ test(deepObjectAssign, (): void => {
     { start: date },
     {
       end: date2,
-    }
+    },
   ).expect({
     start: date,
     end: date2,
@@ -284,7 +284,7 @@ test(deepObjectAssign, (): void => {
     { start: date, end: date2 },
     {
       end: date3,
-    }
+    },
   ).expect({
     start: date,
     end: date3,

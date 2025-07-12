@@ -45,7 +45,7 @@ describe("binarySearchCustom", function (): void {
       assert.calledOnce(bscMock);
       expect(
         bscMock.getCall(0).args,
-        "The comparator should receive the value retrieved from the array item using the passed property name."
+        "The comparator should receive the value retrieved from the array item using the passed property name.",
       )
         .to.have.lengthOf(1)
         .and.to.have.ownProperty("0")
@@ -54,13 +54,13 @@ describe("binarySearchCustom", function (): void {
 
     it("missing item", function (): void {
       expect(
-        binarySearchCustom(orderedItems, comparatorFactory(13), "prop1")
+        binarySearchCustom(orderedItems, comparatorFactory(13), "prop1"),
       ).to.equal(-1);
     });
 
     it("present item", function (): void {
       expect(
-        binarySearchCustom(orderedItems, comparatorFactory(28), "prop1")
+        binarySearchCustom(orderedItems, comparatorFactory(28), "prop1"),
       ).to.equal(6);
     });
 
@@ -81,7 +81,7 @@ describe("binarySearchCustom", function (): void {
       assert.calledOnce(bscMock);
       expect(
         bscMock.getCall(0).args,
-        "The comparator should receive the value retrieved from the array item using the passed property names."
+        "The comparator should receive the value retrieved from the array item using the passed property names.",
       )
         .to.have.lengthOf(1)
         .and.to.have.ownProperty("0")
@@ -94,8 +94,8 @@ describe("binarySearchCustom", function (): void {
           orderedItems,
           comparatorFactory(0.13),
           "nested",
-          "prop2"
-        )
+          "prop2",
+        ),
       ).to.equal(-1);
     });
 
@@ -105,8 +105,8 @@ describe("binarySearchCustom", function (): void {
           orderedItems,
           comparatorFactory(0.28),
           "nested",
-          "prop2"
-        )
+          "prop2",
+        ),
       ).to.equal(6);
     });
 
@@ -116,8 +116,8 @@ describe("binarySearchCustom", function (): void {
           orderedItems,
           comparatorFactory(0.71),
           "nested",
-          "prop2"
-        )
+          "prop2",
+        ),
       )
         .to.be.at.least(11)
         .and.at.most(14);

@@ -17,7 +17,7 @@ describe("selectiveExtend", function (): void {
     expect(copied, "They should be the same instance.").to.equal(target);
     expect(
       copied,
-      "The selected properties should be copied by reference"
+      "The selected properties should be copied by reference",
     ).to.deep.equal({
       hi: ":-)",
       bye: ":-) 1",
@@ -33,7 +33,7 @@ describe("selectiveExtend", function (): void {
     expect(copied, "They should be the same instance.").to.equal(target);
     expect(
       copied,
-      "The selected properties should be copied by reference"
+      "The selected properties should be copied by reference",
     ).to.deep.equal({
       hi: ":-)",
       bye: ":-) 2",
@@ -54,13 +54,13 @@ describe("selectiveExtend", function (): void {
       target,
       source1,
       source2,
-      source3
+      source3,
     );
 
     expect(copied, "They should be the same instance.").to.equal(target);
     expect(
       copied,
-      "The selected properties should be copied by reference"
+      "The selected properties should be copied by reference",
     ).to.deep.equal({
       hi: ":-)",
       hello: ":-) 2",

@@ -284,7 +284,7 @@ describe("parseColor", function (): void {
     inputs.forEach(({ name, color, defaultColor, expected }): void => {
       it(name, function (): void {
         expect(
-          parseColor(color, defaultColor as FullColorObject)
+          parseColor(color, defaultColor as FullColorObject),
         ).to.be.deep.equal(expected);
       });
     });

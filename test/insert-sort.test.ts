@@ -26,7 +26,7 @@ describe("insertSort", function (): void {
     ];
 
     expect(insertSort(getData(), (a, b): number => a - b)).to.deep.equal(
-      getData()
+      getData(),
     );
   });
 

@@ -30,9 +30,9 @@ describe("bridgeObject", function (): void {
         function (): void {
           expect(
             bridgeObject(input),
-            "Null should be returned for invalid input."
+            "Null should be returned for invalid input.",
           ).to.be.null;
-        }
+        },
       );
     });
   });

@@ -22,13 +22,13 @@ assignableTestObject = assignableTestObject ?? {};
 // It shouldn't be possible to use anything but TestObject as the target.
 deepObjectAssign<TestObject>(
   // THROWS Argument of type
-  {}
+  {},
 );
 
 // It shouldn't be possible to use Assignable<TestObject> as the target.
 deepObjectAssign<TestObject>(
   // THROWS Argument of type
-  assignableTestObject
+  assignableTestObject,
 );
 
 deepObjectAssign<TestObject>(
@@ -36,7 +36,7 @@ deepObjectAssign<TestObject>(
   // It should be possible to assign the original object.
   testObject,
   // It should be possible to assign Assignable<TestObject>.
-  assignableTestObject
+  assignableTestObject,
 );
 
 // It should be possible to replace optional values with DELETE.

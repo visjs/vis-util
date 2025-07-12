@@ -94,7 +94,7 @@ export class Validator {
       referenceOptions,
       referenceOption,
       refOptionObj,
-      path
+      path,
     );
   }
 
@@ -114,12 +114,12 @@ export class Validator {
     referenceOptions,
     referenceOption,
     refOptionObj,
-    path
+    path,
   ) {
     const log = function (message) {
       console.error(
         "%c" + message + Validator.printLocation(path, option),
-        VALIDATOR_PRINT_STYLE
+        VALIDATOR_PRINT_STYLE,
       );
     };
 
@@ -140,7 +140,7 @@ export class Validator {
             Validator.print(refOptionType) +
             ' not "' +
             options[option] +
-            '". '
+            '". ',
         );
         errorFound = true;
       } else if (optionType === "object" && referenceOption !== "__any__") {
@@ -148,7 +148,7 @@ export class Validator {
         Validator.parse(
           options[option],
           referenceOptions[referenceOption],
-          path
+          path,
         );
       }
     } else if (refOptionObj["any"] === undefined) {
@@ -162,7 +162,7 @@ export class Validator {
           optionType +
           '] "' +
           options[option] +
-          '"'
+          '"',
       );
       errorFound = true;
     }
@@ -247,7 +247,7 @@ export class Validator {
         Validator.printLocation(
           globalSearch.path,
           globalSearch.closestMatch,
-          ""
+          "",
         );
     } else if (localSearch.distance <= localSearchThreshold) {
       msg =
@@ -264,7 +264,7 @@ export class Validator {
 
     console.error(
       '%cUnknown option detected: "' + option + '"' + msg,
-      VALIDATOR_PRINT_STYLE
+      VALIDATOR_PRINT_STYLE,
     );
     errorFound = true;
   }
@@ -290,7 +290,7 @@ export class Validator {
         const result = Validator.findInOptions(
           option,
           options[op],
-          copyAndExtendArray(path, op)
+          copyAndExtendArray(path, op),
         );
         if (min > result.distance) {
           closestMatch = result.closestMatch;
@@ -401,8 +401,8 @@ export class Validator {
             matrix[i - 1][j - 1] + 1, // substitution
             Math.min(
               matrix[i][j - 1] + 1, // insertion
-              matrix[i - 1][j] + 1
-            )
+              matrix[i - 1][j] + 1,
+            ),
           ); // deletion
         }
       }

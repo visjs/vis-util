@@ -9,11 +9,11 @@ describe("copyAndExtendArray", function (): void {
     const copied = copyAndExtendArray(original, addition);
 
     expect(copied, "They should be different instances.").to.not.equal(
-      original
+      original,
     );
     expect(
       copied,
-      "All elements should be in the new array and in the right order."
+      "All elements should be in the new array and in the right order.",
     ).to.deep.equal([-77, 14, 78, 0]);
   });
 
@@ -26,17 +26,17 @@ describe("copyAndExtendArray", function (): void {
     const copied = copyAndExtendArray(original, addition);
 
     expect(copied, "They should be different instances.").to.not.equal(
-      original
+      original,
     );
 
     expect(copied[0], "The objects should be copied by reference").to.equal(
-      original[0]
+      original[0],
     );
     expect(copied[1], "The objects should be copied by reference").to.equal(
-      original[1]
+      original[1],
     );
     expect(copied[2], "The objects should be copied by reference").to.equal(
-      addition
+      addition,
     );
   });
 });
