@@ -246,7 +246,7 @@
     "shx": "^0.4.0",
     "sinon": "21.0.0",
     "snap-shot-it": "7.9.10",
-    "typedoc": "0.28.5",
+    "typedoc": "0.28.7",
     "vis-dev-utils": "5.0.0"
   }
 }
