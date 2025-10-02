@@ -226,7 +226,7 @@
     "@types/chai": "5.2.2",
     "@types/jsdom-global": "3.0.7",
     "@types/mocha": "10.0.10",
-    "@types/node": "24.6.1",
+    "@types/node": "24.6.2",
     "@types/sinon": "17.0.4",
     "assert": "2.1.0",
     "check-dts": "0.9.0",
