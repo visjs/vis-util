@@ -213,7 +213,7 @@
     "url": "https://opencollective.com/visjs"
   },
   "volta": {
-    "node": "24.13.0",
+    "node": "24.13.1",
     "npm": "11.9.0",
     "pnpm": "10.29.2"
   },
@@ -226,7 +226,7 @@
     "@types/chai": "5.2.3",
     "@types/jsdom-global": "3.0.7",
     "@types/mocha": "10.0.10",
-    "@types/node": "24.10.12",
+    "@types/node": "24.10.13",
     "@types/sinon": "17.0.4",
     "assert": "2.1.0",
     "check-dts": "0.9.0",
