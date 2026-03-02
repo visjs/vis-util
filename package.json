@@ -227,7 +227,7 @@
     "@types/jsdom-global": "3.0.7",
     "@types/mocha": "10.0.10",
     "@types/node": "24.11.0",
-    "@types/sinon": "17.0.4",
+    "@types/sinon": "21.0.0",
     "assert": "2.1.0",
     "check-dts": "0.9.0",
     "component-emitter": "2.0.0",
@@ -244,7 +244,7 @@
     "sazerac": "2.0.0",
     "semantic-release": "24.2.9",
     "shx": "^0.4.0",
-    "sinon": "21.0.0",
+    "sinon": "21.0.1",
     "snap-shot-it": "7.9.10",
     "typedoc": "0.28.17",
     "vis-dev-utils": "6.0.1"
