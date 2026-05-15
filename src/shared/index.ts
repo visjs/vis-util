@@ -9,7 +9,7 @@ import { Validator as ValidatorJS } from "./validator.js";
 export const Activator: any = ActivatorJS;
 export const ColorPicker: any = ColorPickerJS;
 export const Configurator: any = ConfiguratorJS;
-export const Hammer: HammerStatic = HammerJS;
+export const Hammer: typeof import("hammerjs") = HammerJS;
 export const Popup: any = PopupJS;
 export const VALIDATOR_PRINT_STYLE: string = VALIDATOR_PRINT_STYLE_JS;
 export const Validator: any = ValidatorJS;
