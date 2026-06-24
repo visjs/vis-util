@@ -1,5 +1,6 @@
 {
-  "extends": ["config:base"],
+  "extends": ["config:best-practices", ":pinOnlyDevDependencies"],
+  "dependencyDashboard": false,
   "packageRules": [
     {
       "updateTypes": ["major", "minor", "patch", "pin", "digest"],
