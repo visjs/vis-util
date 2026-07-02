@@ -236,7 +236,7 @@
     "mocha": "11.7.6",
     "nyc": "17.1.0",
     "sazerac": "2.0.0",
-    "semantic-release": "24.2.9",
+    "semantic-release": "25.0.5",
     "shx": "^0.4.0",
     "sinon": "22.0.0",
     "snap-shot-it": "7.9.10",
