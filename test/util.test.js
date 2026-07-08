@@ -1,5 +1,5 @@
 import jsdom_global from "jsdom-global";
-import assert, { throws, equal } from "assert";
+import { expect } from "chai";
 
 import {
   fillIfDefined,
@@ -48,39 +48,35 @@ describe("util", function () {
         },
       };
 
-      assert(a.color !== undefined && a.color === result.color);
-      assert(a.notInSource === true);
+      expect(a.color).to.equal(result.color);
+      expect(a.notInSource).to.equal(true);
       if (checkCopyTarget) {
-        assert(a.notInTarget === true);
+        expect(a.notInTarget).to.equal(true);
       } else {
-        assert(a.notInTarget === undefined);
+        expect(a.notInTarget).to.equal(undefined);
       }
 
       var sub = a.sub;
-      assert(sub !== undefined);
-      assert(sub.enabled !== undefined && sub.enabled === result.sub.enabled);
-      assert(sub.notInSource === true);
+      expect(sub).to.not.equal(undefined);
+      expect(sub.enabled).to.equal(result.sub.enabled);
+      expect(sub.notInSource).to.equal(true);
       if (checkCopyTarget) {
-        assert(sub.notInTarget === true);
+        expect(sub.notInTarget).to.equal(true);
       } else {
-        assert(sub.notInTarget === undefined);
+        expect(sub.notInTarget).to.equal(undefined);
       }
 
       sub = a.sub.sub2;
-      assert(sub !== undefined);
-      assert(
-        sub !== undefined &&
-          sub.font !== undefined &&
-          sub.font === result.sub.sub2.font,
-      );
-      assert(sub.notInSource === true);
-      assert(a.subNotInSource !== undefined);
+      expect(sub).to.not.equal(undefined);
+      expect(sub.font).to.equal(result.sub.sub2.font);
+      expect(sub.notInSource).to.equal(true);
+      expect(a.subNotInSource).to.not.equal(undefined);
       if (checkCopyTarget) {
-        assert(a.subNotInTarget.enabled === true);
-        assert(sub.notInTarget === true);
+        expect(a.subNotInTarget.enabled).to.equal(true);
+        expect(sub.notInTarget).to.equal(true);
       } else {
-        assert(a.subNotInTarget === undefined);
-        assert(sub.notInTarget === undefined);
+        expect(a.subNotInTarget).to.equal(undefined);
+        expect(sub.notInTarget).to.equal(undefined);
       }
     }
 
@@ -89,22 +85,20 @@ describe("util", function () {
      */
     function testAUnchanged(a) {
       var sub = a.sub;
-      assert(sub !== undefined);
-      assert(sub.enabled !== undefined && sub.enabled === true);
-      assert(sub.notInSource === true);
-      assert(sub.notInTarget === undefined);
-      assert(sub.deleteThis === true);
+      expect(sub).to.not.equal(undefined);
+      expect(sub.enabled).to.equal(true);
+      expect(sub.notInSource).to.equal(true);
+      expect(sub.notInTarget).to.equal(undefined);
+      expect(sub.deleteThis).to.equal(true);
 
       sub = a.sub.sub2;
-      assert(sub !== undefined);
-      assert(
-        sub !== undefined && sub.font !== undefined && sub.font === "arial",
-      );
-      assert(sub.notInSource === true);
-      assert(sub.notInTarget === undefined);
+      expect(sub).to.not.equal(undefined);
+      expect(sub.font).to.equal("arial");
+      expect(sub.notInSource).to.equal(true);
+      expect(sub.notInTarget).to.equal(undefined);
 
-      assert(a.subNotInSource !== undefined);
-      assert(a.subNotInTarget === undefined);
+      expect(a.subNotInSource).to.not.equal(undefined);
+      expect(a.subNotInTarget).to.equal(undefined);
     }
 
     function initA() {
@@ -162,9 +156,9 @@ describe("util", function () {
 
       // NOTE: if allowDeletion === false, null values are copied over!
       //       This is due to existing logic; it might not be the intention and hence a bug
-      assert(a.sub.deleteThis === null);
-      assert(a.deleteThis === null);
-      assert(a.subDeleteThis === null);
+      expect(a.sub.deleteThis).to.equal(null);
+      expect(a.deleteThis).to.equal(null);
+      expect(a.subDeleteThis).to.equal(null);
     });
 
     it("performs fillIfDefined() as advertized with deletion", function () {
@@ -175,9 +169,9 @@ describe("util", function () {
       checkExtended(a, b);
 
       // Following should be removed now
-      assert(a.sub.deleteThis === undefined);
-      assert(a.deleteThis === undefined);
-      assert(a.subDeleteThis === undefined);
+      expect(a.sub.deleteThis).to.equal(undefined);
+      expect(a.deleteThis).to.equal(undefined);
+      expect(a.subDeleteThis).to.equal(undefined);
     });
 
     it("performs selectiveDeepExtend() as advertized", function () {
@@ -186,48 +180,48 @@ describe("util", function () {
 
       // pedantic: copy nothing
       selectiveDeepExtend([], a, b);
-      assert(a.color !== undefined && a.color === "red");
-      assert(a.notInSource === true);
-      assert(a.notInTarget === undefined);
+      expect(a.color).to.equal("red");
+      expect(a.notInSource).to.equal(true);
+      expect(a.notInTarget).to.equal(undefined);
 
       // pedantic: copy nonexistent property (nothing happens)
-      assert(b.iDontExist === undefined);
+      expect(b.iDontExist).to.equal(undefined);
       selectiveDeepExtend(["iDontExist"], a, b, true);
-      assert(a.iDontExist === undefined);
+      expect(a.iDontExist).to.equal(undefined);
 
       // At this point nothing should have changed yet.
       testAUnchanged(a);
 
       // Copy one property
       selectiveDeepExtend(["color"], a, b);
-      assert(a.color !== undefined && a.color === "green");
+      expect(a.color).to.equal("green");
 
       // Copy property Object
       var sub = a.sub;
-      assert(sub.deleteThis === true); // pre
+      expect(sub.deleteThis).to.equal(true); // pre
       selectiveDeepExtend(["sub"], a, b);
-      assert(sub !== undefined);
-      assert(sub.enabled !== undefined && sub.enabled === false);
-      assert(sub.notInSource === true);
-      assert(sub.notInTarget === true);
-      assert(sub.deleteThis === null);
+      expect(sub).to.not.equal(undefined);
+      expect(sub.enabled).to.equal(false);
+      expect(sub.notInSource).to.equal(true);
+      expect(sub.notInTarget).to.equal(true);
+      expect(sub.deleteThis).to.equal(null);
 
       // Copy new Objects
-      assert(a.notInTarget === undefined); // pre
-      assert(a.subNotInTarget === undefined); // pre
+      expect(a.notInTarget).to.equal(undefined); // pre
+      expect(a.subNotInTarget).to.equal(undefined); // pre
       selectiveDeepExtend(["notInTarget", "subNotInTarget"], a, b);
-      assert(a.notInTarget === true);
-      assert(a.subNotInTarget.enabled === true);
+      expect(a.notInTarget).to.equal(true);
+      expect(a.subNotInTarget.enabled).to.equal(true);
 
       // Copy null objects
-      assert(a.deleteThis !== null); // pre
-      assert(a.subDeleteThis !== null); // pre
+      expect(a.deleteThis).to.not.equal(null); // pre
+      expect(a.subDeleteThis).to.not.equal(null); // pre
       selectiveDeepExtend(["deleteThis", "subDeleteThis"], a, b);
 
       // NOTE: if allowDeletion === false, null values are copied over!
       //       This is due to existing logic; it might not be the intention and hence a bug
-      assert(a.deleteThis === null);
-      assert(a.subDeleteThis === null);
+      expect(a.deleteThis).to.equal(null);
+      expect(a.subDeleteThis).to.equal(null);
     });
 
     it("performs selectiveDeepExtend() as advertized with deletion", function () {
@@ -238,24 +232,24 @@ describe("util", function () {
 
       // Copy object property with properties to be deleted
       var sub = a.sub;
-      assert(sub.deleteThis === true); // pre
+      expect(sub.deleteThis).to.equal(true); // pre
       selectiveDeepExtend(["sub"], a, b, true);
-      assert(sub.deleteThis === undefined); // should be deleted
+      expect(sub.deleteThis).to.equal(undefined); // should be deleted
 
       // Spot check on rest of properties in `a.sub` - there should have been copied
       sub = a.sub;
-      assert(sub !== undefined);
-      assert(sub.enabled !== undefined && sub.enabled === false);
-      assert(sub.notInSource === true);
-      assert(sub.notInTarget === true);
+      expect(sub).to.not.equal(undefined);
+      expect(sub.enabled).to.equal(false);
+      expect(sub.notInSource).to.equal(true);
+      expect(sub.notInTarget).to.equal(true);
 
       // Copy null objects
-      assert(a.deleteThis === true); // pre
-      assert(a.subDeleteThis !== undefined); // pre
-      assert(a.subDeleteThis.enabled === true); // pre
+      expect(a.deleteThis).to.equal(true); // pre
+      expect(a.subDeleteThis).to.not.equal(undefined); // pre
+      expect(a.subDeleteThis.enabled).to.equal(true); // pre
       selectiveDeepExtend(["deleteThis", "subDeleteThis"], a, b, true);
-      assert(a.deleteThis === undefined); // should be deleted
-      assert(a.subDeleteThis === undefined); // should be deleted
+      expect(a.deleteThis).to.equal(undefined); // should be deleted
+      expect(a.subDeleteThis).to.equal(undefined); // should be deleted
     });
 
     it("performs selectiveNotDeepExtend() as advertized", function () {
@@ -272,12 +266,12 @@ describe("util", function () {
 
       // Exclude some
       a = initA();
-      assert(a.notInTarget === undefined); // pre
-      assert(a.subNotInTarget === undefined); // pre
+      expect(a.notInTarget).to.equal(undefined); // pre
+      expect(a.subNotInTarget).to.equal(undefined); // pre
       selectiveNotDeepExtend(["notInTarget", "subNotInTarget"], a, b);
-      assert(a.notInTarget === undefined); // not copied
-      assert(a.subNotInTarget === undefined); // not copied
-      assert(a.sub.notInTarget === true); // copied!
+      expect(a.notInTarget).to.equal(undefined); // not copied
+      expect(a.subNotInTarget).to.equal(undefined); // not copied
+      expect(a.sub.notInTarget).to.equal(true); // copied!
     });
 
     it("performs selectiveNotDeepExtend() as advertized with deletion", function () {
@@ -294,20 +288,20 @@ describe("util", function () {
 
       // Exclude some
       a = initA();
-      assert(a.notInTarget === undefined); // pre
-      assert(a.subNotInTarget === undefined); // pre
-      assert(a.deleteThis === true); // pre
-      assert(a.subDeleteThis !== undefined); // pre
-      assert(a.sub.deleteThis === true); // pre
-      assert(a.subDeleteThis.enabled === true); // pre
+      expect(a.notInTarget).to.equal(undefined); // pre
+      expect(a.subNotInTarget).to.equal(undefined); // pre
+      expect(a.deleteThis).to.equal(true); // pre
+      expect(a.subDeleteThis).to.not.equal(undefined); // pre
+      expect(a.sub.deleteThis).to.equal(true); // pre
+      expect(a.subDeleteThis.enabled).to.equal(true); // pre
       selectiveNotDeepExtend(["notInTarget", "subNotInTarget"], a, b, true);
-      assert(a.deleteThis === undefined); // should be deleted
-      assert(a.sub.deleteThis !== undefined); // not deleted! Original logic, could be a bug
-      assert(a.subDeleteThis === undefined); // should be deleted
+      expect(a.deleteThis).to.equal(undefined); // should be deleted
+      expect(a.sub.deleteThis).to.not.equal(undefined); // not deleted! Original logic, could be a bug
+      expect(a.subDeleteThis).to.equal(undefined); // should be deleted
       // Spot check: following should be same as allowDeletion === false
-      assert(a.notInTarget === undefined); // not copied
-      assert(a.subNotInTarget === undefined); // not copied
-      assert(a.sub.notInTarget === true); // copied!
+      expect(a.notInTarget).to.equal(undefined); // not copied
+      expect(a.subNotInTarget).to.equal(undefined); // not copied
+      expect(a.sub.notInTarget).to.equal(true); // copied!
     });
 
     /**
@@ -329,14 +323,14 @@ describe("util", function () {
       var b = this.b;
 
       // Copy null objects
-      assert(a.deleteThis === true); // pre
-      assert(a.subDeleteThis !== undefined); // pre
-      assert(a.subDeleteThis.enabled === true); // pre
+      expect(a.deleteThis).to.equal(true); // pre
+      expect(a.subDeleteThis).to.not.equal(undefined); // pre
+      expect(a.subDeleteThis.enabled).to.equal(true); // pre
       deepExtend(a, b, false, true);
       checkExtended(a, b, true); // Normal copy should be good
-      assert(a.deleteThis === undefined); // should be deleted
-      assert(a.subDeleteThis === undefined); // should be deleted
-      assert(a.sub.deleteThis !== undefined); // not deleted!!! Original logic, could be a bug
+      expect(a.deleteThis).to.equal(undefined); // should be deleted
+      expect(a.subDeleteThis).to.equal(undefined); // should be deleted
+      expect(a.sub.deleteThis).to.not.equal(undefined); // not deleted!!! Original logic, could be a bug
     });
   }); // extend routines
 
@@ -361,36 +355,39 @@ describe("util", function () {
       var mergeTarget = {};
 
       mergeOptions(mergeTarget, options, "someValue");
-      assert(
-        mergeTarget.someValue === undefined,
+      expect(mergeTarget.someValue).to.equal(
+        undefined,
         "Non-object option should not be copied",
       );
-      assert(mergeTarget.anObject === undefined);
+      expect(mergeTarget.anObject).to.equal(undefined);
 
       mergeOptions(mergeTarget, options, "aBoolOption");
-      assert(
-        mergeTarget.aBoolOption !== undefined,
+      expect(mergeTarget.aBoolOption).to.not.equal(
+        undefined,
         "option aBoolOption should now be an object",
       );
-      assert(
-        mergeTarget.aBoolOption.enabled === false,
+      expect(mergeTarget.aBoolOption.enabled).to.equal(
+        false,
         "enabled value option aBoolOption should have been copied into object",
       );
 
       mergeOptions(mergeTarget, options, "anObject");
-      assert(mergeTarget.anObject !== undefined, "Option object is not copied");
-      assert(mergeTarget.anObject.answer === 42);
-      assert(mergeTarget.anObject.enabled === true);
+      expect(mergeTarget.anObject).to.not.equal(
+        undefined,
+        "Option object is not copied",
+      );
+      expect(mergeTarget.anObject.answer).to.equal(42);
+      expect(mergeTarget.anObject.enabled).to.equal(true);
 
       mergeOptions(mergeTarget, options, "anotherObject");
-      assert(
-        mergeTarget.anotherObject.enabled === false,
+      expect(mergeTarget.anotherObject.enabled).to.equal(
+        false,
         "enabled value from options must have priority",
       );
 
       mergeOptions(mergeTarget, options, "merge");
-      assert(
-        mergeTarget.merge === undefined,
+      expect(mergeTarget.merge).to.equal(
+        undefined,
         "Explicit null option should not be copied, there is no global option for it",
       );
 
@@ -408,42 +405,42 @@ describe("util", function () {
       };
 
       mergeOptions(mergeTarget, options, "someValue");
-      assert(
-        mergeTarget.someValue === false,
+      expect(mergeTarget.someValue).to.equal(
+        false,
         "Non-object option should not be copied",
       );
-      assert(
-        mergeTarget.anObject.answer === 49,
+      expect(mergeTarget.anObject.answer).to.equal(
+        49,
         "Sibling option should not be changed",
       );
 
       mergeOptions(mergeTarget, options, "aBoolOption");
-      assert(
-        mergeTarget.aBoolOption !== true,
+      expect(mergeTarget.aBoolOption).to.not.equal(
+        true,
         "option enabled should have been overwritten",
       );
-      assert(
-        mergeTarget.aBoolOption.enabled === false,
+      expect(mergeTarget.aBoolOption.enabled).to.equal(
+        false,
         "enabled value option aBoolOption should have been copied into object",
       );
 
       mergeOptions(mergeTarget, options, "anObject");
-      assert(mergeTarget.anObject.answer === 42);
-      assert(mergeTarget.anObject.enabled === true);
+      expect(mergeTarget.anObject.answer).to.equal(42);
+      expect(mergeTarget.anObject.enabled).to.equal(true);
 
       mergeOptions(mergeTarget, options, "anotherObject");
-      assert(
-        mergeTarget.anotherObject !== undefined,
+      expect(mergeTarget.anotherObject).to.not.equal(
+        undefined,
         "Option object is not copied",
       );
-      assert(
-        mergeTarget.anotherObject.enabled === false,
+      expect(mergeTarget.anotherObject.enabled).to.equal(
+        false,
         "enabled value from options must have priority",
       );
 
       mergeOptions(mergeTarget, options, "merge");
-      assert(
-        mergeTarget.merge === "hello",
+      expect(mergeTarget.merge).to.equal(
+        "hello",
         "Explicit null-option should not be copied, already present in target",
       );
     });
@@ -455,35 +452,45 @@ describe("util", function () {
       };
 
       var errMsg = "Non-object parameters should not be accepted";
-      throws(() => mergeOptions(null, options, "anything"), Error, errMsg);
-      throws(() => mergeOptions(undefined, options, "anything"), Error, errMsg);
-      throws(() => mergeOptions(42, options, "anything"), Error, errMsg);
-      throws(() => mergeOptions(mergeTarget, null, "anything"), Error, errMsg);
-      throws(
+      expect(() => mergeOptions(null, options, "anything"), errMsg).to.throw(
+        Error,
+      );
+      expect(
+        () => mergeOptions(undefined, options, "anything"),
+        errMsg,
+      ).to.throw(Error);
+      expect(() => mergeOptions(42, options, "anything"), errMsg).to.throw(
+        Error,
+      );
+      expect(
+        () => mergeOptions(mergeTarget, null, "anything"),
+        errMsg,
+      ).to.throw(Error);
+      expect(
         () => mergeOptions(mergeTarget, undefined, "anything"),
-        Error,
         errMsg,
+      ).to.throw(Error);
+      expect(() => mergeOptions(mergeTarget, 42, "anything"), errMsg).to.throw(
+        Error,
       );
-      throws(() => mergeOptions(mergeTarget, 42, "anything"), Error, errMsg);
-      throws(() => mergeOptions(mergeTarget, options, null), Error, errMsg);
-      throws(
+      expect(() => mergeOptions(mergeTarget, options, null), errMsg).to.throw(
+        Error,
+      );
+      expect(
         () => mergeOptions(mergeTarget, options, undefined),
-        Error,
         errMsg,
-      );
-      throws(
+      ).to.throw(Error);
+      expect(
         () => mergeOptions(mergeTarget, options, "anything", null),
-        Error,
         errMsg,
-      );
-      throws(
+      ).to.throw(Error);
+      expect(
         () => mergeOptions(mergeTarget, options, "anything", "not an object"),
-        Error,
         errMsg,
-      );
+      ).to.throw(Error);
 
       mergeOptions(mergeTarget, options, "iDontExist");
-      assert(mergeTarget.iDontExist === undefined);
+      expect(mergeTarget.iDontExist).to.equal(undefined);
     });
 
     it("handles good input with global options", function () {
@@ -509,16 +516,16 @@ describe("util", function () {
       };
 
       mergeOptions(mergeTarget, options, "merge", globalOptions);
-      assert(
-        mergeTarget.merge.enabled === false,
+      expect(mergeTarget.merge.enabled).to.equal(
+        false,
         "null-option should create an empty target object",
       );
 
       mergeOptions(mergeTarget, options, "missingEnabled", globalOptions);
-      assert(mergeTarget.missingEnabled.enabled === false);
+      expect(mergeTarget.missingEnabled.enabled).to.equal(false);
 
       mergeOptions(mergeTarget, options, "alsoMissingEnabled", globalOptions);
-      assert(mergeTarget.alsoMissingEnabled.enabled === true);
+      expect(mergeTarget.alsoMissingEnabled.enabled).to.equal(true);
     });
   }); // mergeOptions
 
@@ -548,90 +555,90 @@ describe("util", function () {
       parentSibiling.appendChild(childSibling);
 
       recursiveDOMDelete(root);
-      equal(root.children.length, 0);
-      equal(parent.children.length, 0);
-      equal(parentSibiling.children.length, 0);
-      equal(child.children.length, 0);
-      equal(childSibling.children.length, 0);
+      expect(root.children.length).to.equal(0);
+      expect(parent.children.length).to.equal(0);
+      expect(parentSibiling.children.length).to.equal(0);
+      expect(child.children.length).to.equal(0);
+      expect(childSibling.children.length).to.equal(0);
     });
   });
 
   describe("isDate", function () {
     it("identifies a Date", function () {
-      assert(isDate(new Date()));
+      expect(isDate(new Date())).to.equal(true);
     });
 
     it("identifies an ASPDate as String", function () {
-      assert(isDate("Date(1198908717056)"));
+      expect(isDate("Date(1198908717056)")).to.equal(true);
     });
 
     it("identifies a date string", function () {
-      assert(isDate("1995-01-01"));
+      expect(isDate("1995-01-01")).to.equal(true);
     });
 
     it("identifies a date string", function () {
-      equal(isDate(""), false);
+      expect(isDate("")).to.equal(false);
     });
 
     it("identifies non-dates", function () {
-      equal(isDate(null), false);
-      equal(isDate(undefined), false);
-      equal(isDate([1, 2, 3]), false);
-      equal(isDate({ a: 42 }), false);
-      equal(isDate(42), false);
-      equal(isDate("meow"), false);
+      expect(isDate(null)).to.equal(false);
+      expect(isDate(undefined)).to.equal(false);
+      expect(isDate([1, 2, 3])).to.equal(false);
+      expect(isDate({ a: 42 })).to.equal(false);
+      expect(isDate(42)).to.equal(false);
+      expect(isDate("meow")).to.equal(false);
     });
   });
 
   describe("getType", function () {
     it("of object null is null", function () {
-      equal(getType(null), "null");
+      expect(getType(null)).to.equal("null");
     });
 
     it("of object Boolean is Boolean", function () {
       function Tester() {}
       Tester.prototype = Object.create(Boolean.prototype);
-      equal(getType(new Tester("true")), "Boolean");
+      expect(getType(new Tester("true"))).to.equal("Boolean");
     });
 
     it("of object Number is Number", function () {
       function Tester() {}
       Tester.prototype = Object.create(Number.prototype);
-      equal(getType(new Tester(1)), "Number");
+      expect(getType(new Tester(1))).to.equal("Number");
     });
 
     it("of object String is String", function () {
       function Tester() {}
       Tester.prototype = Object.create(String.prototype);
-      equal(getType(new Tester("stringy!")), "String");
+      expect(getType(new Tester("stringy!"))).to.equal("String");
     });
 
     it("of object Array is Array", function () {
-      equal(getType(new Array([])), "Array");
+      expect(getType(new Array([]))).to.equal("Array");
     });
 
     it("of object Date is Date", function () {
-      equal(getType(new Date()), "Date");
+      expect(getType(new Date())).to.equal("Date");
     });
 
     it("of object any other type is Object", function () {
-      equal(getType({}), "Object");
+      expect(getType({})).to.equal("Object");
     });
 
     it("of number is Number", function () {
-      equal(getType(1), "Number");
+      expect(getType(1)).to.equal("Number");
     });
 
     it("of boolean is Boolean", function () {
-      equal(getType(true), "Boolean");
+      expect(getType(true)).to.equal("Boolean");
     });
 
     it("of string is String", function () {
-      equal(getType("string"), "String");
+      expect(getType("string")).to.equal("String");
     });
 
     it("of undefined is undefined", function () {
-      equal(getType(), "undefined");
+      expect(getType()).to.equal("undefined");
     });
   });
 
@@ -639,8 +646,8 @@ describe("util", function () {
     it("take a number and output a number", function () {
       for (var key in easingFunctions) {
         if (Object.prototype.hasOwnProperty.call(easingFunctions, key)) {
-          equal(typeof easingFunctions[key](1), "number");
-          equal(typeof easingFunctions[key](0.2), "number");
+          expect(typeof easingFunctions[key](1)).to.equal("number");
+          expect(typeof easingFunctions[key](0.2)).to.equal("number");
         }
       }
     });
@@ -657,133 +664,130 @@ describe("util", function () {
     });
 
     it("returns 0 when there is no content", function () {
-      equal(getScrollBarWidth(), 0);
+      expect(getScrollBarWidth()).to.equal(0);
     });
   });
 
   describe("equalArray", function () {
     it("arrays of different lengths are not equal", function () {
-      equal(equalArray([1, 2, 3], [1, 2]), false);
+      expect(equalArray([1, 2, 3], [1, 2])).to.equal(false);
     });
 
     it("arrays with different content are not equal", function () {
-      equal(equalArray([1, 2, 3], [3, 2, 1]), false);
+      expect(equalArray([1, 2, 3], [3, 2, 1])).to.equal(false);
     });
 
     it("same content arrays are equal", function () {
-      assert(equalArray([1, 2, 3], [1, 2, 3]));
+      expect(equalArray([1, 2, 3], [1, 2, 3])).to.equal(true);
     });
 
     it("empty arrays are equal", function () {
-      assert(equalArray([], []));
+      expect(equalArray([], [])).to.equal(true);
     });
 
     it("the same array is equal", function () {
       var arr = [1, 2, 3];
-      assert(equalArray(arr, arr));
+      expect(equalArray(arr, arr)).to.equal(true);
     });
   });
 
   describe("asBoolean", function () {
     it("resolves value from a function", function () {
-      assert(
+      expect(
         option.asBoolean(function () {
           return true;
         }, false),
-      );
+      ).to.equal(true);
     });
 
     it("returns default value for null", function () {
-      assert(option.asBoolean(null, true));
+      expect(option.asBoolean(null, true)).to.equal(true);
     });
 
     it("returns true for other types", function () {
-      assert(option.asBoolean("should be true", false));
+      expect(option.asBoolean("should be true", false)).to.equal(true);
     });
 
     it("returns null for undefined", function () {
-      equal(option.asBoolean(), null);
+      expect(option.asBoolean()).to.equal(null);
     });
   });
 
   describe("asNumber", function () {
     it("resolves value from a function", function () {
-      equal(
+      expect(
         option.asNumber(function () {
           return 777;
         }, 13),
-        777,
-      );
+      ).to.equal(777);
     });
 
     it("returns default value for null", function () {
-      equal(option.asNumber(null, 13), 13);
+      expect(option.asNumber(null, 13)).to.equal(13);
     });
 
     it("returns number for other types", function () {
-      equal(option.asNumber("777", 13), 777);
+      expect(option.asNumber("777", 13)).to.equal(777);
     });
 
     it("returns default for NaN", function () {
-      equal(option.asNumber(NaN, 13), 13);
+      expect(option.asNumber(NaN, 13)).to.equal(13);
     });
 
     it("returns null for undefined", function () {
-      equal(option.asNumber(), null);
+      expect(option.asNumber()).to.equal(null);
     });
   });
 
   describe("asString", function () {
     it("resolves value from a function", function () {
-      equal(
+      expect(
         option.asString(function () {
           return "entered";
         }, "default"),
-        "entered",
-      );
+      ).to.equal("entered");
     });
 
     it("returns default value for null", function () {
-      equal(option.asString(null, "default"), "default");
+      expect(option.asString(null, "default")).to.equal("default");
     });
 
     it("returns string for other types", function () {
-      equal(option.asString(777, "default"), "777");
+      expect(option.asString(777, "default")).to.equal("777");
     });
 
     it("returns default for undefined", function () {
-      equal(option.asString(undefined, "default"), "default");
+      expect(option.asString(undefined, "default")).to.equal("default");
     });
 
     it("returns null for undefined", function () {
-      equal(option.asString(), null);
+      expect(option.asString()).to.equal(null);
     });
   });
 
   describe("asSize", function () {
     it("resolves value from a function", function () {
-      equal(
+      expect(
         option.asSize(function () {
           return "100px";
         }, "50px"),
-        "100px",
-      );
+      ).to.equal("100px");
     });
 
     it("returns default value for null", function () {
-      equal(option.asSize(null, "50px"), "50px");
+      expect(option.asSize(null, "50px")).to.equal("50px");
     });
 
     it("returns string with px for other number", function () {
-      equal(option.asSize(100, "50px"), "100px");
+      expect(option.asSize(100, "50px")).to.equal("100px");
     });
 
     it("returns default for undefined", function () {
-      equal(option.asSize(undefined, "50px"), "50px");
+      expect(option.asSize(undefined, "50px")).to.equal("50px");
     });
 
     it("returns null for undefined", function () {
-      equal(option.asSize(), null);
+      expect(option.asSize()).to.equal(null);
     });
   });
 
@@ -801,30 +805,33 @@ describe("util", function () {
 
     it("resolves value from a function", function () {
       var me = this;
-      equal(
+      expect(
         option.asElement(function () {
           return me.value;
         }, this.defaultValue),
+      ).to.equal(this.value);
+    });
+
+    it("returns Element", function () {
+      expect(option.asElement(this.value, this.defaultValue)).to.equal(
         this.value,
       );
     });
 
-    it("returns Element", function () {
-      equal(option.asElement(this.value, this.defaultValue), this.value);
-    });
-
     it("returns default value for null", function () {
-      equal(option.asElement(null, this.defaultValue), this.defaultValue);
+      expect(option.asElement(null, this.defaultValue)).to.equal(
+        this.defaultValue,
+      );
     });
 
     it("returns null for undefined", function () {
-      equal(option.asElement(), null);
+      expect(option.asElement()).to.equal(null);
     });
   });
 
   describe("binarySearchValue", function () {
     it("Finds center target on odd sized array", function () {
-      equal(
+      expect(
         binarySearchValue(
           [
             { id: "a", val: 0 },
@@ -834,12 +841,11 @@ describe("util", function () {
           1,
           "val",
         ),
-        1,
-      );
+      ).to.equal(1);
     });
 
     it("Finds target on odd sized array", function () {
-      equal(
+      expect(
         binarySearchValue(
           [
             { id: "a", val: 0 },
@@ -849,12 +855,11 @@ describe("util", function () {
           2,
           "val",
         ),
-        2,
-      );
+      ).to.equal(2);
     });
 
     it("Cannot find target", function () {
-      equal(
+      expect(
         binarySearchValue(
           [
             { id: "a", val: 0 },
@@ -864,8 +869,7 @@ describe("util", function () {
           7,
           "val",
         ),
-        -1,
-      );
+      ).to.equal(-1);
     });
   });
 });
