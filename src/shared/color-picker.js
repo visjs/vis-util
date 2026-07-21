@@ -1,4 +1,3 @@
-import { Hammer } from "./hammer.js";
 import {
   HSVToRGB,
   RGBToHSV,
@@ -8,6 +7,7 @@ import {
   isValidRGB,
   isValidRGBA,
 } from "../util.ts";
+import { Hammer } from "./hammer.js";
 
 const htmlColors = {
   black: "#000000",

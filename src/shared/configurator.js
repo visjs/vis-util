@@ -1,5 +1,4 @@
 import { copyAndExtendArray } from "../util.ts";
-
 import { ColorPicker } from "./color-picker.js";
 
 /**

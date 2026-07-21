@@ -1,4 +1,5 @@
 import Emitter from "component-emitter";
+
 import { Hammer } from "./hammer.js";
 
 /**
@@ -90,7 +91,7 @@ Activator.current = null;
 Activator.prototype.destroy = function () {
   this.deactivate();
 
-  for (const callback of this._cleanupQueue.splice(0).reverse()) {
+  for (const callback of this._cleanupQueue.splice(0).toReversed()) {
     callback();
   }
 };

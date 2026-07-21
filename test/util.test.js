@@ -1,20 +1,20 @@
-import jsdom_global from "jsdom-global";
 import { expect } from "chai";
+import jsdom_global from "jsdom-global";
 
 import {
+  binarySearchValue,
+  deepExtend,
+  easingFunctions,
+  equalArray,
   fillIfDefined,
+  getScrollBarWidth,
+  getType,
+  isDate,
+  mergeOptions,
+  option,
+  recursiveDOMDelete,
   selectiveDeepExtend,
   selectiveNotDeepExtend,
-  deepExtend,
-  mergeOptions,
-  recursiveDOMDelete,
-  isDate,
-  getType,
-  easingFunctions,
-  getScrollBarWidth,
-  equalArray,
-  option,
-  binarySearchValue,
 } from "../src/index.ts";
 
 describe("util", function () {
