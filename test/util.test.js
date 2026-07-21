@@ -614,7 +614,7 @@ describe("util", function () {
     });
 
     it("of object Array is Array", function () {
-      expect(getType(new Array([]))).to.equal("Array");
+      expect(getType([])).to.equal("Array");
     });
 
     it("of object Date is Date", function () {

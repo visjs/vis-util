@@ -340,7 +340,7 @@ export class Configurator {
       range.type = "range"; // not supported on IE9
       range.min = min;
       range.max = max;
-    } catch (err) {
+    } catch {
       // TODO: Add some error handling.
     }
     range.step = step;

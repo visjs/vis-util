@@ -54,6 +54,7 @@ function AleaImplementation(seed: Mashable[]): RNG {
   random.uint32 = (): number => random() * 0x100000000; // 2^32
 
   random.fract53 = (): number =>
+    // oxlint-disable-next-line oxc/erasing-op -- False positive, no idea why it considers 1.1102230246251565e-16 to be zero
     random() + ((random() * 0x200000) | 0) * 1.1102230246251565e-16; // 2^-53
 
   random.algorithm = "Alea";
