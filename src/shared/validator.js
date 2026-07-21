@@ -284,6 +284,7 @@ export class Validator {
     let closestMatchPath = [];
     const lowerCaseOption = option.toLowerCase();
     let indexMatch = undefined;
+    // oxlint-disable-next-line guard-for-in -- Options use prototype inheritance to override defaults, parent options, etc.
     for (const op in options) {
       let distance;
       if (options[op].__type__ !== undefined && recursive === true) {

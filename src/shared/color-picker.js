@@ -1,4 +1,3 @@
-import { Hammer } from "./hammer.js";
 import {
   HSVToRGB,
   RGBToHSV,
@@ -8,6 +7,7 @@ import {
   isValidRGB,
   isValidRGBA,
 } from "../util.ts";
+import { Hammer } from "./hammer.js";
 
 const htmlColors = {
   black: "#000000",
@@ -559,7 +559,7 @@ export class ColorPicker {
       this.opacityRange.type = "range"; // Not supported on IE9
       this.opacityRange.min = "0";
       this.opacityRange.max = "100";
-    } catch (err) {
+    } catch {
       // TODO: Add some error handling.
     }
     this.opacityRange.value = "100";
@@ -570,7 +570,7 @@ export class ColorPicker {
       this.brightnessRange.type = "range"; // Not supported on IE9
       this.brightnessRange.min = "0";
       this.brightnessRange.max = "100";
-    } catch (err) {
+    } catch {
       // TODO: Add some error handling.
     }
     this.brightnessRange.value = "100";

@@ -1,5 +1,5 @@
-import jsdom_global from "jsdom-global";
 import { expect } from "chai";
+import jsdom_global from "jsdom-global";
 
 import { bridgeObject } from "../src/index.ts";
 
@@ -88,7 +88,7 @@ describe("bridgeObject", function (): void {
       });
 
       it("Bridged object should have all original properties but no additional", function (): void {
-        expect(Object.keys(bridgedObject).sort()).to.deep.equal([
+        expect(Object.keys(bridgedObject).toSorted()).to.deep.equal([
           "1",
           "2",
           "3",

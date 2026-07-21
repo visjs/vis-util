@@ -1,5 +1,5 @@
-import jsdom_global from "jsdom-global";
 import { expect } from "chai";
+import jsdom_global from "jsdom-global";
 
 import { addCssText } from "../src/index.ts";
 

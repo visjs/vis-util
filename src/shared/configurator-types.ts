@@ -10,7 +10,6 @@ interface OptionsType {
   readonly undefined?: "undefined";
 }
 export type OptionsConfig = {
-  /* eslint-disable-next-line @typescript-eslint/naming-convention -- The __*__ format is used to prevent collisions with actual option names. */
   readonly __type__: {
     readonly object: "object";
   } & OptionsType;

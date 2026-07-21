@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { assert, mock } from "sinon";
-import { deepFreeze } from "./helpers/index.ts";
 
 import { binarySearchCustom } from "../src/index.ts";
+import { deepFreeze } from "./helpers/index.ts";
 
 describe("binarySearchCustom", function (): void {
   const orderedItems = deepFreeze([
