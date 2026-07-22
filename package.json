@@ -232,7 +232,7 @@
     "jsdom-global": "3.0.2",
     "lint-staged": "17.1.0",
     "mocha": "11.7.6",
-    "nyc": "17.1.0",
+    "nyc": "18.0.0",
     "oxfmt": "0.59.0",
     "oxlint": "1.74.0",
     "semantic-release": "25.0.8",
