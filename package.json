@@ -230,7 +230,7 @@
     "husky": "9.1.7",
     "jsdom": "29.1.1",
     "jsdom-global": "3.0.2",
-    "lint-staged": "17.0.8",
+    "lint-staged": "17.1.0",
     "mocha": "11.7.6",
     "nyc": "17.1.0",
     "oxfmt": "0.59.0",
