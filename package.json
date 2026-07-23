@@ -237,7 +237,7 @@
     "oxlint": "1.74.0",
     "semantic-release": "25.0.8",
     "shx": "0.4.0",
-    "sinon": "22.0.0",
+    "sinon": "22.1.0",
     "snap-shot-it": "7.9.10",
     "typedoc": "0.28.20",
     "vis-dev-utils": "6.0.15"
