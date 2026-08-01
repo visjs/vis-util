@@ -1,11 +1,5 @@
 export const ignorePatterns: string[] = [
-  "/*",
-
-  "!/*?.?*",
-  "!/.?*.?*",
-
-  "!/.circleci",
-  "!/dev-lib",
-  "!/src",
-  "!/test",
+  "/__snapshots__/",
+  "/docs/",
+  // Everything from gitignore is implicitly ignored.
 ];
