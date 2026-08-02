@@ -522,7 +522,7 @@ export class Configurator {
     const checkbox = document.createElement("input");
     checkbox.type = "text";
     checkbox.className = "vis-configuration vis-config-text";
-    checkbox.value = value;
+    checkbox.setAttribute("value", String(value).replace(/[<>"'&]/g, ""));
     if (value !== defaultValue) {
       this.changedOptions.push({ path: path, value: value });
     }
