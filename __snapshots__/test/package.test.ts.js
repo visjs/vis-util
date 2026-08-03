@@ -10,6 +10,12 @@ exports['Package Exported files 1'] = {
     "README.md": {
       "empty": false
     },
+    "declarations/css-shim.d.ts": {
+      "empty": false
+    },
+    "declarations/css-shim.d.ts.map": {
+      "empty": false
+    },
     "declarations/deep-object-assign.d.ts": {
       "empty": false
     },
@@ -95,16 +101,16 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "esnext/esm/vis-util.min.mjs": {
-      "empty":false
+      "empty": false
     },
     "esnext/esm/vis-util.min.mjs.map": {
-      "empty":false
+      "empty": false
     },
     "esnext/esm/vis-util.mjs": {
-      "empty":false
+      "empty": false
     },
     "esnext/esm/vis-util.mjs.map": {
-      "empty":false
+      "empty": false
     },
     "esnext/index.d.ts": {
       "empty": false
@@ -134,10 +140,10 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "esnext/umd/vis-util.cjs": {
-      "empty":false
+      "empty": false
     },
     "esnext/umd/vis-util.cjs.map": {
-      "empty":false
+      "empty": false
     },
     "esnext/umd/vis-util.d.ts": {
       "empty": false
@@ -149,10 +155,10 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "esnext/umd/vis-util.min.cjs": {
-      "empty":false
+      "empty": false
     },
     "esnext/umd/vis-util.min.cjs.map": {
-      "empty":false
+      "empty": false
     },
     "esnext/umd/vis-util.min.d.ts": {
       "empty": false
@@ -191,16 +197,16 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "peer/esm/vis-util.min.mjs": {
-      "empty":false
+      "empty": false
     },
     "peer/esm/vis-util.min.mjs.map": {
-      "empty":false
+      "empty": false
     },
     "peer/esm/vis-util.mjs": {
-      "empty":false
+      "empty": false
     },
     "peer/esm/vis-util.mjs.map": {
-      "empty":false
+      "empty": false
     },
     "peer/index.d.ts": {
       "empty": false
@@ -230,10 +236,10 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "peer/umd/vis-util.cjs": {
-      "empty":false
+      "empty": false
     },
     "peer/umd/vis-util.cjs.map": {
-      "empty":false
+      "empty": false
     },
     "peer/umd/vis-util.d.ts": {
       "empty": false
@@ -245,10 +251,10 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "peer/umd/vis-util.min.cjs": {
-      "empty":false
+      "empty": false
     },
     "peer/umd/vis-util.min.cjs.map": {
-      "empty":false
+      "empty": false
     },
     "peer/umd/vis-util.min.d.ts": {
       "empty": false
@@ -284,16 +290,16 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "standalone/esm/vis-util.min.mjs": {
-      "empty":false
+      "empty": false
     },
     "standalone/esm/vis-util.min.mjs.map": {
-      "empty":false
+      "empty": false
     },
     "standalone/esm/vis-util.mjs": {
-      "empty":false
+      "empty": false
     },
     "standalone/esm/vis-util.mjs.map": {
-      "empty":false
+      "empty": false
     },
     "standalone/index.d.ts": {
       "empty": false
@@ -323,10 +329,10 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "standalone/umd/vis-util.cjs": {
-      "empty":false
+      "empty": false
     },
     "standalone/umd/vis-util.cjs.map": {
-      "empty":false
+      "empty": false
     },
     "standalone/umd/vis-util.d.ts": {
       "empty": false
@@ -338,10 +344,10 @@ exports['Package Exported files 1'] = {
       "empty": false
     },
     "standalone/umd/vis-util.min.cjs": {
-      "empty":false
+      "empty": false
     },
     "standalone/umd/vis-util.min.cjs.map": {
-      "empty":false
+      "empty": false
     },
     "standalone/umd/vis-util.min.d.ts": {
       "empty": false
@@ -351,6 +357,6 @@ exports['Package Exported files 1'] = {
     },
     "standalone/umd/vis-util.min.js.map": {
       "empty": false
-    },
+    }
   }
 }

@@ -168,9 +168,18 @@
       "require": "./esnext/umd/vis-util.min.cjs",
       "types": "./declarations/index.d.ts"
     },
-    "./standalone/styles/*": "./standalone/styles/*",
-    "./peer/styles/*": "./peer/styles/*",
-    "./esnext/styles/*": "./esnext/styles/*"
+    "./standalone/styles/*": {
+      "default": "./standalone/styles/*",
+      "types": "./declarations/css-shim.d.ts"
+    },
+    "./peer/styles/*": {
+      "default": "./peer/styles/*",
+      "types": "./declarations/css-shim.d.ts"
+    },
+    "./esnext/styles/*": {
+      "default": "./esnext/styles/*",
+      "types": "./declarations/css-shim.d.ts"
+    }
   },
   "scripts": {
     "build": "npm run build:types && npm run build:code && npm run build:docs",
