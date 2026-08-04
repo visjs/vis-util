@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
-import { hexToRGB, type RGB } from "../src/index.ts";
+import { hexToRGB } from "../src/index.ts";
+import type { RGB } from "../src/index.ts";
 
 describe("hexToRGB", function (): void {
   const valid = [

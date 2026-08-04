@@ -1,21 +1,22 @@
 {
   "compilerOptions": {
     "allowImportingTsExtensions": true,
-    "baseUrl": ".",
     "declaration": true,
     "declarationDir": "dist/types",
     "declarationMap": true,
     "esModuleInterop": true,
-    "module": "es2015",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "outDir": "dist/src",
     "paths": {},
     "resolveJsonModule": true,
+    "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "types": ["hammerjs"]
   },
   "exclude": ["node_modules", "**/__tests__/*"],
   "include": ["src", "test"]

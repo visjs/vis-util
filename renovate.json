@@ -1,9 +1,27 @@
 {
-  "extends": ["config:base"],
+  "extends": ["config:best-practices", ":pinOnlyDevDependencies"],
+  "dependencyDashboard": false,
   "packageRules": [
     {
-      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "matchDepTypes": ["peerDependencies"],
+      "semanticCommitType": "fix"
+    },
+    {
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch",
+        "lockFileMaintenance",
+        "pin",
+        "digest",
+        "pinDigest"
+      ],
       "automerge": true
+    },
+    {
+      "matchDepTypes": ["dependencies", "peerDependencies"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false
     }
   ]
 }

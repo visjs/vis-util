@@ -3,8 +3,10 @@ import { ColorPicker as ColorPickerJS } from "./color-picker.js";
 import { Configurator as ConfiguratorJS } from "./configurator.js";
 import { Hammer as HammerJS } from "./hammer.js";
 import { Popup as PopupJS } from "./popup.js";
-import { VALIDATOR_PRINT_STYLE as VALIDATOR_PRINT_STYLE_JS } from "./validator.js";
-import { Validator as ValidatorJS } from "./validator.js";
+import {
+  VALIDATOR_PRINT_STYLE as VALIDATOR_PRINT_STYLE_JS,
+  Validator as ValidatorJS,
+} from "./validator.js";
 
 export const Activator: any = ActivatorJS;
 export const ColorPicker: any = ColorPickerJS;
