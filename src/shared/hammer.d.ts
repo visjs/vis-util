@@ -1,1 +1,1 @@
-export const Hammer: HammerStatic;
+export { default as Hammer } from "@egjs/hammerjs";

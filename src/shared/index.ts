@@ -1,3 +1,5 @@
+import type { default as HammerType } from "@egjs/hammerjs";
+
 import { Activator as ActivatorJS } from "./activator.js";
 import { ColorPicker as ColorPickerJS } from "./color-picker.js";
 import { Configurator as ConfiguratorJS } from "./configurator.js";
@@ -11,7 +13,7 @@ import {
 export const Activator: any = ActivatorJS;
 export const ColorPicker: any = ColorPickerJS;
 export const Configurator: any = ConfiguratorJS;
-export const Hammer: typeof import("hammerjs") = HammerJS;
+export const Hammer: typeof HammerType = HammerJS;
 export const Popup: any = PopupJS;
 export const VALIDATOR_PRINT_STYLE: string = VALIDATOR_PRINT_STYLE_JS;
 export const Validator: any = ValidatorJS;
