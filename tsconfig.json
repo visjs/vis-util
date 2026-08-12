@@ -15,8 +15,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "esnext",
-    "types": ["hammerjs"]
+    "target": "esnext"
   },
   "exclude": ["node_modules", "**/__tests__/*"],
   "include": ["src", "test"]
