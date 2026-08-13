@@ -228,7 +228,7 @@
     "sinon": "22.1.0",
     "snap-shot-it": "7.9.10",
     "typedoc": "0.28.20",
-    "vis-dev-utils": "7.1.6"
+    "vis-dev-utils": "7.1.7"
   },
   "peerDependencies": {
     "@egjs/hammerjs": "^2.0.0",
