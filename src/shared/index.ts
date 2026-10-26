@@ -1,4 +1,4 @@
-import type { default as HammerType } from "@egjs/hammerjs";
+import type HammerType from "@egjs/hammerjs";
 
 import { Activator as ActivatorJS } from "./activator.js";
 import { ColorPicker as ColorPickerJS } from "./color-picker.js";
