@@ -249,5 +249,8 @@
   "engines": {
     "node": ">=8"
   },
+  "allowScripts": {
+    "puppeteer": true
+  },
   "jsnext": "./esnext/esm/vis-util.mjs"
 }
