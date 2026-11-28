@@ -8,13 +8,12 @@ export const DELETE = Symbol("DELETE");
  * partial. Intended to be used with `deepObjectAssign`.
  */
 export type Assignable<T> = T extends undefined
-  ?
-      | (T extends Function
-          ? T
-          : T extends object
-            ? { [Key in keyof T]?: Assignable<T[Key]> | undefined }
-            : T)
-      | typeof DELETE
+  ? | (T extends Function
+        ? T
+        : T extends object
+          ? { [Key in keyof T]?: Assignable<T[Key]> | undefined }
+          : T)
+    | typeof DELETE
   : T extends Function
     ? T | undefined
     : T extends object
